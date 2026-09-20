@@ -1,0 +1,1473 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#173b32">
+<title>A7 Superintendent · V10</title>
+<style>
+:root{
+ --green:#173b32;--bg:#f5f7f4;--ink:#172923;
+ --muted:#61716b;--line:#dce5df;--soft:#edf4ef;
+ --amber:#94630d;--amberbg:#fff4dc;--blue:#245e85;
+ --red:#a33636
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:150px}
+body{
+ margin:0;background:var(--bg);color:var(--ink);
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ line-height:1.45;padding-bottom:94px
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,
+textarea:focus-visible,summary:focus-visible{
+ outline:3px solid #8dc6a8;outline-offset:2px
+}
+.sticky{
+ position:sticky;top:0;z-index:20;background:#f5f7f4f5;
+ backdrop-filter:blur(14px);border-bottom:1px solid var(--line)
+}
+.sticky-inner{max-width:760px;margin:auto;padding:9px 13px}
+.brand{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.logo{
+ width:35px;height:35px;border-radius:11px;background:var(--green);
+ color:white;display:grid;place-items:center;font-weight:850
+}
+.brand strong{font-size:16px}
+.brand small{display:block;color:var(--muted);font-size:11px}
+.selectors{display:grid;grid-template-columns:1fr 1.35fr;gap:8px}
+.selectors label{display:block;font-size:11px;color:var(--muted);font-weight:750}
+.selectors select{
+ width:100%;min-width:0;padding:9px 6px;border:1px solid #cbd8ce;
+ border-radius:10px;background:white;color:var(--ink);
+ font-size:14px;font-weight:700
+}
+.wrap{max-width:760px;margin:auto;padding:13px}
+.card,details{
+ background:white;border:1px solid var(--line);
+ border-radius:16px;margin-bottom:11px
+}
+.card{padding:15px}
+.hero{background:var(--green);color:white;border-radius:19px;padding:19px;margin-bottom:12px}
+.hero h1{font-size:24px;margin:5px 0}
+.hero p,.hero small{color:#d6e8dd}
+h2{font-size:20px;margin:0 0 7px}
+h3{font-size:16px;margin:0 0 7px}
+p{margin:7px 0}
+small,.muted{color:var(--muted)}
+small{font-size:12px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:9px}
+.row>*{min-width:0}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px}
+.stat small{display:block;font-size:11px}
+.stat strong{display:block;font-size:21px;margin-top:3px}
+.badge{
+ display:inline-block;padding:4px 8px;border-radius:30px;
+ background:#edf0ee;color:#53645b;font-size:11px;
+ font-weight:750;white-space:nowrap
+}
+.badge.requested{background:var(--amberbg);color:var(--amber)}
+.badge.received{background:#eaf3fb;color:var(--blue)}
+.badge.approved{background:#e4f4e9;color:#21683f}
+.btn{
+ border:0;background:var(--green);color:white;
+ border-radius:11px;padding:11px 13px;font-weight:750;text-align:center
+}
+.btn.alt{background:var(--soft);color:var(--green);border:1px solid #c9ded0}
+.btn.light{background:white;color:var(--green);border:1px solid var(--line)}
+.btn.danger{background:#fff0ef;color:var(--red)}
+.btn.full{width:100%;margin-top:9px}
+.btn.small{font-size:12px;padding:8px 10px}
+label.field{display:block;font-weight:700;font-size:13px;margin:12px 0 5px}
+input:not([type=checkbox]),textarea,select.field{
+ width:100%;min-width:0;padding:11px;border:1px solid #cbd8ce;
+ border-radius:10px;background:white;color:var(--ink);font-size:16px
+}
+textarea{min-height:83px;resize:vertical}
+input[type=checkbox]{width:19px;height:19px;flex:none;accent-color:var(--green)}
+.check{
+ display:flex;align-items:flex-start;gap:10px;padding:11px 0;
+ border-bottom:1px solid var(--line);font-size:14px
+}
+.check:last-child{border:0}
+.check span{flex:1}
+.notice{
+ background:var(--amberbg);color:#735014;padding:11px;
+ border-radius:11px;font-size:13px;margin:10px 0
+}
+.notice.good{background:#e8f5eb;color:#245e37}
+.money{font-size:25px;font-weight:800;overflow-wrap:anywhere}
+.line{border-top:1px solid var(--line);margin:13px 0}
+.budget-line{
+ display:flex;justify-content:space-between;gap:9px;
+ border-bottom:1px solid var(--line);padding:10px 0;font-size:13px
+}
+.budget-line:last-child{border:0}
+.budget-line strong{text-align:right}
+.budget-line small{display:block}
+summary{
+ cursor:pointer;list-style:none;padding:15px;display:flex;
+ justify-content:space-between;align-items:center;gap:8px;font-weight:750
+}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"⌄";font-size:20px;color:var(--muted)}
+details[open]>summary:after{content:"⌃"}
+.details-body{padding:0 15px 15px;border-top:1px solid var(--line)}
+.bid{border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0}
+.bid strong{overflow-wrap:anywhere}
+.pillrow{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.pill{font-size:11px;background:var(--soft);padding:4px 7px;border-radius:20px}
+.bottom{
+ position:fixed;bottom:0;left:0;right:0;z-index:30;
+ background:#fffffff2;backdrop-filter:blur(14px);
+ border-top:1px solid var(--line);
+ padding:8px 8px calc(8px + env(safe-area-inset-bottom))
+}
+.bottom-inner{max-width:760px;margin:auto;display:flex;gap:3px}
+.bottom button{
+ flex:1;min-width:0;border:0;background:transparent;
+ color:var(--muted);border-radius:10px;padding:9px 2px;
+ font-size:11px;font-weight:750
+}
+.bottom button.active{background:var(--soft);color:var(--green)}
+@media(max-width:370px){
+ .wrap{padding:10px}.sticky-inner{padding:8px 10px}
+ .card{padding:12px}.stat{padding:8px}.stat strong{font-size:19px}
+}
+</style>
+</head>
+<body>
+
+<header class="sticky" id="sticky">
+ <div class="sticky-inner">
+  <div class="brand">
+   <div class="logo">A7</div>
+   <div>
+    <strong>A7 Superintendent</strong>
+    <small>Contractors · Bids · Field inspections · V10</small>
+   </div>
+  </div>
+  <div class="selectors">
+   <div>
+    <label for="parcelSelect">PARCEL</label>
+    <select id="parcelSelect" onchange="chooseParcel(this.value)">
+     <option value="1">Parcel 1</option>
+     <option value="2">Parcel 2</option>
+    </select>
+   </div>
+   <div>
+    <label for="jobSelect">JUMP TO A JOB</label>
+    <select id="jobSelect" onchange="chooseJob(this.value)"></select>
+   </div>
+  </div>
+ </div>
+</header>
+
+<main class="wrap" id="main">
+ <div id="app"></div>
+</main>
+
+<nav class="bottom">
+ <div class="bottom-inner">
+  <button id="nav-overview" onclick="go('overview')">⌂ Overview</button>
+  <button id="nav-job" onclick="go('job')">☑ Jobs</button>
+  <button id="nav-contacts" onclick="go('contacts')">♙ People</button>
+  <button id="nav-budget" onclick="go('budget')">$ Budget</button>
+  <button id="nav-settings" onclick="go('settings')">⚙ Settings</button>
+ </div>
+</nav>
+
+<script>
+"use strict";
+
+const KEY="a7-superintendent-v10";
+const OLD9="a7-superintendent-v9";
+const OLD8="a7-superintendent-v8";
+
+const TRADES=[
+ ["home","Manufactured home"],
+ ["tax","Home sales tax"],
+ ["transport","Home transportation"],
+ ["setup","Home setup"],
+ ["septic","Septic installation"],
+ ["clearing","Land clearing"],
+ ["pad","Home pad"],
+ ["culvert","Entrance & culvert"],
+ ["driveway","Rock driveway"],
+ ["frontDeck","Front deck · 8′ × 10′"],
+ ["backDeck","Back deck · 8′ × 10′"],
+ ["steps","Steps & access"],
+ ["skirting","Home skirting"],
+ ["water","Water connection"],
+ ["electrical","Electrical connection"],
+ ["hvac","HVAC"],
+ ["other","Other parcel costs"]
+];
+
+const SCOPES={
+ home:"Manufactured home only. $47,009 quoted before tax. Transportation, setup, steps, skirting and decks excluded. Confirm other inclusions.",
+ tax:"Confirm the actual applicable tax amount in writing.",
+ transport:"Obtain a separate transportation quote for this parcel.",
+ setup:"Obtain a separate setup quote. Confirm exactly what is included.",
+ septic:"Obtain a written proposal based on the parcel's approved design and applicable requirements.",
+ clearing:"Confirm clearing boundaries and dimensions for this parcel.",
+ pad:"Confirm dimensions, material, elevation, compaction and home installer requirements.",
+ culvert:"Confirm the responsible road authority's requirements and approved specifications before ordering.",
+ driveway:"Confirm length, width, base, rock type, depth and drainage.",
+ frontDeck:"One planned 8′ × 10′ front deck. Confirm materials, footings, steps and railings.",
+ backDeck:"One planned 8′ × 10′ back deck. Confirm materials, footings, steps and railings.",
+ steps:"Confirm safe access at each entrance and avoid double-counting items included in deck bids.",
+ skirting:"Confirm material, ventilation, access panels and installation.",
+ water:"Confirm service availability, connection requirements and cost.",
+ electrical:"Confirm service, meter, pole or pedestal, trenching and connection cost.",
+ hvac:"Confirm whether equipment and installation are included in the home quote.",
+ other:"Record additional parcel-specific work here."
+};
+
+/*
+ These are owner walk-through prompts, NOT a substitute for
+ manufacturer instructions, permits, licensed inspections,
+ engineering, or approval by the responsible authority.
+*/
+const INSPECTIONS={
+ home:[
+  "Confirm the delivered home matches the order and model",
+  "Document visible delivery damage or missing items",
+  "Collect the home paperwork and applicable warranties",
+  "Record unresolved items for the seller or manufacturer"
+ ],
+ tax:[
+  "Confirm the actual tax amount with the seller or appropriate professional",
+  "Keep the final invoice or tax documentation"
+ ],
+ transport:[
+  "Confirm delivery location and access before arrival",
+  "Document visible damage when the home arrives",
+  "Confirm delivery paperwork and outstanding issues"
+ ],
+ setup:[
+  "Review setup against the manufacturer's installation instructions",
+  "Confirm required support, anchoring and access are addressed",
+  "Collect applicable installer and inspection documents",
+  "Document and resolve visible outstanding issues"
+ ],
+ septic:[
+  "Confirm the installed system matches the approved design",
+  "Collect required inspection or approval records",
+  "Record equipment information and maintenance instructions",
+  "Document any unfinished or corrective work"
+ ],
+ clearing:[
+  "Confirm clearing stayed within the agreed boundaries",
+  "Check that agreed debris removal is complete",
+  "Photograph and record any remaining work"
+ ],
+ pad:[
+  "Confirm location and dimensions against the agreed plan",
+  "Collect any specified material or compaction documentation",
+  "Confirm readiness with the home installer",
+  "Record drainage or other unresolved concerns"
+ ],
+ culvert:[
+  "Confirm the installed location and culvert match the approved requirements",
+  "Check that agreed inlet, outlet and backfill work is complete",
+  "Collect any required road-authority approval",
+  "Document outstanding drainage or access concerns"
+ ],
+ driveway:[
+  "Confirm the driveway follows the agreed location and dimensions",
+  "Check agreed base, rock and finish work",
+  "Document drainage and access concerns",
+  "Record unfinished or corrective work"
+ ],
+ frontDeck:[
+  "Confirm deck dimensions and agreed materials",
+  "Check agreed steps, railings and access are included",
+  "Collect any required inspection or approval",
+  "Document visible defects or incomplete work"
+ ],
+ backDeck:[
+  "Confirm deck dimensions and agreed materials",
+  "Check agreed steps, railings and access are included",
+  "Collect any required inspection or approval",
+  "Document visible defects or incomplete work"
+ ],
+ steps:[
+  "Confirm the agreed entrances have access",
+  "Check steps against the agreed scope and applicable requirements",
+  "Document incomplete or corrective work"
+ ],
+ skirting:[
+  "Confirm the agreed material and finish",
+  "Check required ventilation and access are addressed",
+  "Document incomplete or corrective work"
+ ],
+ water:[
+  "Confirm the agreed service and connection work is complete",
+  "Collect applicable utility or inspection records",
+  "Document leaks or unresolved issues for the qualified installer"
+ ],
+ electrical:[
+  "Confirm the agreed service and connection work is complete",
+  "Collect applicable utility and inspection records",
+  "Document outstanding issues for the qualified electrician"
+ ],
+ hvac:[
+  "Confirm equipment and installation match the agreed scope",
+  "Collect startup, warranty and applicable inspection records",
+  "Record unresolved operating or installation issues"
+ ],
+ other:[
+  "Confirm the agreed scope was completed",
+  "Collect applicable documents and approvals",
+  "Document any unresolved items"
+ ]
+};
+
+function fresh(){
+ const jobs={};
+ for(const parcel of [1,2]){
+  for(const [key,name] of TRADES){
+   const id=parcel+"-"+key;
+   jobs[id]={
+    id,parcel,key,name,scope:SCOPES[key]||"",
+    requested:false,bids:[],approvedBidId:null,
+    completed:false,contractorId:"",
+    inspection:INSPECTIONS[key].map(text=>({
+     id:uid(),text,checked:false
+    })),
+    inspectionNotes:"",
+    documentReferences:"",
+    signedOffAt:""
+   };
+   if(key==="home"){
+    jobs[id].bids.push({
+     id:id+"-initial",
+     contractor:"Home seller — name to confirm",
+     amount:47009,
+     notes:"Before tax; not approved or paid. Transportation, setup, steps, skirting and decks excluded.",
+     receivedDate:"",paid:0
+    });
+   }
+  }
+ }
+ return{
+  version:10,
+  development:{
+   name:"Talco Development",
+   landPrice:173000,landPaid:173000,
+   acres:[5,5],saleTarget:[250000,250000],
+   profitLow:[45000,45000],profitHigh:[75000,75000],
+   sharedCosts:[]
+  },
+  contacts:[],
+  homeRoles:{
+   1:{manufacturer:"",seller:"",delivery:"",setup:"",model:""},
+   2:{manufacturer:"",seller:"",delivery:"",setup:"",model:""}
+  },
+  jobs
+ };
+}
+
+function uid(){
+ return "id-"+Date.now()+"-"+Math.random().toString(36).slice(2,9);
+}
+
+function valid(d){
+ return !!(
+  d&&d.development&&d.jobs&&
+  Array.isArray(d.development.acres)&&
+  Array.isArray(d.development.saleTarget)&&
+  Array.isArray(d.development.profitLow)&&
+  Array.isArray(d.development.profitHigh)&&
+  TRADES.every(([key])=>
+   d.jobs["1-"+key]&&d.jobs["2-"+key]&&
+   Array.isArray(d.jobs["1-"+key].bids)&&
+   Array.isArray(d.jobs["2-"+key].bids)
+  )
+ );
+}
+
+function upgrade(old){
+ const copy=JSON.parse(JSON.stringify(old));
+ copy.version=10;
+ copy.contacts=Array.isArray(copy.contacts)?copy.contacts:[];
+ copy.homeRoles=copy.homeRoles||{};
+ for(const p of [1,2]){
+  copy.homeRoles[p]=Object.assign(
+   {manufacturer:"",seller:"",delivery:"",setup:"",model:""},
+   copy.homeRoles[p]||{}
+  );
+  for(const [key] of TRADES){
+   const j=copy.jobs[p+"-"+key];
+   if(!Array.isArray(j.inspection)){
+    j.inspection=INSPECTIONS[key].map(text=>({
+     id:uid(),text,checked:false
+    }));
+   }
+   if(typeof j.inspectionNotes!=="string")j.inspectionNotes="";
+   if(typeof j.documentReferences!=="string")j.documentReferences="";
+   if(typeof j.contractorId!=="string")j.contractorId="";
+   if(typeof j.signedOffAt!=="string")j.signedOffAt="";
+   if(!Array.isArray(j.bids))j.bids=[];
+  }
+ }
+ if(!Array.isArray(copy.development.sharedCosts)){
+  copy.development.sharedCosts=[];
+ }
+ return copy;
+}
+
+let migrationNote="";
+let startupWarning="";
+
+function load(){
+ try{
+  const current=localStorage.getItem(KEY);
+  if(current){
+   const parsed=JSON.parse(current);
+   if(!valid(parsed))throw Error("Invalid V10 data");
+   return upgrade(parsed);
+  }
+  for(const [oldKey,label] of [[OLD9,"V9"],[OLD8,"V8"]]){
+   const raw=localStorage.getItem(oldKey);
+   if(!raw)continue;
+   const parsed=JSON.parse(raw);
+   if(!valid(parsed))continue;
+   const copy=upgrade(parsed);
+   localStorage.setItem(KEY,JSON.stringify(copy));
+   migrationNote=label+" records copied into V10. "+label+" was left unchanged.";
+   return copy;
+  }
+ }catch(error){
+  startupWarning="Saved data could not be copied. Your earlier version has not been deleted. Use its backup if you need to restore your records.";
+ }
+ return fresh();
+}
+
+let data=load();
+let parcel=1;
+let jobKey="home";
+let view="overview";
+let notice=migrationNote||startupWarning;
+let editingContact="";
+const openSections={};
+const app=document.getElementById("app");
+
+function save(){
+ try{
+  localStorage.setItem(KEY,JSON.stringify(data));
+  return true;
+ }catch(error){
+  alert("Safari could not save this change. Export a backup from Settings.");
+  return false;
+ }
+}
+
+function esc(value){
+ return String(value??"")
+  .replaceAll("&","&amp;").replaceAll("<","&lt;")
+  .replaceAll(">","&gt;").replaceAll('"',"&quot;")
+  .replaceAll("'","&#39;");
+}
+function n(value){
+ const x=Number(value);
+ return Number.isFinite(x)?Math.max(0,x):0;
+}
+function money(value){
+ return new Intl.NumberFormat("en-US",{
+  style:"currency",currency:"USD",maximumFractionDigits:0
+ }).format(value);
+}
+function job(){return data.jobs[parcel+"-"+jobKey]}
+function jobs(p=parcel){
+ return TRADES.map(([key])=>data.jobs[p+"-"+key]);
+}
+function contact(id){
+ return data.contacts.find(c=>c.id===id)||null;
+}
+function contactName(id){
+ const c=contact(id);
+ return c?c.name:"Not selected";
+}
+function accepted(j){
+ return j.bids.find(b=>b.id===j.approvedBidId)||null;
+}
+function planning(j){
+ return accepted(j)||j.bids[j.bids.length-1]||null;
+}
+function status(j){
+ if(j.completed)return["Completed","approved"];
+ if(accepted(j))return["Approved","approved"];
+ if(j.bids.length)return["Bid received","received"];
+ if(j.requested)return["Quote requested","requested"];
+ return["Quote needed","needed"];
+}
+function badge(j){
+ const [label,type]=status(j);
+ return '<span class="badge '+type+'">'+label+"</span>";
+}
+function land(p){
+ const a=data.development.acres;
+ const total=n(a[0])+n(a[1]);
+ return total?n(data.development.landPrice)*n(a[p-1])/total:0;
+}
+function budget(p=parcel){
+ const d=data.development;
+ let low=land(p),high=low,unpriced=0,approved=0,paid=0;
+ for(const j of jobs(p)){
+  const b=planning(j);
+  if(b){low+=n(b.amount);high+=n(b.amount)}
+  else if(j.key==="septic"){low+=7809;high+=8500}
+  else unpriced++;
+  const a=accepted(j);
+  if(a){approved+=n(a.amount);paid+=n(a.paid)}
+ }
+ const acres=n(d.acres[0])+n(d.acres[1]);
+ const share=acres?n(d.acres[p-1])/acres:0;
+ for(const item of d.sharedCosts||[]){
+  low+=n(item.amount)*share;
+  high+=n(item.amount)*share;
+ }
+ return{
+  low,high,unpriced,approved,paid,
+  sale:n(d.saleTarget[p-1]),
+  profitLow:n(d.profitLow[p-1]),
+  profitHigh:n(d.profitHigh[p-1])
+ };
+}
+function stats(){
+ const list=jobs();
+ return{
+  needed:list.filter(j=>!j.requested&&!j.bids.length).length,
+  bids:list.reduce((sum,j)=>sum+j.bids.length,0),
+  approved:list.filter(j=>accepted(j)).length,
+  complete:list.filter(j=>j.completed).length
+ };
+}
+function inspectionCount(j){
+ return j.inspection.filter(item=>item.checked).length;
+}
+function sectionId(name){
+ return parcel+"-"+jobKey+"-"+name;
+}
+function isOpen(name,defaultOpen=false){
+ const id=sectionId(name);
+ return Object.prototype.hasOwnProperty.call(openSections,id)
+  ?openSections[id]:defaultOpen;
+}
+function rememberSection(name,element){
+ openSections[sectionId(name)]=element.open;
+}
+function details(name,title,body,defaultOpen=false){
+ return '<details '+(isOpen(name,defaultOpen)?"open":"")+
+  ' ontoggle="rememberSection(\''+name+'\',this)">'+
+  '<summary>'+title+'</summary>'+
+  '<div class="details-body">'+body+"</div></details>";
+}
+
+function jumpToContent(){
+ requestAnimationFrame(()=>{
+  const sticky=document.getElementById("sticky");
+  const main=document.getElementById("main");
+  const y=main.getBoundingClientRect().top+
+   window.scrollY-sticky.offsetHeight+4;
+  window.scrollTo({top:Math.max(0,y),behavior:"instant"});
+ });
+}
+function chooseParcel(value){
+ parcel=Number(value);
+ notice="";
+ render();
+ jumpToContent();
+}
+function chooseJob(value){
+ jobKey=value;
+ view="job";
+ notice="";
+ render();
+ jumpToContent();
+}
+function go(next){
+ view=next;
+ notice="";
+ render();
+ jumpToContent();
+}
+function message(text){
+ notice=text;
+ render();
+}
+function noticeHTML(){
+ return notice
+  ?'<div class="notice good" role="status">'+esc(notice)+"</div>"
+  :"";
+}
+function render(){
+ const parcelSelect=document.getElementById("parcelSelect");
+ parcelSelect.options[0].textContent=
+  "Parcel 1 · "+data.development.acres[0]+" ac";
+ parcelSelect.options[1].textContent=
+  "Parcel 2 · "+data.development.acres[1]+" ac";
+ parcelSelect.value=String(parcel);
+
+ const select=document.getElementById("jobSelect");
+ select.innerHTML=TRADES.map(([key,name])=>
+  '<option value="'+key+'">'+esc(name)+"</option>"
+ ).join("");
+ select.value=jobKey;
+
+ for(const name of ["overview","job","contacts","budget","settings"]){
+  document.getElementById("nav-"+name).classList.toggle(
+   "active",view===name
+  );
+ }
+
+ let html=noticeHTML();
+ if(view==="overview")html+=overview();
+ if(view==="job")html+=jobPage();
+ if(view==="contacts")html+=contactsPage();
+ if(view==="budget")html+=budgetPage();
+ if(view==="settings")html+=settingsPage();
+ app.innerHTML=html;
+
+ // Saving does not send the page back to the top.
+}
+
+function overview(){
+ const s=stats(),b=budget();
+ const pending=jobs().filter(j=>!j.completed);
+ return `
+  <section class="hero">
+   <small>TALCO DEVELOPMENT · PARCEL ${parcel}</small>
+   <h1>Your superintendent dashboard</h1>
+   <p>Know who's doing the work, what they've bid,
+   and what still needs your inspection.</p>
+  </section>
+
+  <section class="card">
+   <h2>Parcel ${parcel} at a glance</h2>
+   <div class="grid3">
+    <div class="stat"><small>Quotes needed</small><strong>${s.needed}</strong></div>
+    <div class="stat"><small>Bids received</small><strong>${s.bids}</strong></div>
+    <div class="stat"><small>Jobs completed</small><strong>${s.complete}</strong></div>
+   </div>
+   <button class="btn full" onclick="go('job')">
+    Open selected job →
+   </button>
+  </section>
+
+  <section class="card">
+   <h3>Who is handling the home?</h3>
+   ${["manufacturer","seller","delivery","setup"].map(role=>`
+    <div class="budget-line">
+     <span>${role[0].toUpperCase()+role.slice(1)}</span>
+     <strong>${esc(contactName(data.homeRoles[parcel][role]))}</strong>
+    </div>
+   `).join("")}
+   <button class="btn alt full" onclick="go('contacts')">
+    Set up home contacts
+   </button>
+  </section>
+
+  <section class="card">
+   <h3>Field checklist</h3>
+   <p class="muted">${pending.length} jobs are not marked complete.
+   Each job has its own inspection checklist and final sign-off.</p>
+   <button class="btn alt full" onclick="go('job')">
+    Open job inspection
+   </button>
+  </section>
+
+  <section class="card">
+   <h3>Budget snapshot</h3>
+   <div class="money">${money(b.low)}–${money(b.high)}</div>
+   <div class="notice">${b.unpriced} cost categories are unpriced.
+   This is not your final cost or projected profit.</div>
+   <button class="btn alt full" onclick="go('budget')">
+    View budget
+   </button>
+  </section>
+ `;
+}
+
+function contactOptions(selected,filterKey="",includeAll=true){
+ let list=data.contacts;
+ if(filterKey){
+  list=list.filter(c=>
+   c.trades.includes(filterKey)||c.trades.includes("all")||
+   c.id===selected
+  );
+ }
+ return '<option value="">Not selected yet</option>'+
+  list.map(c=>
+   '<option value="'+esc(c.id)+'" '+
+   (c.id===selected?"selected":"")+">"+
+   esc(c.name)+"</option>"
+  ).join("");
+}
+
+function homeRolePage(){
+ const roles=data.homeRoles[parcel];
+ return `
+  <p class="muted">These may be four different companies.
+  Selecting a contact does not approve a bid.</p>
+
+  <label class="field">Home manufacturer</label>
+  <select class="field" onchange="setHomeRole('manufacturer',this.value)">
+   ${contactOptions(roles.manufacturer)}
+  </select>
+
+  <label class="field">Home seller / dealer</label>
+  <select class="field" onchange="setHomeRole('seller',this.value)">
+   ${contactOptions(roles.seller)}
+  </select>
+
+  <label class="field">Delivery company</label>
+  <select class="field" onchange="setHomeRole('delivery',this.value)">
+   ${contactOptions(roles.delivery)}
+  </select>
+
+  <label class="field">Setup contractor</label>
+  <select class="field" onchange="setHomeRole('setup',this.value)">
+   ${contactOptions(roles.setup)}
+  </select>
+
+  <label class="field">Home model / identifying details</label>
+  <input id="homeModel" value="${esc(roles.model)}"
+   placeholder="Model or other details">
+  <button class="btn alt full" onclick="saveHomeModel()">
+   Save home details
+  </button>
+  <button class="btn light full" onclick="go('contacts')">
+   Add or edit a contact
+  </button>
+ `;
+}
+
+function jobPage(){
+ const j=job(),a=accepted(j);
+ const index=TRADES.findIndex(([key])=>key===jobKey);
+ const previous=TRADES[(index-1+TRADES.length)%TRADES.length][0];
+ const next=TRADES[(index+1)%TRADES.length][0];
+ const checked=inspectionCount(j);
+ const total=j.inspection.length;
+ const legacy=j.completed&&!j.signedOffAt;
+
+ const assignment=`
+  <p class="muted">Choose someone from your shared directory.
+  A contractor can be listed for several trades, but each job
+  needs its own bid and approval.</p>
+  <label class="field">Assigned contractor or supplier</label>
+  <select class="field" onchange="assignContractor(this.value)">
+   ${contactOptions(j.contractorId,j.key)}
+  </select>
+  <button class="btn light full" onclick="go('contacts')">
+   Add a contractor to the directory
+  </button>
+  ${j.key==="home"?`
+   <div class="line"></div>
+   <h3>Manufacturer, seller, delivery & setup</h3>
+   ${homeRolePage()}
+  `:""}
+ `;
+
+ const scope=`
+  <label class="field">Scope of work</label>
+  <textarea id="scope">${esc(j.scope)}</textarea>
+  <button class="btn alt full" onclick="saveScope()">Save scope</button>
+  ${!j.requested&&!j.bids.length?`
+   <button class="btn light full" onclick="markRequested()">
+    Mark quote as requested
+   </button>
+  `:""}
+  ${j.requested&&!j.bids.length?`
+   <div class="notice">Quote request recorded.
+   A7 has not sent an email.</div>
+  `:""}
+ `;
+
+ const bids=`
+  <p class="muted">Compare bids for this job.
+  Only one can be approved at a time.</p>
+  ${j.bids.length?j.bids.map(b=>`
+   <div class="bid">
+    <div class="row">
+     <strong>${esc(b.contractor)}</strong>
+     ${a&&a.id===b.id
+      ?'<span class="badge approved">Approved</span>'
+      :'<span class="badge received">Received</span>'}
+    </div>
+    <div class="money" style="font-size:22px;margin-top:7px">
+     ${money(n(b.amount))}
+    </div>
+    <p class="muted">${esc(b.notes||"No inclusions entered.")}</p>
+    <small>Recorded payments: ${money(n(b.paid))}</small>
+    ${a&&a.id===b.id
+     ?'<p class="muted">Approved for this job.</p>'
+     :'<button class="btn alt full" onclick="approveBid(\''+
+       esc(b.id)+'\')">Review & approve</button>'}
+   </div>
+  `).join(""):'<p class="muted">No bids recorded yet.</p>'}
+ `;
+
+ const newBid=`
+  <form onsubmit="addBid(event)">
+   <label class="field">Contractor or supplier</label>
+   <input id="contractor" required
+    value="${esc(contactName(j.contractorId)==="Not selected"?"":contactName(j.contractorId))}"
+    placeholder="Name">
+   <label class="field">Bid amount ($)</label>
+   <input id="bidAmount" type="number" min="0"
+    step="0.01" required placeholder="Quoted price">
+   <label class="field">What's included or excluded?</label>
+   <textarea id="bidNotes"
+    placeholder="Labor, materials, tax, exclusions..."></textarea>
+   <label class="field">Date received (optional)</label>
+   <input id="bidDate" type="date">
+   <button class="btn full" type="submit">Save bid</button>
+  </form>
+ `;
+
+ const inspection=`
+  <p class="muted">Owner walk-through prompts for this trade.
+  Check items only after reviewing them. Required official
+  inspections and manufacturer instructions still apply.</p>
+  <div class="row">
+   <strong>${checked} of ${total} checked</strong>
+   <span class="badge ${checked===total?"approved":"requested"}">
+    ${checked===total?"Checklist reviewed":"Review in progress"}
+   </span>
+  </div>
+  ${j.inspection.map(item=>`
+   <label class="check">
+    <input type="checkbox" ${item.checked?"checked":""}
+     onchange="toggleInspection('${esc(item.id)}',this.checked)">
+    <span>${esc(item.text)}</span>
+   </label>
+  `).join("")}
+  <label class="field">Add your own inspection item</label>
+  <input id="newInspection" placeholder="Something else to verify">
+  <button class="btn alt full" onclick="addInspectionItem()">
+   Add checklist item
+  </button>
+  <label class="field">Inspection notes / outstanding issues</label>
+  <textarea id="inspectionNotes"
+   placeholder="What needs fixing? Who is responsible?">${esc(j.inspectionNotes)}</textarea>
+  <label class="field">Document or photo references</label>
+  <textarea id="documentReferences"
+   placeholder="File names, document links, inspection report details...">${esc(j.documentReferences)}</textarea>
+  <button class="btn alt full" onclick="saveInspectionNotes()">
+   Save inspection notes
+  </button>
+  <p class="muted">This version stores references and notes,
+  not actual photo or document uploads.</p>
+ `;
+
+ const progress=`
+  ${a?`
+   <p><strong>Approved bid:</strong> ${esc(a.contractor)}
+   · ${money(n(a.amount))}</p>
+   <p><strong>Payments recorded:</strong> ${money(n(a.paid))}</p>
+   <label class="field">Record another payment ($)</label>
+   <input id="payment" type="number" min="0"
+    step="0.01" placeholder="Amount">
+   <button class="btn alt full" onclick="recordPayment()">
+    Record payment
+   </button>
+  `:'<p class="muted">No bid approved yet.</p>'}
+
+  ${legacy?`
+   <div class="notice">This job was marked complete in an
+   earlier version. V10 preserved that status, but its new
+   inspection checklist has not been signed off.</div>
+  `:""}
+
+  ${j.completed?`
+   <div class="notice good">
+    Job marked complete${j.signedOffAt
+     ?" · signed off "+esc(new Date(j.signedOffAt).toLocaleDateString())
+     :""}.
+   </div>
+   <button class="btn light full" onclick="reopenJob()">
+    Reopen this job
+   </button>
+  `:`
+   <button class="btn full" onclick="finishJob()">
+    Review & sign off this job
+   </button>
+   <p class="muted">A7 checks for an approved bid and a completed
+   walk-through checklist before allowing a new sign-off.</p>
+  `}
+ `;
+
+ return `
+  <section class="card">
+   <div class="row">
+    <div>
+     <small>PARCEL ${parcel} · JOB ${index+1} OF ${TRADES.length}</small>
+     <h2>${esc(j.name)}</h2>
+    </div>
+    ${badge(j)}
+   </div>
+   <p class="muted">Use the dropdown above to jump to any job.</p>
+   <div class="grid2">
+    <button class="btn light small"
+     onclick="chooseJob('${previous}')">← Previous</button>
+    <button class="btn light small"
+     onclick="chooseJob('${next}')">Next →</button>
+   </div>
+   ${j.key==="home"?`
+    <div class="notice">Home quote: $47,009 before tax.
+    Not approved or paid. Transportation, setup, steps,
+    skirting and decks need separate prices.</div>
+   `:""}
+   ${j.key==="septic"&&!j.bids.length?`
+    <div class="notice">Planning estimate: $7,809–$8,500.
+    A written bid is still needed.</div>
+   `:""}
+  </section>
+
+  ${details("assignment","1 · Who is responsible?",
+   assignment,j.key==="home")}
+
+  ${details("scope","2 · Scope of work",scope)}
+
+  ${details("bids","3 · Bids received ("+j.bids.length+")",bids,true)}
+
+  ${details("newBid","4 · Add a contractor bid",newBid)}
+
+  ${details("inspection",
+   "5 · Field inspection ("+checked+"/"+total+")",inspection)}
+
+  ${details("progress","6 · Payments & final sign-off",progress)}
+
+  <button class="btn light full" onclick="go('budget')">
+   View Parcel ${parcel} budget →
+  </button>
+ `;
+}
+
+function setHomeRole(role,id){
+ if(!["manufacturer","seller","delivery","setup"].includes(role))return;
+ data.homeRoles[parcel][role]=id;
+ if(role==="delivery"&&jobKey==="transport"){
+  job().contractorId=id;
+ }
+ if(role==="setup"&&jobKey==="setup"){
+  job().contractorId=id;
+ }
+ if(save())message("Home "+role+" saved for Parcel "+parcel+".");
+}
+function saveHomeModel(){
+ data.homeRoles[parcel].model=
+  document.getElementById("homeModel").value.trim();
+ if(save())message("Home details saved.");
+}
+function assignContractor(id){
+ job().contractorId=id;
+ if(save())message("Assignment saved. No bid was approved or email sent.");
+}
+function saveScope(){
+ job().scope=document.getElementById("scope").value;
+ if(save())message("Scope saved for Parcel "+parcel+".");
+}
+function markRequested(){
+ job().requested=true;
+ if(save())message("Quote marked requested. No email was sent.");
+}
+function addBid(event){
+ event.preventDefault();
+ const contractor=document.getElementById("contractor").value.trim();
+ const raw=document.getElementById("bidAmount").value;
+ const amount=Number(raw);
+ if(!contractor||raw===""||!Number.isFinite(amount)||amount<0){
+  alert("Enter a contractor and valid amount.");return;
+ }
+ job().bids.push({
+  id:uid(),contractor,amount,
+  notes:document.getElementById("bidNotes").value.trim(),
+  receivedDate:document.getElementById("bidDate").value,
+  paid:0
+ });
+ job().requested=true;
+ if(save())message("Bid saved. Nothing was approved or sent.");
+}
+function approveBid(id){
+ const j=job(),b=j.bids.find(item=>item.id===id);
+ if(!b)return;
+ const previous=accepted(j);
+ if(!confirm(
+  "Approve "+b.contractor+" for "+money(n(b.amount))+
+  " on Parcel "+parcel+" — "+j.name+"?"+
+  (previous?"\nThis replaces the previously approved bid.":"")+
+  "\n\nThis records your approval in A7 only."
+ ))return;
+ j.approvedBidId=b.id;
+ j.completed=false;
+ j.signedOffAt="";
+ if(save())message("Bid approved in A7. No email or payment was sent.");
+}
+function toggleInspection(id,checked){
+ const item=job().inspection.find(x=>x.id===id);
+ if(!item)return;
+ item.checked=checked;
+ save();
+ // Keep the checkbox and scroll position exactly where they are.
+}
+function addInspectionItem(){
+ const field=document.getElementById("newInspection");
+ const text=field.value.trim();
+ if(!text){alert("Enter an inspection item.");return}
+ job().inspection.push({id:uid(),text,checked:false});
+ if(save())message("Inspection item added.");
+}
+function saveInspectionNotes(){
+ const j=job();
+ j.inspectionNotes=document.getElementById("inspectionNotes").value;
+ j.documentReferences=document.getElementById("documentReferences").value;
+ if(save())message("Inspection notes and references saved.");
+}
+function recordPayment(){
+ const b=accepted(job());
+ if(!b)return;
+ const raw=document.getElementById("payment").value;
+ const amount=Number(raw);
+ if(raw===""||!Number.isFinite(amount)||amount<=0){
+  alert("Enter a payment greater than $0.");return;
+ }
+ if(n(b.paid)+amount>n(b.amount)&&!confirm(
+  "Recorded payments would exceed the approved bid. Continue?"
+ ))return;
+ if(!confirm("Record a payment of "+money(amount)+"?"))return;
+ b.paid=n(b.paid)+amount;
+ if(save())message("Payment recorded. A7 did not make a payment.");
+}
+function finishJob(){
+ const j=job();
+ if(!accepted(j)){
+  alert("Approve a bid for this job before signing off.");return;
+ }
+ if(!j.inspection.length||j.inspection.some(x=>!x.checked)){
+  alert("Review every inspection checklist item before signing off.");
+  return;
+ }
+ if(!confirm(
+  "Mark Parcel "+parcel+" — "+j.name+" complete?\n\n"+
+  "Confirm that the work has been reviewed and all applicable "+
+  "required inspections or approvals have been addressed. "+
+  "A7 does not certify code compliance."
+ ))return;
+ j.completed=true;
+ j.signedOffAt=new Date().toISOString();
+ if(save())message("Job signed off in A7.");
+}
+function reopenJob(){
+ if(!confirm("Reopen this job?"))return;
+ job().completed=false;
+ job().signedOffAt="";
+ if(save())message("Job reopened.");
+}
+
+function contactsPage(){
+ const editing=contact(editingContact);
+ const selectedTrades=editing?editing.trades:[];
+ return `
+  <section class="card">
+   <h2>Contractor & company directory</h2>
+   <p class="muted">Enter each person or company once.
+   Tag every trade they handle, then assign them to individual jobs.</p>
+   <button class="btn alt full" onclick="startContact()">
+    + Add a new contact
+   </button>
+  </section>
+
+  ${data.contacts.map(c=>`
+   <section class="card">
+    <div class="row">
+     <h3>${esc(c.name)}</h3>
+     <button class="btn light small"
+      onclick="editContact('${esc(c.id)}')">Edit</button>
+    </div>
+    ${c.phone?'<p><a href="tel:'+esc(c.phone)+'">'+esc(c.phone)+'</a></p>':""}
+    ${c.email?'<p><a href="mailto:'+esc(c.email)+'">'+esc(c.email)+'</a></p>':""}
+    ${c.notes?'<p class="muted">'+esc(c.notes)+'</p>':""}
+    <div class="pillrow">
+     ${c.trades.map(key=>`
+      <span class="pill">${esc(
+       TRADES.find(([id])=>id===key)?.[1]||
+       (key==="all"?"All trades":key)
+      )}</span>
+     `).join("")}
+    </div>
+   </section>
+  `).join("")}
+
+  <details id="contactForm" ${editingContact?"open":""}>
+   <summary>${editing?"Edit contact":"Add a contact"}</summary>
+   <div class="details-body">
+    <form onsubmit="saveContact(event)">
+     <label class="field">Name or company</label>
+     <input id="contactName" required
+      value="${esc(editing?.name||"")}"
+      placeholder="Zach / company name">
+
+     <label class="field">Phone (optional)</label>
+     <input id="contactPhone" type="tel"
+      value="${esc(editing?.phone||"")}">
+
+     <label class="field">Email (optional)</label>
+     <input id="contactEmail" type="email"
+      value="${esc(editing?.email||"")}">
+
+     <label class="field">Trades this contact handles</label>
+     <p class="muted">Select as many as apply.</p>
+     ${TRADES.map(([key,name])=>`
+      <label class="check">
+       <input type="checkbox" name="trade"
+        value="${key}"
+        ${selectedTrades.includes(key)?"checked":""}>
+       <span>${esc(name)}</span>
+      </label>
+     `).join("")}
+
+     <label class="field">Notes</label>
+     <textarea id="contactNotes"
+      placeholder="Capabilities, service area, license information to verify...">${esc(editing?.notes||"")}</textarea>
+
+     <button class="btn full" type="submit">
+      ${editing?"Save changes":"Save contact"}
+     </button>
+     ${editing?`
+      <button class="btn light full" type="button"
+       onclick="cancelContact()">Cancel editing</button>
+     `:""}
+    </form>
+   </div>
+  </details>
+
+  <section class="card">
+   <h3>How assignments work</h3>
+   <p class="muted">A contact can appear on several jobs.
+   Assigning them does not approve a bid, create a contract,
+   or send a message.</p>
+  </section>
+ `;
+}
+function startContact(){
+ editingContact="";
+ render();
+ const section=document.getElementById("contactForm");
+ section.open=true;
+ section.scrollIntoView({block:"start",behavior:"smooth"});
+}
+function editContact(id){
+ editingContact=id;
+ render();
+ document.getElementById("contactForm").scrollIntoView({
+  block:"start",behavior:"smooth"
+ });
+}
+function cancelContact(){
+ editingContact="";
+ render();
+}
+function saveContact(event){
+ event.preventDefault();
+ const name=document.getElementById("contactName").value.trim();
+ if(!name){alert("Enter a name.");return}
+ const trades=Array.from(
+  document.querySelectorAll('input[name="trade"]:checked')
+ ).map(el=>el.value);
+ const values={
+  name,
+  phone:document.getElementById("contactPhone").value.trim(),
+  email:document.getElementById("contactEmail").value.trim(),
+  notes:document.getElementById("contactNotes").value.trim(),
+  trades
+ };
+ if(editingContact){
+  const c=contact(editingContact);
+  if(c)Object.assign(c,values);
+ }else{
+  data.contacts.push({id:uid(),...values});
+ }
+ editingContact="";
+ if(save())message("Contact saved to your directory.");
+}
+
+function budgetPage(){
+ const b=budget(),d=data.development,i=parcel-1;
+ const costs=jobs().filter(j=>planning(j)||j.key==="septic")
+  .map(j=>{
+   const bid=planning(j);
+   const value=bid?money(n(bid.amount)):money(7809)+"–"+money(8500);
+   const type=accepted(j)?"Approved bid":
+    bid?"Unapproved quote":"Estimate";
+   return `
+    <div class="budget-line">
+     <div>${esc(j.name)}<small>${type}</small></div>
+     <strong>${value}</strong>
+    </div>
+   `;
+  }).join("");
+
+ const targets=`
+  <div class="grid2">
+   <div>
+    <label class="field">Sale target ($)</label>
+    <input id="saleTarget" type="number" min="0"
+     value="${d.saleTarget[i]}">
+   </div>
+   <div>
+    <label class="field">Planned acreage</label>
+    <input id="acres" type="number" min="0.01" step="0.01"
+     value="${d.acres[i]}">
+   </div>
+   <div>
+    <label class="field">Minimum profit ($)</label>
+    <input id="profitLow" type="number" min="0"
+     value="${d.profitLow[i]}">
+   </div>
+   <div>
+    <label class="field">Higher profit ($)</label>
+    <input id="profitHigh" type="number" min="0"
+     value="${d.profitHigh[i]}">
+   </div>
+  </div>
+  <button class="btn alt full" onclick="saveTargets()">
+   Save budget goals
+  </button>
+ `;
+
+ const breakdown=`
+  <div class="budget-line">
+   <div>Allocated land purchase
+    <small>Paid at development level</small></div>
+   <strong>${money(land(parcel))}</strong>
+  </div>
+  ${costs}
+  ${(d.sharedCosts||[]).map(item=>{
+   const total=n(d.acres[0])+n(d.acres[1]);
+   const share=total?n(d.acres[i])/total:0;
+   return `
+    <div class="budget-line">
+     <div>${esc(item.name)}<small>Shared cost</small></div>
+     <strong>${money(n(item.amount)*share)}</strong>
+    </div>
+   `;
+  }).join("")}
+ `;
+
+ return `
+  <section class="card">
+   <h2>Parcel ${parcel} · Budget</h2>
+   <small>CURRENT PRICED SUBTOTAL</small>
+   <div class="money">${money(b.low)}–${money(b.high)}</div>
+   <div class="notice">${b.unpriced} job categories remain unpriced.
+   This is not the final cost or projected profit.</div>
+  </section>
+
+  ${details("targets","Sale price & profit goals",targets)}
+
+  <section class="card">
+   <h3>Room for remaining costs</h3>
+   <p class="muted">At your ${money(b.sale)} sale target:</p>
+   <div class="budget-line">
+    <div>${money(b.profitLow)} profit goal
+     <small>All-in cost limit: ${money(b.sale-b.profitLow)}</small></div>
+    <strong>${money(b.sale-b.profitLow-b.high)}–${money(b.sale-b.profitLow-b.low)}</strong>
+   </div>
+   <div class="budget-line">
+    <div>${money(b.profitHigh)} profit goal
+     <small>All-in cost limit: ${money(b.sale-b.profitHigh)}</small></div>
+    <strong>${money(b.sale-b.profitHigh-b.high)}–${money(b.sale-b.profitHigh-b.low)}</strong>
+   </div>
+   <div class="notice">Positive amounts must still cover unpriced
+   work, tax, selling expenses and contingency. They are not profit.</div>
+  </section>
+
+  ${details("breakdown","Full cost breakdown",breakdown)}
+
+  ${details("tracking","Approved bids & payments",`
+   <div class="budget-line">
+    <span>Approved bids</span><strong>${money(b.approved)}</strong>
+   </div>
+   <div class="budget-line">
+    <span>Payments on approved bids</span>
+    <strong>${money(b.paid)}</strong>
+   </div>
+   <p class="muted">Payments are not counted a second time
+   in the cost subtotal.</p>
+  `)}
+ `;
+}
+function saveTargets(){
+ const d=data.development,i=parcel-1;
+ const sale=Number(document.getElementById("saleTarget").value);
+ const acres=Number(document.getElementById("acres").value);
+ const low=Number(document.getElementById("profitLow").value);
+ const high=Number(document.getElementById("profitHigh").value);
+ if(!Number.isFinite(sale)||sale<0||
+  !Number.isFinite(acres)||acres<=0||
+  !Number.isFinite(low)||low<0||
+  !Number.isFinite(high)||high<low){
+  alert("Check the sale target, acreage and profit goals.");return;
+ }
+ d.saleTarget[i]=sale;
+ d.acres[i]=acres;
+ d.profitLow[i]=low;
+ d.profitHigh[i]=high;
+ if(save())message("Parcel "+parcel+" budget goals updated.");
+}
+
+function settingsPage(){
+ const d=data.development;
+ return `
+  <section class="card">
+   <h2>Development settings</h2>
+   <p class="muted">The land purchase is entered once and
+   allocated to the two parcels by acreage.</p>
+  </section>
+
+  ${details("land","Land purchase",`
+   <label class="field">Whole-property price ($)</label>
+   <input id="landPrice" type="number" min="0"
+    value="${d.landPrice}">
+   <label class="field">Amount paid ($)</label>
+   <input id="landPaid" type="number" min="0"
+    value="${d.landPaid}">
+   <button class="btn alt full" onclick="saveLand()">
+    Save land purchase
+   </button>
+   <div class="line"></div>
+   <div class="budget-line">
+    <span>Parcel 1 allocation</span>
+    <strong>${money(land(1))}</strong>
+   </div>
+   <div class="budget-line">
+    <span>Parcel 2 allocation</span>
+    <strong>${money(land(2))}</strong>
+   </div>
+  `)}
+
+  ${details("shared","Shared costs · Survey & subdivision",`
+   <p class="muted">Enter each shared cost once.
+   A7 allocates it by acreage.</p>
+   ${(d.sharedCosts||[]).map((item,index)=>`
+    <div class="budget-line">
+     <span>${esc(item.name)}</span>
+     <strong>${money(n(item.amount))}</strong>
+     <button class="btn danger small"
+      onclick="removeShared(${index})">Remove</button>
+    </div>
+   `).join("")}
+   <form onsubmit="addShared(event)">
+    <label class="field">Cost name</label>
+    <input id="sharedName" required
+     placeholder="Survey, subdivision...">
+    <label class="field">Total cost ($)</label>
+    <input id="sharedAmount" type="number"
+     min="0" step="0.01" required>
+    <button class="btn alt full" type="submit">
+     Add shared cost
+    </button>
+   </form>
+  `)}
+
+  ${details("backup","Back up or restore your work",`
+   <p class="muted">V10 saves in this browser on this device.
+   It does not sync with another phone or Google Drive.
+   Keep a backup outside Safari.</p>
+   <button class="btn full" onclick="exportBackup()">
+    Download V10 backup
+   </button>
+   <label class="field">Restore a V10 backup</label>
+   <input type="file" accept=".json,application/json"
+    onchange="importBackup(event)">
+  `,true)}
+
+  <section class="card">
+   <h3>What V10 does and does not do</h3>
+   <p class="muted">V10 tracks contacts, assignments, bids,
+   owner walk-throughs and sign-offs. It does not send emails,
+   make payments, store uploaded photos, verify credentials,
+   or replace official inspections and approvals.</p>
+  </section>
+ `;
+}
+function saveLand(){
+ const price=Number(document.getElementById("landPrice").value);
+ const paid=Number(document.getElementById("landPaid").value);
+ if(!Number.isFinite(price)||price<0||
+  !Number.isFinite(paid)||paid<0){
+  alert("Enter valid land amounts.");return;
+ }
+ data.development.landPrice=price;
+ data.development.landPaid=paid;
+ if(save())message("Land purchase updated.");
+}
+function addShared(event){
+ event.preventDefault();
+ const name=document.getElementById("sharedName").value.trim();
+ const raw=document.getElementById("sharedAmount").value;
+ const amount=Number(raw);
+ if(!name||raw===""||!Number.isFinite(amount)||amount<0){
+  alert("Enter a name and valid amount.");return;
+ }
+ data.development.sharedCosts.push({name,amount});
+ if(save())message("Shared cost added.");
+}
+function removeShared(index){
+ if(!confirm("Remove this shared cost?"))return;
+ data.development.sharedCosts.splice(index,1);
+ if(save())message("Shared cost removed.");
+}
+function exportBackup(){
+ const blob=new Blob([JSON.stringify(data,null,2)],{
+  type:"application/json"
+ });
+ const url=URL.createObjectURL(blob);
+ const link=document.createElement("a");
+ link.href=url;
+ link.download="a7-superintendent-v10-backup.json";
+ document.body.appendChild(link);
+ link.click();
+ link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+async function importBackup(event){
+ const file=event.target.files[0];
+ if(!file)return;
+ try{
+  const parsed=JSON.parse(await file.text());
+  if(parsed.version!==10||!valid(parsed)){
+   throw Error("Invalid V10 backup");
+  }
+  if(!confirm(
+   "Replace the V10 data saved in this browser with this backup?"
+  )){
+   event.target.value="";return;
+  }
+  data=upgrade(parsed);
+  parcel=1;
+  jobKey="home";
+  view="overview";
+  editingContact="";
+  if(save())message("V10 backup restored.");
+ }catch(error){
+  alert("Could not restore this file. Choose a valid V10 backup.");
+ }
+ event.target.value="";
+}
+
+render();
+</script>
+</body>
+</html>
