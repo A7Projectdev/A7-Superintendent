@@ -1,0 +1,709 @@
+
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#ffffff"><title>A7 Superintendent · Project Workspace</title>
+<style>
+:root{--navy:#103354;--deep:#092842;--ink:#172b43;--muted:#5d7084;--line:#dce5ef;--soft:#f4f7fb;--green:#08794d}*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #77b6ec;outline-offset:2px}header{padding:15px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--line)}.logo{background:var(--navy);color:#fff;font-size:19px;font-weight:900;border-radius:12px;width:43px;height:43px;display:grid;place-items:center}.brand{font-size:17px;font-weight:850}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.08em}main{max-width:1060px;margin:auto;padding:16px 14px 110px}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 3px 14px #10335408}.hero{background:linear-gradient(135deg,#eff6fd,#fff)}.eyebrow{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:850;color:#3c6487}h1{font-size:23px;line-height:1.2;margin:7px 0}h2{font-size:18px;margin:4px 0 12px}h3{font-size:15px;margin:8px 0}p{color:var(--muted);margin:8px 0}.notice{background:#fff8e9;border:1px solid #efdbab;color:#71541e;padding:10px 12px;border-radius:10px;font-size:12px;margin-bottom:14px}.btn{background:var(--navy);border:1px solid var(--navy);color:white;border-radius:10px;padding:10px 13px;font-weight:750}.btn.light{background:#eef4fa;border-color:#d4e1ed;color:var(--navy)}.btn.danger{background:white;border-color:#efc5cb;color:#9e2b39}.btn:disabled{opacity:.55;cursor:not-allowed}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.actions .btn{flex:1 1 120px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0}.stat{border:1px solid var(--line);border-radius:12px;padding:11px}.stat small{font-size:11px;color:var(--muted)}.stat strong{display:block;font-size:23px;color:var(--navy)}.page{display:none}.page.active{display:block}.field{display:block;font-size:12px;font-weight:750;color:var(--muted);margin:12px 0 4px}input:not([type=checkbox]),textarea,select{width:100%;border:1px solid #bdccdc;border-radius:10px;background:#fff;color:var(--ink);padding:11px;min-height:44px}textarea{min-height:105px;resize:vertical}.row{padding:12px 0;border-top:1px solid var(--line)}.row strong{display:block}.row small{color:var(--muted)}.task{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.task input{width:20px;height:20px;flex:none;accent-color:var(--navy)}.task span{flex:1}.progress{height:9px;border-radius:15px;overflow:hidden;background:#e7eef5;margin:12px 0}.progress div{height:100%;background:var(--green)}.empty{background:var(--soft);padding:12px;border-radius:10px;color:var(--muted)}.pill{display:inline-block;background:#e8f5ed;color:#08794d;border-radius:20px;font-size:11px;padding:4px 8px;font-weight:750}.chat{background:#f0f5fb;padding:12px;border-radius:12px;margin:10px 0;white-space:pre-wrap;overflow-wrap:anywhere}.chat.me{background:#dfedf9;margin-left:18px}.muted{font-size:12px;color:var(--muted)}.two{display:grid;gap:14px}.nav{position:fixed;bottom:0;left:0;right:0;z-index:20;background:var(--deep);display:flex;gap:2px;overflow-x:auto;padding:7px 5px calc(8px + env(safe-area-inset-bottom))}.nav button{flex:1 0 auto;min-width:55px;border:0;background:transparent;color:#c6d7e7;border-radius:9px;padding:7px 4px;font-size:10px}.nav button b{display:block;font-size:19px}.nav button.active{background:#245174;color:#fff}a{color:#125a9b}#toast{position:fixed;top:12px;left:12px;right:12px;max-width:550px;margin:auto;z-index:30;background:#173d5d;color:#fff;padding:13px;border-radius:11px;display:none}#toast.show{display:block}@media(min-width:760px){.two{grid-template-columns:1fr 1fr}main{padding-bottom:30px}.nav{position:static;justify-content:center}.nav button{flex:0 1 125px}}
+</style></head><body>
+<header><div class="logo">A7</div><div class="brand">A7 SUPERINTENDENT<small>PLAN · MANAGE · BUILD · COMPLETE</small></div></header>
+<main><div class="notice">PRIVATE-DATA WARNING: This is a public prototype. Records and small uploaded documents stay in this browser, not a private cloud. Use sample information until secure storage is added. AI and live supplier search require a separately configured, authenticated backend.</div>
+<section class="page active" id="home"><div class="card hero"><div class="eyebrow">Project command center</div><h1 id="heroName">A7 Superintendent</h1><p id="heroDetail">Your project workspace</p><div class="actions"><button class="btn" data-go="projects">Open project</button><button class="btn light" data-go="ai">✦ AI Desk</button></div></div><div class="stats"><div class="stat"><small>Projects</small><strong id="statProjects">0</strong></div><div class="stat"><small>Contractors</small><strong id="statContractors">0</strong></div><div class="stat"><small>Tasks done</small><strong id="statTasks">0/0</strong></div></div><div class="two"><div class="card"><div class="eyebrow">Selected project</div><h2>Progress</h2><div class="progress"><div id="progressFill"></div></div><p id="progressLabel"></p><div id="homeTasks"></div></div><div class="card"><div class="eyebrow">Quick actions</div><h2>What needs attention?</h2><div class="actions"><button class="btn" data-go="contractors">Contractor files</button><button class="btn" data-go="files">Scopes & documents</button><button class="btn light" data-go="suppliers">Find suppliers</button><button class="btn light" data-go="email">Draft email</button></div></div></div></section>
+<section class="page" id="projects"><div class="card hero"><div class="eyebrow">Filing cabinet / Projects</div><h1>Your properties</h1><p>Each property has its own tasks, contractors, scopes, and documents.</p><div id="projectList"></div></div><div class="two"><div class="card"><h2>Create project</h2><form id="projectForm"><label class="field" for="projectName">Project name</label><input id="projectName" required maxlength="100" placeholder="Example: Tract 2"><label class="field" for="projectLocation">Location</label><input id="projectLocation" maxlength="120" placeholder="City and state"><button class="btn" type="submit">Create project</button></form></div><div class="card"><h2 id="taskHeading">Project checklist</h2><div id="taskList"></div><form id="taskForm"><label class="field" for="taskName">New task</label><input id="taskName" required maxlength="160" placeholder="Example: Confirm entrance permit"><button class="btn" type="submit">Add task</button></form></div></div></section>
+<section class="page" id="contractors"><div class="card"><div class="eyebrow">Filing cabinet / Trades</div><h1>Contractor records</h1><p>Save trades and contact details, then assign contractors to specific properties.</p><div id="contractorList"></div></div><div class="card"><h2 id="contractorHeading">New contractor · review before saving</h2><form id="contractorForm"><input type="hidden" id="contractorId"><label class="field" for="contractorName">Name or company</label><input id="contractorName" required maxlength="100"><label class="field" for="contractorTrades">Trades / specialties</label><input id="contractorTrades" required maxlength="250" placeholder="Clearing, culverts, driveways, pads"><label class="field" for="contractorEmail">Email (optional)</label><input id="contractorEmail" type="email" maxlength="150"><label class="field" for="contractorPhone">Phone (optional)</label><input id="contractorPhone" type="tel" maxlength="40"><label class="field" for="contractorProject">Assigned project</label><select id="contractorProject"></select><label class="field" for="contractorNotes">Notes / qualifications to verify</label><textarea id="contractorNotes" maxlength="1000"></textarea><div class="actions"><button class="btn" type="submit">Review & save record</button><button class="btn light" type="button" id="clearContractor">Clear form</button></div></form></div></section>
+
+<section class="page" id="files"><div class="card"><div class="eyebrow">Filing cabinet / Documents</div><h1>Scopes of work</h1><p>Generate a draft for the selected property. Edit and approve it yourself; it is never sent automatically.</p><label class="field" for="scopeTrade">Trade</label><input id="scopeTrade" maxlength="100" placeholder="Example: Sitework"><label class="field" for="scopeDetails">Work description / measurements to verify</label><textarea id="scopeDetails" maxlength="3000" placeholder="Describe what the contractor should price."></textarea><button class="btn" id="generateScope">Generate editable draft</button><label class="field" for="scopeText">Draft to review</label><textarea id="scopeText" style="min-height:285px" maxlength="12000"></textarea><div class="actions"><button class="btn" id="saveScope">Save scope draft</button><button class="btn light" id="copyScope">Copy draft</button></div><p class="muted">DRAFT ONLY — confirm permits, TxDOT or local requirements, engineered dimensions, and pricing independently.</p></div><div class="card"><h2>Saved scopes · selected project</h2><div id="scopeList"></div></div><div class="card"><h2>Document drawer · selected project</h2><p>Store small reference files locally (PDFs or images, up to 2 MB each). Files do not sync to another device. Large plans should use secure cloud storage later.</p><label class="field" for="docFile">Choose a document</label><input type="file" id="docFile" accept=".pdf,image/*"><button class="btn" id="addDoc">Save file in this browser</button><div id="docList"></div></div></section>
+<section class="page" id="ai"><div class="card"><div class="eyebrow">AI Superintendent</div><h1>Talk to your superintendent</h1><p id="aiMode">Guided local preview. Connect a protected backend in Settings to enable real AI.</p><div id="chatLog" aria-live="polite"><div class="chat">Tell me about a contractor, a scope of work, or materials. I will show you what I can prepare for your review.</div></div><form id="chatForm"><label class="field" for="chatInput">Message</label><textarea id="chatInput" maxlength="2000" required placeholder="I met Zach today. He can clear property, set culverts, build driveways and pads."></textarea><button class="btn" id="chatSend" type="submit">Ask A7</button></form><div id="proposalArea"></div></div></section>
+<section class="page" id="suppliers"><div class="card"><div class="eyebrow">Materials desk</div><h1>Find and compare suppliers</h1><p>Live business listings require a protected Places API connection. Search results are leads, not verified stock, prices, or TxDOT approval.</p><label class="field" for="supplierQuery">Material</label><input id="supplierQuery" maxlength="120" placeholder="Concrete culverts"><label class="field" for="supplierLocation">City / location</label><input id="supplierLocation" maxlength="120" placeholder="Mount Pleasant, TX"><div class="actions"><button class="btn" id="searchSuppliers">Search suppliers</button><button class="btn light" id="mapsSearch">Search Google Maps manually</button></div><div id="supplierResults"></div></div><div class="card"><h2>Record a verified quote</h2><form id="quoteForm"><label class="field" for="quoteSupplier">Supplier name</label><input id="quoteSupplier" required maxlength="120"><label class="field" for="quoteMaterial">Material / specification</label><input id="quoteMaterial" required maxlength="180"><label class="field" for="quotePrice">Verified price in USD (optional)</label><input id="quotePrice" type="number" min="0" step="0.01"><label class="field" for="quoteSource">Source / quote reference</label><input id="quoteSource" required maxlength="400" placeholder="URL, written quote number, or dated phone call"><label class="field" for="quoteNotes">Availability / delivery / compliance notes</label><textarea id="quoteNotes" maxlength="1200"></textarea><button class="btn" type="submit">Save quote to selected project</button></form></div><div class="card"><h2>Saved quotes · selected project</h2><div id="quoteList"></div></div></section>
+<section class="page" id="email"><div class="card"><div class="eyebrow">Communications desk</div><h1>Owner-approved email drafts</h1><p>Choose a contractor and prepare a message. You review and send it yourself in your email app.</p><label class="field" for="emailContractor">Contractor</label><select id="emailContractor"></select><label class="field" for="emailSubject">Subject</label><input id="emailSubject" maxlength="160" value="Request for project quote"><label class="field" for="emailBody">Email body</label><textarea id="emailBody" maxlength="8000" style="min-height:220px"></textarea><div class="actions"><button class="btn light" id="draftEmail">Prepare draft</button><button class="btn" id="openEmail">Open email app to review</button></div><p class="muted" id="emailStatus">Nothing has been sent.</p></div></section>
+<section class="page" id="settings"><div class="card"><div class="eyebrow">Connections</div><h1>AI & supplier setup</h1><p>The website never accepts an OpenAI or Google API secret. Deploy the separate <code>api/assistant.js</code> backend with server-side secrets and Supabase authentication first.</p><label class="field" for="apiUrl">Protected API base URL (HTTPS)</label><input id="apiUrl" type="url" placeholder="https://your-a7-api.vercel.app"><label class="field" for="supabaseUrl">Supabase project URL (HTTPS)</label><input id="supabaseUrl" type="url" placeholder="https://your-project.supabase.co"><label class="field" for="supabaseKey">Supabase publishable / anon key (never service-role)</label><input id="supabaseKey" placeholder="sb_publishable_…"><button class="btn" id="saveSettings">Save public connection settings</button><p class="muted">These public settings are stored in this browser. Never paste an OpenAI key, Google Places key, Supabase secret, or service-role key here.</p><h2>Sign in for connected features</h2><label class="field" for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="username"><label class="field" for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password"><div class="actions"><button class="btn" id="signIn">Sign in</button><button class="btn light" id="signOut">Sign out</button></div><p id="authStatus" class="muted">Not signed in.</p></div><div class="card"><h2>Local backup</h2><p>Export your sample records as JSON. This does not include uploaded document bytes. Keep backups private.</p><div class="actions"><button class="btn light" id="exportData">Export records</button><button class="btn light" id="importData">Import records</button></div><input id="importFile" type="file" accept="application/json,.json" hidden></div></section>
+</main><nav class="nav" aria-label="App navigation"><button class="active" data-go="home"><b>⌂</b>Home</button><button data-go="projects"><b>▤</b>Projects</button><button data-go="contractors"><b>♙</b>Trades</button><button data-go="files"><b>▣</b>Files</button><button data-go="ai"><b>✦</b>AI</button><button data-go="suppliers"><b>▦</b>Materials</button><button data-go="email"><b>✉</b>Email</button><button data-go="settings"><b>⚙</b>Setup</button></nav><div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+const $=id=>document.getElementById(id),KEY='a7-v3-records',CFG='a7-v3-config';
+const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random();
+const text=(tag,value,cls)=>{const el=document.createElement(tag);el.textContent=String(value??'');if(cls)el.className=cls;return el};
+const button=(label,fn,cls='btn light')=>{const el=text('button',label,cls);el.type='button';el.addEventListener('click',fn);return el};
+const toast=message=>{const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),3600)};
+const seed=()=>{const id=uid();return {selected:id,projects:[{id,name:'Talco Development (sample)',location:'Talco, Texas',tasks:['Confirm entrance and culvert requirements','Verify clearing limits and site plan','Plan driveways and home pads','Coordinate water and septic'].map(name=>({id:uid(),name,done:false}))}],contractors:[],scopes:[],quotes:[]}};
+function read(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&Array.isArray(d.projects)&&Array.isArray(d.contractors)&&Array.isArray(d.scopes)&&Array.isArray(d.quotes))return d}catch{}return seed()}
+let data=read();let config={apiUrl:'',supabaseUrl:'',supabaseKey:''};try{config={...config,...JSON.parse(localStorage.getItem(CFG)||'{}')}}catch{}
+let token='',pending=null,chatHistory=[];
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data));return true}catch{toast('Storage full or blocked. Export your records in Setup.');return false}}
+function project(){return data.projects.find(p=>p.id===data.selected)||data.projects[0]}
+function projectName(id){return data.projects.find(p=>p.id===id)?.name||'Unassigned'}
+function go(id){document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id===id));document.querySelectorAll('.nav button').forEach(el=>el.classList.toggle('active',el.dataset.go===id));render();window.scrollTo(0,0)}
+document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>go(el.dataset.go)));
+function options(el,items,empty){const old=el.value;el.replaceChildren();if(empty!==undefined){const opt=new Option(empty,'');el.add(opt)}items.forEach(item=>el.add(new Option(item.name,item.id)));if([...el.options].some(o=>o.value===old))el.value=old;else if(!empty&&data.selected)el.value=data.selected}
+function render(){if(!data.projects.length)data=seed();if(!data.projects.some(p=>p.id===data.selected))data.selected=data.projects[0].id;const p=project();$('heroName').textContent=p.name;$('heroDetail').textContent=p.location||'Location not entered';$('statProjects').textContent=data.projects.length;$('statContractors').textContent=data.contractors.filter(c=>c.projectId===p.id).length;const done=p.tasks.filter(t=>t.done).length;$('statTasks').textContent=done+'/'+p.tasks.length;$('progressFill').style.width=(p.tasks.length?100*done/p.tasks.length:0)+'%';$('progressLabel').textContent=done+' of '+p.tasks.length+' tasks complete';renderTasks($('homeTasks'),p,true);renderProjects();renderTasks($('taskList'),p,false);$('taskHeading').textContent='Checklist · '+p.name;renderContractors();renderScopes();renderDocs();renderQuotes();options($('contractorProject'),data.projects,'Unassigned');options($('emailContractor'),data.contractors,'Select contractor');$('aiMode').textContent=config.apiUrl&&token?'Connected AI (owner review required).':'Guided local preview. Configure and sign in through Setup for real AI.'}
+function renderTasks(root,p,compact){root.replaceChildren();if(!p.tasks.length)root.append(text('p','No tasks yet.','empty'));p.tasks.forEach(t=>{const row=document.createElement('label');row.className='task';const check=document.createElement('input');check.type='checkbox';check.checked=!!t.done;check.addEventListener('change',()=>{t.done=check.checked;save();render()});row.append(check,text('span',t.name));if(!compact)row.append(button('Delete',()=>{if(confirm('Delete this task?')){p.tasks=p.tasks.filter(x=>x.id!==t.id);save();render()}},'btn danger'));root.append(row)})}
+function renderProjects(){const root=$('projectList');root.replaceChildren();data.projects.forEach(p=>{const row=document.createElement('div');row.className='row';row.append(text('strong',p.name),text('small',(p.location||'Location not entered')+' · '+p.tasks.length+' tasks'));const actions=document.createElement('div');actions.className='actions';actions.append(button(p.id===data.selected?'Selected ✓':'Open project',()=>{data.selected=p.id;save();render();toast('Selected '+p.name)},p.id===data.selected?'btn':'btn light'));if(data.projects.length>1)actions.append(button('Delete',()=>{if(!confirm('Delete this project and its linked records and documents?'))return;data.projects=data.projects.filter(x=>x.id!==p.id);data.contractors=data.contractors.filter(x=>x.projectId!==p.id);data.scopes=data.scopes.filter(x=>x.projectId!==p.id);data.quotes=data.quotes.filter(x=>x.projectId!==p.id);deleteProjectDocs(p.id);save();render()},'btn danger'));row.append(actions);root.append(row)})}
+$('projectForm').addEventListener('submit',e=>{e.preventDefault();const name=$('projectName').value.trim();if(!name)return;const p={id:uid(),name,location:$('projectLocation').value.trim(),tasks:[]};data.projects.push(p);data.selected=p.id;save();e.target.reset();render();toast('Project created')});
+$('taskForm').addEventListener('submit',e=>{e.preventDefault();const name=$('taskName').value.trim();if(!name)return;project().tasks.push({id:uid(),name,done:false});save();e.target.reset();render()});
+function clearContractor(){$('contractorForm').reset();$('contractorId').value='';$('contractorHeading').textContent='New contractor · review before saving';$('contractorProject').value=data.selected}
+$('clearContractor').addEventListener('click',clearContractor);
+function renderContractors(){const root=$('contractorList');root.replaceChildren();const list=data.contractors.filter(c=>c.projectId===data.selected);if(!list.length)root.append(text('p','No contractors assigned to this project.','empty'));list.forEach(c=>{const row=document.createElement('div');row.className='row';row.append(text('strong',c.name),text('small',c.trades+' · '+projectName(c.projectId)));if(c.email)row.append(text('small','Email: '+c.email));if(c.phone)row.append(text('small','Phone: '+c.phone));if(c.notes)row.append(text('p',c.notes));const actions=document.createElement('div');actions.className='actions';actions.append(button('Edit',()=>{$('contractorId').value=c.id;$('contractorName').value=c.name;$('contractorTrades').value=c.trades;$('contractorEmail').value=c.email||'';$('contractorPhone').value=c.phone||'';$('contractorProject').value=c.projectId||'';$('contractorNotes').value=c.notes||'';$('contractorHeading').textContent='Edit contractor · review changes';$('contractorName').focus()}));actions.append(button('Delete',()=>{if(confirm('Delete this contractor record?')){data.contractors=data.contractors.filter(x=>x.id!==c.id);save();render()}},'btn danger'));row.append(actions);root.append(row)})}
+$('contractorForm').addEventListener('submit',e=>{e.preventDefault();const c={id:$('contractorId').value||uid(),name:$('contractorName').value.trim(),trades:$('contractorTrades').value.trim(),email:$('contractorEmail').value.trim(),phone:$('contractorPhone').value.trim(),projectId:$('contractorProject').value,notes:$('contractorNotes').value.trim()};if(!c.name||!c.trades)return;const message=`Review contractor record:\nName: ${c.name}\nTrades: ${c.trades}\nEmail: ${c.email||'Not entered'}\nPhone: ${c.phone||'Not entered'}\nProject: ${projectName(c.projectId)}\n\nSave this record?`;if(!confirm(message))return;const i=data.contractors.findIndex(x=>x.id===c.id);if(i<0)data.contractors.push(c);else data.contractors[i]=c;save();clearContractor();render();toast('Contractor record saved')});
+function makeScope(){const p=project(),trade=$('scopeTrade').value.trim(),details=$('scopeDetails').value.trim();if(!trade){toast('Enter a trade first');return}$('scopeText').value=`SCOPE OF WORK — DRAFT / NOT APPROVED\nProject: ${p.name}\nLocation: ${p.location||'Confirm location'}\nTrade: ${trade}\nDate: ${new Date().toLocaleDateString()}\n\n1. WORK REQUESTED\n${details||'[Describe work and boundaries; do not assume specifications.]'}\n\n2. CONTRACTOR TO VERIFY\n• Site visit, dimensions, access, and existing conditions.\n• Applicable permits, utility locates, inspections and authority requirements.\n• Materials and specifications, including any agency-approved culvert requirements.\n\n3. QUOTE TO INCLUDE\n• Itemized labor, materials, equipment, delivery and disposal.\n• Exclusions, allowances, change-order process and payment milestones.\n• Start date, estimated duration, insurance and warranty details.\n\n4. OWNER REVIEW\nNo work is authorized until the owner approves a final scope and written agreement.\n\nDRAFT ONLY — verify engineering, permits and legal requirements independently.`}
+$('generateScope').addEventListener('click',makeScope);
+$('saveScope').addEventListener('click',()=>{const body=$('scopeText').value.trim();if(!body){toast('Generate or enter a draft first');return}const name=$('scopeTrade').value.trim()||'Untitled scope';data.scopes.push({id:uid(),projectId:data.selected,name,body,date:new Date().toISOString()});save();render();toast('Draft saved locally')});
+$('copyScope').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('scopeText').value);toast('Draft copied — nothing sent')}catch{toast('Copy unavailable; select the draft text manually')}});
+function renderScopes(){const root=$('scopeList');root.replaceChildren();const list=data.scopes.filter(s=>s.projectId===data.selected);if(!list.length)root.append(text('p','No saved drafts.','empty'));list.forEach(s=>{const row=document.createElement('div');row.className='row';row.append(text('strong',s.name),text('small',new Date(s.date).toLocaleDateString()));const a=document.createElement('div');a.className='actions';a.append(button('Open draft',()=>{$('scopeTrade').value=s.name;$('scopeText').value=s.body;toast('Draft loaded; changes are not saved until you save a new copy')}));a.append(button('Delete',()=>{if(confirm('Delete this draft?')){data.scopes=data.scopes.filter(x=>x.id!==s.id);save();render()}},'btn danger'));row.append(a);root.append(row)})}
+
+// Small document attachments are stored in this browser.
+const DB='a7-v3-documents';
+
+function db(){
+  return new Promise((resolve,reject)=>{
+    const r=indexedDB.open(DB,1);
+    r.onupgradeneeded=()=>{
+      r.result.createObjectStore('docs',{keyPath:'id'});
+    };
+    r.onsuccess=()=>resolve(r.result);
+    r.onerror=()=>reject(r.error);
+  });
+}
+
+async function docsAll(){
+  const d=await db();
+  return new Promise((resolve,reject)=>{
+    const tx=d.transaction('docs','readonly');
+    const r=tx.objectStore('docs').getAll();
+    r.onsuccess=()=>resolve(r.result);
+    r.onerror=()=>reject(r.error);
+    tx.oncomplete=()=>d.close();
+  });
+}
+
+async function putDoc(item){
+  const d=await db();
+  return new Promise((resolve,reject)=>{
+    const tx=d.transaction('docs','readwrite');
+    tx.objectStore('docs').put(item);
+    tx.oncomplete=()=>{d.close();resolve()};
+    tx.onerror=()=>reject(tx.error);
+  });
+}
+
+async function deleteDoc(id){
+  const d=await db();
+  return new Promise((resolve,reject)=>{
+    const tx=d.transaction('docs','readwrite');
+    tx.objectStore('docs').delete(id);
+    tx.oncomplete=()=>{d.close();resolve()};
+    tx.onerror=()=>reject(tx.error);
+  });
+}
+
+async function deleteProjectDocs(projectId){
+  try{
+    for(const doc of await docsAll()){
+      if(doc.projectId===projectId)await deleteDoc(doc.id);
+    }
+  }catch{
+    toast('Could not remove every attachment; check browser storage');
+  }
+}
+
+let docRenderId=0;
+
+async function renderDocs(){
+  const id=++docRenderId;
+  const root=$('docList');
+  const projectId=data.selected;
+  root.replaceChildren();
+
+  try{
+    const list=(await docsAll()).filter(
+      d=>d.projectId===projectId
+    );
+    if(id!==docRenderId)return;
+
+    if(!list.length){
+      root.append(text('p','No documents stored for this project.','empty'));
+    }
+
+    list.forEach(d=>{
+      const row=document.createElement('div');
+      row.className='row';
+      row.append(
+        text('strong',d.name),
+        text('small',Math.round(d.file.size/1024)+' KB')
+      );
+
+      const actions=document.createElement('div');
+      actions.className='actions';
+
+      actions.append(button('Open',()=>{
+        const url=URL.createObjectURL(d.file);
+        window.open(url,'_blank','noopener');
+        setTimeout(()=>URL.revokeObjectURL(url),60000);
+      }));
+
+      actions.append(button('Delete',async()=>{
+        if(confirm('Delete this local file?')){
+          await deleteDoc(d.id);
+          renderDocs();
+        }
+      },'btn danger'));
+
+      row.append(actions);
+      root.append(row);
+    });
+  }catch{
+    root.append(text(
+      'p',
+      'Document storage unavailable in this browser.',
+      'empty'
+    ));
+  }
+}
+
+$('addDoc').addEventListener('click',async()=>{
+  const file=$('docFile').files[0];
+
+  if(!file)return toast('Choose a file');
+
+  if(file.size>2*1024*1024){
+    return toast('Choose a file smaller than 2 MB');
+  }
+
+  if(!(file.type==='application/pdf'||file.type.startsWith('image/'))){
+    return toast('Only PDFs and images are supported');
+  }
+
+  try{
+    await putDoc({
+      id:uid(),
+      projectId:data.selected,
+      name:file.name,
+      file
+    });
+    $('docFile').value='';
+    renderDocs();
+    toast('Document saved on this device');
+  }catch{
+    toast('Document could not be saved');
+  }
+});
+
+// Supplier quotes: prices must be entered from a verified source.
+function renderQuotes(){
+  const root=$('quoteList');
+  root.replaceChildren();
+
+  const list=data.quotes.filter(
+    q=>q.projectId===data.selected
+  );
+
+  if(!list.length){
+    root.append(text('p','No verified quotes saved.','empty'));
+  }
+
+  list.forEach(q=>{
+    const row=document.createElement('div');
+    row.className='row';
+
+    row.append(
+      text('strong',q.supplier+' · '+q.material),
+      text(
+        'small',
+        q.price===''?
+          'Price not verified':
+          'Verified quote: $'+Number(q.price).toFixed(2)
+      ),
+      text('small','Source: '+q.source)
+    );
+
+    if(q.notes)row.append(text('p',q.notes));
+
+    row.append(button('Delete quote',()=>{
+      if(confirm('Delete quote?')){
+        data.quotes=data.quotes.filter(x=>x.id!==q.id);
+        save();
+        render();
+      }
+    },'btn danger'));
+
+    root.append(row);
+  });
+}
+
+$('quoteForm').addEventListener('submit',e=>{
+  e.preventDefault();
+
+  const price=$('quotePrice').value;
+
+  if(
+    price!==''&&
+    (!Number.isFinite(Number(price))||Number(price)<0)
+  )return toast('Enter a valid price');
+
+  data.quotes.push({
+    id:uid(),
+    projectId:data.selected,
+    supplier:$('quoteSupplier').value.trim(),
+    material:$('quoteMaterial').value.trim(),
+    price,
+    source:$('quoteSource').value.trim(),
+    notes:$('quoteNotes').value.trim()
+  });
+
+  save();
+  e.target.reset();
+  render();
+  toast('Verified quote saved');
+});
+
+// Email drafts: A7 does not send messages automatically.
+function draftEmail(){
+  const c=data.contractors.find(
+    c=>c.id===$('emailContractor').value
+  );
+
+  if(!c)return toast('Choose a contractor');
+
+  $('emailSubject').value=
+    'Quote request — '+project().name+' — '+c.trades;
+
+  $('emailBody').value=
+`Hello ${c.name},
+
+I am requesting a written quote for ${c.trades} at ${project().name} (${project().location||'location to confirm'}).
+
+Please confirm your availability, site-visit requirements, itemized pricing, materials, exclusions, permits/inspection responsibilities, and proposed schedule.
+
+No work is authorized by this email.
+
+Thank you,
+[Your name]`;
+
+  toast('Draft ready for your review');
+}
+
+$('draftEmail').addEventListener('click',draftEmail);
+
+$('openEmail').addEventListener('click',()=>{
+  const c=data.contractors.find(
+    c=>c.id===$('emailContractor').value
+  );
+
+  if(!c?.email){
+    return toast('Select a contractor with an email address');
+  }
+
+  if(!confirm(
+    'Open your email app with this draft? You will review and press Send yourself.'
+  ))return;
+
+  const href=
+    'mailto:'+encodeURIComponent(c.email)+
+    '?subject='+encodeURIComponent($('emailSubject').value)+
+    '&body='+encodeURIComponent($('emailBody').value);
+
+  location.href=href;
+
+  $('emailStatus').textContent=
+    'Draft opened in your email app; A7 has not sent anything.';
+});
+
+// The connected API must be HTTPS and require authentication.
+function safeUrl(url){
+  try{
+    const u=new URL(url);
+    return u.protocol==='https:'?u.origin:null;
+  }catch{
+    return null;
+  }
+}
+
+async function api(action,payload){
+  if(!config.apiUrl||!token){
+    throw Error(
+      'Connect your protected API and sign in under Setup first.'
+    );
+  }
+
+  const response=await fetch(
+    config.apiUrl.replace(/\/$/,'')+'/api/assistant',
+    {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        Authorization:'Bearer '+token
+      },
+      body:JSON.stringify({action,...payload})
+    }
+  );
+
+  let body;
+
+  try{
+    body=await response.json();
+  }catch{
+    throw Error('Backend returned an invalid response.');
+  }
+
+  if(!response.ok){
+    throw Error(body.error||'Request failed');
+  }
+
+  return body;
+}
+
+// Google Maps provides a manual search before the live API is connected.
+$('mapsSearch').addEventListener('click',()=>{
+  const q=[
+    $('supplierQuery').value.trim(),
+    $('supplierLocation').value.trim()
+  ].filter(Boolean).join(' ');
+
+  if(!q)return toast('Enter a material and location');
+
+  window.open(
+    'https://www.google.com/maps/search/?api=1&query='+
+      encodeURIComponent(q),
+    '_blank',
+    'noopener'
+  );
+});
+
+$('searchSuppliers').addEventListener('click',async()=>{
+  const query=$('supplierQuery').value.trim();
+  const location=$('supplierLocation').value.trim();
+  const root=$('supplierResults');
+
+  if(!query||!location){
+    return toast('Enter material and location');
+  }
+
+  root.replaceChildren(
+    text('p','Searching connected supplier directory…')
+  );
+
+  try{
+    const result=await api('suppliers',{query,location});
+    root.replaceChildren();
+
+    if(!result.places?.length){
+      root.append(text(
+        'p',
+        'No results returned. Try another search.',
+        'empty'
+      ));
+    }
+
+    for(const place of result.places||[]){
+      const row=document.createElement('div');
+      row.className='row';
+
+      row.append(
+        text('strong',place.name),
+        text('small',place.address||'Address unavailable'),
+        text('small','Stock, specifications and prices: not verified')
+      );
+
+      const actions=document.createElement('div');
+      actions.className='actions';
+
+      if(place.mapsUrl&&safeUrl(place.mapsUrl)){
+        const link=text('a','View listing','btn light');
+        link.href=place.mapsUrl;
+        link.target='_blank';
+        link.rel='noopener noreferrer';
+        actions.append(link);
+      }
+
+      actions.append(button('Use as quote lead',()=>{
+        $('quoteSupplier').value=place.name;
+        $('quoteMaterial').value=query;
+        $('quoteSource').value=place.mapsUrl||'';
+        $('quotePrice').value='';
+        toast('Contact supplier to verify quote before saving');
+      }));
+
+      row.append(actions);
+      root.append(row);
+    }
+  }catch(error){
+    root.replaceChildren(
+      text('p',error.message,'empty')
+    );
+  }
+});
+
+// AI Desk: guided preview until a protected backend is connected.
+function chatBubble(message,me=false){
+  const root=$('chatLog');
+  root.append(
+    text('div',message,'chat'+(me?' me':''))
+  );
+  root.lastElementChild.scrollIntoView({
+    block:'nearest',
+    behavior:'smooth'
+  });
+}
+
+function localPreview(message){
+  if(/contractor|met |clearing|culvert|driveway|pads/i.test(message)){
+    return 'I can prepare a contractor record for your review. Enter their name and specialties under Trades. No record has been created automatically.';
+  }
+
+  if(/scope|quote|bid|work/i.test(message)){
+    return 'Open Files to generate an editable scope for the selected project. Confirm dimensions, permits, responsibilities and pricing before approval.';
+  }
+
+  if(/supplier|buy|material|price/i.test(message)){
+    return 'Open Materials to search Google Maps manually or record verified supplier quotes. Live directory search requires a protected backend.';
+  }
+
+  return 'I can help organize projects, trades, scope drafts, materials and owner-approved emails. This is a guided preview; connect the protected backend for a real conversation.';
+}
+
+$('chatForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+
+  const message=$('chatInput').value.trim();
+  if(!message)return;
+
+  chatBubble(message,true);
+  $('chatInput').value='';
+  $('chatSend').disabled=true;
+  $('proposalArea').replaceChildren();
+
+  try{
+    if(config.apiUrl&&token){
+      const result=await api('chat',{
+        message,
+        project:{
+          name:project().name,
+          location:project().location
+        },
+        history:chatHistory.slice(-6)
+      });
+
+      chatBubble(result.reply||'No response.');
+
+      chatHistory.push(
+        {role:'user',content:message},
+        {role:'assistant',content:result.reply||''}
+      );
+
+      if(
+        result.proposal?.type==='contractor'&&
+        result.proposal.name
+      ){
+        pending=result.proposal;
+
+        const area=$('proposalArea');
+        const card=document.createElement('div');
+        card.className='card';
+
+        card.append(
+          text('h2','Review suggested contractor'),
+          text(
+            'p',
+            'Name: '+pending.name+
+            '\nTrades: '+pending.trades+
+            '\nEmail: '+(pending.email||'Not provided')+
+            '\nPhone: '+(pending.phone||'Not provided')
+          )
+        );
+
+        card.append(button(
+          'Review in contractor form',
+          ()=>{
+            $('contractorId').value='';
+            $('contractorName').value=pending.name;
+            $('contractorTrades').value=pending.trades;
+            $('contractorEmail').value=pending.email||'';
+            $('contractorPhone').value=pending.phone||'';
+            $('contractorProject').value=data.selected;
+            $('contractorNotes').value=
+              'AI-suggested record; verify details before saving.';
+            pending=null;
+            go('contractors');
+            $('contractorName').focus();
+          },
+          'btn'
+        ));
+
+        area.append(card);
+      }
+    }else{
+      chatBubble(localPreview(message));
+    }
+  }catch(error){
+    chatBubble('Connection error: '+error.message);
+  }finally{
+    $('chatSend').disabled=false;
+  }
+});
+
+// Public connection settings only. Never enter secret API keys here.
+$('saveSettings').addEventListener('click',()=>{
+  const apiUrl=$('apiUrl').value.trim();
+  const supabaseUrl=$('supabaseUrl').value.trim();
+  const supabaseKey=$('supabaseKey').value.trim();
+
+  if(
+    (apiUrl&&!safeUrl(apiUrl))||
+    (supabaseUrl&&!safeUrl(supabaseUrl))
+  ){
+    return toast('Only HTTPS URLs are accepted');
+  }
+
+  config={
+    apiUrl:apiUrl.replace(/\/$/,''),
+    supabaseUrl:supabaseUrl.replace(/\/$/,''),
+    supabaseKey
+  };
+
+  try{
+    localStorage.setItem(CFG,JSON.stringify(config));
+  }catch{
+    return toast('Could not save connection settings');
+  }
+
+  token='';
+  $('authStatus').textContent='Settings saved. Sign in again.';
+  render();
+  toast('Public connection settings saved');
+});
+
+async function supabaseLogin(){
+  if(!config.supabaseUrl||!config.supabaseKey){
+    return toast('Save Supabase settings first');
+  }
+
+  const email=$('loginEmail').value.trim();
+  const password=$('loginPassword').value;
+
+  if(!email||!password){
+    return toast('Enter your email and password');
+  }
+
+  $('signIn').disabled=true;
+
+  try{
+    const response=await fetch(
+      config.supabaseUrl+'/auth/v1/token?grant_type=password',
+      {
+        method:'POST',
+        headers:{
+          apikey:config.supabaseKey,
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({email,password})
+      }
+    );
+
+    const body=await response.json();
+
+    if(!response.ok||!body.access_token){
+      throw Error(
+        body.error_description||
+        body.msg||
+        'Sign-in failed'
+      );
+    }
+
+    token=body.access_token;
+    $('loginPassword').value='';
+
+    $('authStatus').textContent=
+      'Signed in for this page session. Refresh requires sign-in again.';
+
+    render();
+    toast('Signed in');
+  }catch(error){
+    toast(error.message);
+  }finally{
+    $('signIn').disabled=false;
+  }
+}
+
+$('signIn').addEventListener('click',supabaseLogin);
+
+$('signOut').addEventListener('click',()=>{
+  token='';
+  $('loginPassword').value='';
+  $('authStatus').textContent='Signed out';
+  render();
+});
+
+// Export and import local records.
+// Uploaded document files are NOT included in this backup.
+$('exportData').addEventListener('click',()=>{
+  const blob=new Blob(
+    [JSON.stringify({version:3,data},null,2)],
+    {type:'application/json'}
+  );
+
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');
+
+  link.href=url;
+  link.download=
+    'a7-records-'+new Date().toISOString().slice(0,10)+'.json';
+
+  link.click();
+
+  setTimeout(()=>URL.revokeObjectURL(url),30000);
+});
+
+$('importData').addEventListener('click',()=>{
+  $('importFile').click();
+});
+
+$('importFile').addEventListener('change',async e=>{
+  const file=e.target.files[0];
+  if(!file)return;
+
+  if(file.size>2*1024*1024){
+    e.target.value='';
+    return toast('Backup too large');
+  }
+
+  try{
+    const parsed=JSON.parse(await file.text());
+    const d=parsed.data;
+
+    if(
+      parsed.version!==3||
+      !d||
+      !Array.isArray(d.projects)||
+      !Array.isArray(d.contractors)||
+      !Array.isArray(d.scopes)||
+      !Array.isArray(d.quotes)||
+      !d.projects.length
+    ){
+      throw Error('Not an A7 v3 backup');
+    }
+
+    if(!confirm(
+      'Replace all local records with this backup? Uploaded documents are not included.'
+    ))return;
+
+    data=d;
+    save();
+    render();
+    toast('Records imported');
+  }catch(error){
+    toast(error.message);
+  }finally{
+    e.target.value='';
+  }
+});
+
+// Start the app.
+$('apiUrl').value=config.apiUrl;
+$('supabaseUrl').value=config.supabaseUrl;
+$('supabaseKey').value=config.supabaseKey;
+
+save();
+render();
+
+</script>
+</body>
+</html>
