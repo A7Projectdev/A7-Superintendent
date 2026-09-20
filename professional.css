@@ -1,0 +1,210 @@
+
+/* A7 Superintendent — Professional navy theme */
+:root {
+  --navy: #102a45;
+  --deep: #071a2d;
+  --ink: #183047;
+  --muted: #60758b;
+  --line: #cbd9e7;
+  --soft: #eaf2fa;
+  --green: #08794d;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #0b2138;
+  color: #17304a;
+  font: 15px/1.45 -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+}
+
+header {
+  background: linear-gradient(120deg, #071827, #153657);
+  color: white;
+  border-bottom: 1px solid #31516c;
+  padding: 14px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 15;
+}
+
+.logo {
+  background: #f5b92c;
+  color: #102a45;
+  border-radius: 12px;
+}
+
+.brand { color: white; }
+.brand small { color: #b8cde0; }
+
+main {
+  max-width: 1200px;
+  padding: 16px 12px 112px;
+  background: linear-gradient(145deg, #bfd4e9, #e9f3fc);
+  min-height: 100vh;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #a9c1d7;
+  border-radius: 13px;
+  padding: 15px;
+  margin-bottom: 12px;
+  box-shadow: 0 5px 16px #09284216;
+}
+
+.hero {
+  background: linear-gradient(125deg, #bed6ef, #f0f7ff);
+  border-color: #94b5d3;
+}
+
+.eyebrow {
+  color: #245d92;
+  font-size: 10px;
+  letter-spacing: .11em;
+}
+
+h1, h2, h3 { color: #102c49; }
+
+h1 {
+  font-size: 23px;
+  line-height: 1.2;
+}
+
+h2 { font-size: 18px; }
+
+p, .muted { color: #566d83; }
+
+.btn {
+  background: #1057a3;
+  border: 1px solid #1057a3;
+  color: white;
+  border-radius: 8px;
+  padding: 11px 12px;
+  font-weight: 750;
+  box-shadow: 0 2px 4px #0b31541a;
+}
+
+.btn.light {
+  background: #eef5ff;
+  color: #134b83;
+  border-color: #bdd3e9;
+  box-shadow: none;
+}
+
+.btn.danger {
+  background: #fff;
+  color: #a22d3b;
+  border-color: #e5bdc5;
+}
+
+.btn:active { transform: scale(.98); }
+
+.stats { gap: 9px; }
+
+.stat {
+  background: #ffffff;
+  border: 1px solid #aec6dc;
+  box-shadow: 0 3px 9px #12395b0b;
+}
+
+.stat strong { color: #1057a3; }
+
+.progress { background: #dce9f5; }
+.progress div { background: #15966a; }
+
+.row {
+  border-top: 1px solid #dce6f0;
+}
+
+.task {
+  border-top: 1px solid #dce6f0;
+}
+
+.task input { accent-color: #1266b4; }
+
+input:not([type=checkbox]),
+textarea,
+select {
+  background: #fff;
+  border: 1px solid #aec4d8;
+  color: #17304a;
+  border-radius: 8px;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: 3px solid #63a9f2;
+  outline-offset: 2px;
+}
+
+.chat {
+  background: #e8f2fc;
+  color: #163553;
+  border: 1px solid #c4d9ec;
+}
+
+.chat.me {
+  background: #d6e8ff;
+  border-color: #a6c8ed;
+}
+
+.notice {
+  background: #fff7e7;
+  color: #72541d;
+  border-color: #ebd59e;
+}
+
+.empty {
+  background: #edf4fa;
+  color: #5a7188;
+}
+
+.nav {
+  background: #071a2d;
+  border-top: 1px solid #31516c;
+  box-shadow: 0 -5px 20px #07182730;
+  padding: 7px 5px calc(9px + env(safe-area-inset-bottom));
+}
+
+.nav button {
+  color: #b9cee2;
+  min-width: 58px;
+  padding: 8px 4px;
+  border-radius: 9px;
+}
+
+.nav button b {
+  font-size: 19px;
+  line-height: 1.35;
+}
+
+.nav button.active {
+  background: #155ca8;
+  color: white;
+}
+
+#toast {
+  background: #103b60;
+  color: white;
+}
+
+@media (min-width: 760px) {
+  main {
+    padding: 22px;
+    min-height: calc(100vh - 140px);
+  }
+
+  .two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .nav {
+    position: static;
+    justify-content: center;
+  }
+}
