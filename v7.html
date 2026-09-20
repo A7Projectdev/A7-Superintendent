@@ -1,0 +1,466 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#102d49">
+<title>A7 Superintendent · V7</title>
+<style>
+:root{--navy:#102d49;--blue:#246ca6;--light:#f3f7fb;--ink:#21394d;--muted:#62788a;--line:#dbe5ed;--gold:#eebf55}
+*{box-sizing:border-box}
+body{margin:0;background:var(--light);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+header{background:var(--navy);color:white;padding:17px 16px}
+header strong{font-size:19px;letter-spacing:.02em}
+header small{display:block;color:#c3d5e4}
+main{max-width:920px;margin:auto;padding:16px 12px 110px}
+h1{font-size:25px;margin:3px 0 9px}
+h2{font-size:19px;margin:0 0 10px}
+h3{font-size:16px;margin:12px 0 7px}
+p{color:var(--muted);margin:7px 0 13px}
+.card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:17px;margin-bottom:13px;box-shadow:0 4px 15px #142d4210}
+.welcome{background:linear-gradient(120deg,#173d60,#102d49);color:white}
+.welcome p{color:#d2e0eb}
+.eyebrow{color:#3173a7;text-transform:uppercase;letter-spacing:.11em;font-size:11px;font-weight:850}
+.welcome .eyebrow{color:var(--gold)}
+label.field{display:block;font-size:13px;font-weight:750;margin:13px 0 5px}
+input:not([type=checkbox]),select,textarea{display:block;width:100%;min-height:45px;border:1px solid #b8cad9;border-radius:10px;padding:10px;background:#fff;color:var(--ink)}
+textarea{min-height:105px;resize:vertical}
+.btn{border:0;background:var(--blue);color:white;border-radius:10px;padding:11px 14px;min-height:44px;font-weight:750}
+.btn.secondary{background:#eaf2f9;color:#164e7c}
+.btn.gold{background:var(--gold);color:#203345}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+.actions>*{flex:1 1 120px}
+.nav{display:flex;gap:5px;overflow-x:auto;padding:9px 12px;background:#fff;border-bottom:1px solid var(--line)}
+.nav button{border:0;border-radius:9px;background:#edf3f8;color:#35556e;padding:10px 13px;white-space:nowrap;font-weight:750}
+.nav button.active{background:var(--blue);color:#fff}
+.page{display:none}.page.active{display:block}
+.tile{border:1px solid var(--line);border-radius:12px;padding:13px;margin:9px 0;background:#fbfdff}
+.tile strong{display:block;font-size:16px}
+.tile small{display:block;color:var(--muted);margin:4px 0}
+.pill{display:inline-block;border-radius:20px;background:#e9f4ff;color:#1b5f93;padding:4px 9px;font-size:11px;font-weight:800}
+.note{padding:12px;background:#fff7e7;border:1px solid #eedeb9;border-radius:10px;font-size:12px;color:#75591e;margin-bottom:13px}
+.grid{display:grid;gap:11px}
+.check{display:flex;gap:10px;align-items:flex-start;border-top:1px solid var(--line);padding:12px 0}
+.check input{width:20px;height:20px;accent-color:var(--blue);flex:none}
+.check span{flex:1}
+hr{border:0;border-top:1px solid var(--line);margin:17px 0}
+#paper{display:none}
+@media(min-width:680px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding:23px}}
+@media print{
+ @page{size:letter;margin:.65in}
+ body{background:#fff;color:#172c3d;font:10.5pt/1.4 Georgia,serif}
+ header,.nav,main,.note{display:none!important}
+ #paper{display:block!important}
+ #paper h1{font: bold 20pt Arial,sans-serif;border-bottom:3px solid #173d60;padding-bottom:10px}
+ #paper h2{font:bold 12pt Arial,sans-serif;margin-top:19px}
+ #paper p{color:#172c3d}
+ #paper table{width:100%;border-collapse:collapse;margin:12px 0}
+ #paper th,#paper td{border:1px solid #8796a3;padding:8px;text-align:left;vertical-align:top}
+ #paper th{background:#edf2f5}
+ #paper .signatures{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:42px}
+ #paper .signature{border-top:1px solid #222;padding-top:7px}
+ #paper .draft{font:bold 9pt Arial,sans-serif;color:#555}
+}
+</style>
+</head>
+<body>
+<header><strong>◈ A7 SUPERINTENDENT</strong><small>Every parcel. Every trade. One clear plan.</small></header>
+<nav class="nav" aria-label="App navigation">
+<button data-page="home" class="active">🏠 Home</button>
+<button data-page="parcels">📍 Parcels</button>
+<button data-page="jobs">🛠 Jobs</button>
+<button data-page="contractors">👷 Contractors</button>
+<button data-page="documents">📄 Documents</button>
+<button data-page="backup">⚙ Backup</button>
+</nav>
+<main>
+<div class="note">V7 prototype: Use sample information only. Records are saved in this browser, not in Google Drive. Verify property measurements, road-authority requirements, permits and prices before using any document.</div>
+
+<section class="page active" id="home">
+<div class="card welcome">
+<div class="eyebrow">Your development dashboard</div>
+<h1 id="welcomeTitle">Let’s plan your property.</h1>
+<p>Start with your development, then give every parcel its own measurements, jobs, bids and paperwork.</p>
+<div class="actions"><button class="btn gold" data-page="parcels">Open my parcels →</button></div>
+</div>
+<div class="card"><h2>Your development</h2>
+<label class="field" for="developmentName">Development name</label>
+<input id="developmentName" placeholder="Example: Talco Property Development">
+<div class="actions"><button class="btn" id="saveDevelopment">Save development name</button></div>
+<p id="homeSummary"></p></div>
+<div class="card"><h2>What would you like to do?</h2>
+<div class="actions">
+<button class="btn secondary" data-page="parcels">＋ Add a parcel</button>
+<button class="btn secondary" data-page="jobs">Answer job questions</button>
+<button class="btn secondary" data-page="contractors">Find a contractor</button>
+<button class="btn secondary" data-page="documents">Prepare a scope</button>
+</div></div>
+</section>
+
+<section class="page" id="parcels">
+<div class="card"><div class="eyebrow">Step 1 · Organize the land</div>
+<h1>My parcels</h1><p>Each parcel gets its own job records. Neighboring parcels never share measurements automatically.</p>
+<div id="parcelList"></div></div>
+<div class="card"><h2>Add a parcel</h2>
+<form id="parcelForm">
+<label class="field" for="parcelName">Parcel name</label>
+<input id="parcelName" required maxlength="100" placeholder="Example: Parcel 1">
+<label class="field" for="parcelLocation">General location or description</label>
+<input id="parcelLocation" maxlength="180" placeholder="Example: North tract">
+<label class="field" for="parcelNotes">Notes</label>
+<textarea id="parcelNotes" maxlength="2000" placeholder="Example: Planned home site near the east property line"></textarea>
+<div class="actions"><button class="btn" type="submit">Create separate parcel</button></div>
+</form></div>
+</section>
+
+<section class="page" id="jobs">
+<div class="card"><div class="eyebrow">Step 2 · Define the work</div><h1>My jobs</h1>
+<p>Choose a parcel and trade. A7 will ask for the measurements needed for that specific job.</p>
+<label class="field" for="jobParcel">Parcel</label><select id="jobParcel"></select>
+<label class="field" for="jobTrade">Trade</label><select id="jobTrade"></select>
+</div>
+<div class="card" id="jobCard">
+<h2 id="jobHeading">Choose a job</h2>
+<p id="jobIntro"></p>
+<form id="jobForm">
+<div id="jobQuestions"></div>
+<label class="field" for="jobNotes">Anything else this contractor must know?</label>
+<textarea id="jobNotes" maxlength="4000" placeholder="Describe work limits, exclusions, materials or special instructions."></textarea>
+<div class="actions"><button class="btn" type="submit">Save this job’s details</button></div>
+</form>
+<hr><h3>Job checklist</h3><div id="jobChecklist"></div>
+<div class="actions"><button class="btn secondary" id="openJobDocument" type="button">Prepare this job’s scope →</button></div>
+</div>
+</section>
+
+<section class="page" id="contractors">
+<div class="card"><div class="eyebrow">Step 3 · Build your contractor directory</div><h1>My contractors</h1>
+<p>One contractor can perform several trades, but each parcel’s job and bid stays separate.</p>
+<label class="field" for="contractorFilter">Show contractors who can do</label>
+<select id="contractorFilter"></select>
+<div id="contractorList"></div></div>
+<div class="card"><h2>Add a contractor</h2>
+<form id="contractorForm">
+<label class="field" for="contractorName">Contractor or company name</label>
+<input id="contractorName" required maxlength="120" placeholder="Example: Sample Sitework LLC">
+<div class="grid">
+<div><label class="field" for="contractorEmail">Email</label><input id="contractorEmail" type="email" maxlength="160"></div>
+<div><label class="field" for="contractorPhone">Phone</label><input id="contractorPhone" type="tel" maxlength="50"></div>
+</div>
+<h3>What work can they do?</h3><div id="contractorTradeChecks"></div>
+<div class="actions"><button class="btn" type="submit">Save contractor</button></div>
+</form></div>
+</section>
+
+<section class="page" id="documents">
+<div class="card"><div class="eyebrow">Step 4 · Job paperwork</div><h1>Scope of work</h1>
+<p>Choose one parcel and one trade. The scope below uses only that job’s measurements and instructions.</p>
+<label class="field" for="docParcel">Parcel</label><select id="docParcel"></select>
+<label class="field" for="docTrade">Trade</label><select id="docTrade"></select>
+<label class="field" for="docContractor">Contractor for this job</label><select id="docContractor"></select>
+<label class="field" for="docPrice">Quoted price (optional)</label><input id="docPrice" type="number" min="0" step=".01" placeholder="Enter contractor’s actual quote">
+<label class="field" for="docExtra">Additional scope wording</label>
+<textarea id="docExtra" maxlength="6000" placeholder="Add or revise the exact work this contractor is expected to perform."></textarea>
+<div class="actions"><button class="btn" id="saveDoc" type="button">Save this job’s document details</button><button class="btn secondary" id="printDoc" type="button">Preview / Print / Save PDF</button></div>
+<p class="note" style="margin-top:14px">The print layout includes a scope, measurements, contractor information, price, exclusions and signature lines. It is a draft for review—not an executed agreement. On iPhone, use the print/share options to save a PDF.</p>
+</div>
+</section>
+
+<section class="page" id="backup">
+<div class="card"><h1>Keep a backup</h1>
+<p>V7 uses separate browser storage. Your V6 records remain untouched, but they are not automatically imported into this new parcel structure.</p>
+<div class="actions"><button class="btn" id="exportBackup">Export V7 backup</button><button class="btn secondary" id="importBackup">Import V7 backup</button></div>
+<input id="backupFile" type="file" accept=".json,application/json" hidden>
+</div>
+</section>
+</main>
+<div id="paper" aria-hidden="true"></div>
+<script>
+"use strict";
+const KEY="a7-superintendent-v7";
+const $=id=>document.getElementById(id);
+const TRADE=[
+ {id:"clearing",name:"Land clearing",intro:"Tell A7 exactly what should be cleared and what must remain.",
+ fields:[
+ ["length","Clearing area length (feet)","number"],
+ ["width","Clearing area width (feet)","number"],
+ ["limits","What areas should be cleared?","text"],
+ ["preserve","What trees or areas must be preserved?","text"],
+ ["debris","What should happen to trees, brush and debris?","text"]
+ ],checks:["Confirm property boundaries","Walk clearing limits with contractor","Confirm utility locations","Approve clearing scope and bid","Inspect clearing and cleanup"]},
+ {id:"pad",name:"Dirt work & home pad",intro:"Define the pad and grading requirements for this parcel.",
+ fields:[
+ ["length","Planned pad length (feet)","number"],
+ ["width","Planned pad width (feet)","number"],
+ ["location","Where should the pad go?","text"],
+ ["requirements","What pad requirements have been confirmed by the installer?","text"],
+ ["drainage","What drainage or grading is needed?","text"]
+ ],checks:["Confirm home location","Obtain installer pad requirements","Confirm drainage and elevations","Approve pad scope and bid","Inspect completed pad"]},
+ {id:"culvert",name:"Entrance & culvert",intro:"Keep your desired entrance dimensions separate from road-authority-approved culvert specifications.",
+ fields:[
+ ["entranceWidth","Desired entrance width (feet)","number"],
+ ["entranceLocation","Where should the entrance be located?","text"],
+ ["culvertLength","Confirmed culvert length (feet), if known","number"],
+ ["culvertSpecs","Road-authority-confirmed culvert size and material","text"],
+ ["approval","Permit or approval status","text"]
+ ],checks:["Identify responsible road authority","Confirm entrance approval requirements","Confirm culvert specifications","Approve material and installation bid","Inspect entrance and drainage"]},
+ {id:"driveway",name:"Rock & gravel driveway",intro:"Give A7 your exact desired length and width for this parcel.",
+ fields:[
+ ["length","Driveway length (feet)","number"],
+ ["width","Driveway width (feet)","number"],
+ ["route","Where will the driveway run?","text"],
+ ["base","Confirmed base and rock specifications","text"],
+ ["depth","Confirmed rock depth (inches), if known","number"]
+ ],checks:["Confirm driveway route","Confirm material specifications","Get itemized rock and hauling bid","Approve scope and price","Inspect finished driveway"]},
+ {id:"water",name:"Water service",intro:"Record the water plan and assign the work clearly.",
+ fields:[
+ ["source","Water source or provider","text"],
+ ["route","Planned water-line route","text"],
+ ["requirements","Confirmed connection requirements","text"]
+ ],checks:["Confirm water availability","Confirm connection requirements","Approve written bid","Coordinate installation","Inspect connection"]},
+ {id:"electrical",name:"Electrical service",intro:"Define the utility provider and connection responsibilities.",
+ fields:[
+ ["provider","Electrical utility provider","text"],
+ ["route","Planned service route","text"],
+ ["requirements","Confirmed service requirements","text"]
+ ],checks:["Confirm provider and service","Confirm electrical requirements","Approve written bid","Coordinate inspection","Verify service"]},
+ {id:"septic",name:"Septic / wastewater",intro:"Record the approved plan rather than guessing a system size.",
+ fields:[
+ ["plan","Septic or sewer plan","text"],
+ ["location","Planned system location","text"],
+ ["approval","Design and permit status","text"]
+ ],checks:["Confirm wastewater plan","Identify permitting authority","Obtain required design","Approve installation bid","Collect inspection records"]},
+ {id:"hvac",name:"HVAC",intro:"Identify what the home dealer includes and what needs a separate contractor.",
+ fields:[
+ ["responsible","Who supplies and installs HVAC?","text"],
+ ["equipment","Confirmed equipment details","text"],
+ ["excluded","Work not included by the dealer","text"]
+ ],checks:["Confirm dealer inclusions","Confirm installer responsibilities","Approve any separate bid","Coordinate startup","Verify operation"]},
+ {id:"home",name:"Home delivery & setup",intro:"Document the exact home and who handles delivery, setup and connections.",
+ fields:[
+ ["model","Home manufacturer and model","text"],
+ ["delivery","Who delivers and sets the home?","text"],
+ ["access","Confirmed delivery access requirements","text"],
+ ["connections","Who handles utility connections?","text"]
+ ],checks:["Confirm model and options","Confirm delivery route","Confirm pad requirements","Assign setup and connection work","Inspect delivery and installation"]}
+];
+const blank=()=>({name:"My Development",parcels:[],contractors:[]});
+let db=load(),activeParcel="",activeTrade="clearing";
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&Array.isArray(d.parcels)&&Array.isArray(d.contractors))return d;}catch(e){}return blank();}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db));return true;}catch(e){alert("Browser storage could not save. Export a backup if possible.");return false;}}
+function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+function parcel(){return db.parcels.find(p=>p.id===activeParcel);}
+function trade(){return TRADE.find(t=>t.id===activeTrade)||TRADE[0];}
+function job(){return parcel()?.jobs?.[activeTrade];}
+function newJob(){return {answers:{},checks:[],contractorId:"",price:"",extra:""};}
+function ensureJob(){const p=parcel();if(!p)return null;p.jobs??={};p.jobs[activeTrade]??=newJob();return p.jobs[activeTrade];}
+function el(tag,text,cls){const x=document.createElement(tag);x.textContent=String(text??"");if(cls)x.className=cls;return x;}
+function btn(text,fn,cls="btn secondary"){const b=el("button",text,cls);b.type="button";b.onclick=fn;return b;}
+function page(name){document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id===name));document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===name));render();scrollTo(0,0);}
+document.querySelectorAll("[data-page]").forEach(x=>x.onclick=()=>page(x.dataset.page));
+function fill(select,items,chosen,empty){
+ select.replaceChildren();
+ if(!items.length){select.add(new Option(empty||"None yet",""));select.disabled=true;return;}
+ select.disabled=false;
+ items.forEach(item=>select.add(new Option(item.name,item.id)));
+ select.value=chosen;
+}
+function render(){
+ $("developmentName").value=db.name;
+ $("welcomeTitle").textContent=db.name||"My Development";
+ $("homeSummary").textContent=db.parcels.length+" parcel(s) · "+db.contractors.length+" contractor(s)";
+ if(!parcel()&&db.parcels.length)activeParcel=db.parcels[0].id;
+ renderParcels();renderJobs();renderContractors();renderDocuments();
+}
+$("saveDevelopment").onclick=()=>{db.name=$("developmentName").value.trim()||"My Development";save();render();};
+$("parcelForm").onsubmit=e=>{
+ e.preventDefault();
+ const name=$("parcelName").value.trim();if(!name)return;
+ if(!confirm("Create "+name+" as a separate parcel with its own jobs and bids?"))return;
+ const p={id:id(),name,location:$("parcelLocation").value.trim(),notes:$("parcelNotes").value.trim(),jobs:{}};
+ db.parcels.push(p);activeParcel=p.id;save();e.target.reset();page("jobs");
+};
+function renderParcels(){
+ const root=$("parcelList");root.replaceChildren();
+ if(!db.parcels.length)root.append(el("p","No parcels yet. Create your first one below."));
+ db.parcels.forEach(p=>{
+  const x=el("div","","tile");
+  x.append(el("strong",p.name),el("small",p.location||"Location not entered"));
+  x.append(el("small",Object.keys(p.jobs||{}).length+" job(s) started"));
+  x.append(btn("Open this parcel",()=>{activeParcel=p.id;page("jobs");}));
+  root.append(x);
+ });
+}
+function renderJobs(){
+ fill($("jobParcel"),db.parcels,activeParcel,"Add a parcel first");
+ fill($("jobTrade"),TRADE,activeTrade);
+ const p=parcel(),t=trade(),j=job();
+ $("jobHeading").textContent=p?p.name+" · "+t.name:"Add a parcel first";
+ $("jobIntro").textContent=t.intro;
+ $("jobForm").hidden=!p;$("openJobDocument").disabled=!p;
+ const root=$("jobQuestions");root.replaceChildren();
+ if(!p){$("jobChecklist").replaceChildren();return;}
+ t.fields.forEach(([key,label,type])=>{
+  const lab=el("label",label,"field"),input=document.createElement("input");
+  input.type=type;input.dataset.key=key;
+  input.value=j?.answers?.[key]??"";
+  if(type==="number"){input.min="0";input.step="any";input.placeholder="Enter feet or inches, as labeled";}
+  else input.placeholder="Enter the answer or leave blank to verify";
+  root.append(lab,input);
+ });
+ $("jobNotes").value=j?.answers?.notes||"";
+ const checks=$("jobChecklist");checks.replaceChildren();
+ t.checks.forEach((text,i)=>{
+  const line=el("label","","check"),input=document.createElement("input");
+  input.type="checkbox";input.checked=!!j?.checks?.[i];
+  input.onchange=()=>{ensureJob().checks[i]=input.checked;save();};
+  line.append(input,el("span",text));checks.append(line);
+ });
+}
+$("jobParcel").onchange=e=>{activeParcel=e.target.value;render();};
+$("jobTrade").onchange=e=>{activeTrade=e.target.value;render();};
+$("jobForm").onsubmit=e=>{
+ e.preventDefault();const j=ensureJob();if(!j)return;
+ const answers={};
+ $("jobQuestions").querySelectorAll("input").forEach(input=>{
+  const v=input.value.trim();
+  if(input.type==="number"&&v!==""&&(!Number.isFinite(Number(v))||Number(v)<0)){answers.invalid=true;return;}
+  answers[input.dataset.key]=v;
+ });
+ if(answers.invalid){alert("Measurements must be zero or positive numbers.");return;}
+ answers.notes=$("jobNotes").value.trim();j.answers=answers;
+ save();alert("Saved for "+parcel().name+" · "+trade().name+". Other parcels are unchanged.");
+};
+$("openJobDocument").onclick=()=>page("documents");
+
+function renderContractors(){
+ const filter=$("contractorFilter"),chosen=filter.value||"all";
+ filter.replaceChildren();filter.add(new Option("All contractors","all"));
+ TRADE.forEach(t=>filter.add(new Option(t.name,t.id)));
+ filter.value=chosen;
+ const checks=$("contractorTradeChecks");checks.replaceChildren();
+ TRADE.forEach(t=>{
+  const line=el("label","","check"),input=document.createElement("input");
+  input.type="checkbox";input.value=t.id;line.append(input,el("span",t.name));checks.append(line);
+ });
+ const root=$("contractorList");root.replaceChildren();
+ const matching=db.contractors.filter(c=>chosen==="all"||c.trades.includes(chosen));
+ if(!matching.length)root.append(el("p","No matching contractors yet."));
+ matching.forEach(c=>{
+  const x=el("div","","tile");
+  x.append(el("strong",c.name),el("small",[c.email,c.phone].filter(Boolean).join(" · ")),
+   el("small",c.trades.map(k=>TRADE.find(t=>t.id===k)?.name).filter(Boolean).join(" · ")));
+  root.append(x);
+ });
+}
+$("contractorFilter").onchange=renderContractors;
+$("contractorForm").onsubmit=e=>{
+ e.preventDefault();
+ const name=$("contractorName").value.trim();
+ const trades=[...$("contractorTradeChecks").querySelectorAll("input:checked")].map(x=>x.value);
+ if(!name||!trades.length){alert("Enter a name and select at least one trade.");return;}
+ db.contractors.push({id:id(),name,email:$("contractorEmail").value.trim(),phone:$("contractorPhone").value.trim(),trades});
+ save();e.target.reset();render();alert("Contractor saved to your shared directory.");
+};
+
+function renderDocuments(){
+ fill($("docParcel"),db.parcels,activeParcel,"Add a parcel first");
+ fill($("docTrade"),TRADE,activeTrade);
+ const j=job();
+ const candidates=db.contractors.filter(c=>c.trades.includes(activeTrade));
+ const selector=$("docContractor");
+ selector.replaceChildren();selector.add(new Option("Not assigned yet",""));
+ candidates.forEach(c=>selector.add(new Option(c.name,c.id)));
+ selector.value=j?.contractorId||"";
+ $("docPrice").value=j?.price??"";
+ $("docExtra").value=j?.extra||"";
+ $("saveDoc").disabled=!parcel();$("printDoc").disabled=!parcel();
+}
+$("docParcel").onchange=e=>{activeParcel=e.target.value;render();};
+$("docTrade").onchange=e=>{activeTrade=e.target.value;render();};
+function saveDocumentFields(){
+ const j=ensureJob();if(!j)return false;
+ const price=$("docPrice").value.trim();
+ if(price!==""&&(!Number.isFinite(Number(price))||Number(price)<0)){
+  alert("Enter a valid quoted price.");return false;
+ }
+ j.contractorId=$("docContractor").value;
+ j.price=price;j.extra=$("docExtra").value.trim();
+ return save();
+}
+$("saveDoc").onclick=()=>{if(saveDocumentFields())alert("Document details saved for this parcel and trade.");};
+function safe(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function value(v){return v===undefined||v===null||String(v).trim()===""?"To be confirmed":String(v);}
+function makePaper(){
+ const p=parcel(),t=trade(),j=job()||newJob();
+ if(!p)return;
+ const contractor=db.contractors.find(c=>c.id===j.contractorId);
+ const rows=t.fields.map(([key,label])=>"<tr><th>"+safe(label)+"</th><td>"+safe(value(j.answers[key]))+"</td></tr>").join("");
+ let area="";
+ if(["clearing","pad","driveway"].includes(t.id)){
+  const l=Number(j.answers.length),w=Number(j.answers.width);
+  if(j.answers.length&&j.answers.width&&l>0&&w>0){
+   area="<p><strong>Preliminary rectangular area:</strong> "+safe((l*w).toLocaleString())+
+    " square feet. Verify actual limits and quantities on site.</p>";
+  }
+ }
+ $("paper").innerHTML=
+ `<div class="draft">A7 SUPERINTENDENT · DRAFT FOR REVIEW · NOT AN EXECUTED AGREEMENT</div>
+ <h1>SCOPE OF WORK</h1>
+ <p><strong>Development:</strong> ${safe(db.name)}<br>
+ <strong>Parcel:</strong> ${safe(p.name)}<br>
+ <strong>Location:</strong> ${safe(value(p.location))}<br>
+ <strong>Trade:</strong> ${safe(t.name)}<br>
+ <strong>Contractor:</strong> ${safe(value(contractor?.name))}<br>
+ <strong>Prepared:</strong> ${safe(new Date().toLocaleDateString())}</p>
+ <h2>1. Project-specific work details</h2>
+ <table><tbody>${rows}</tbody></table>${area}
+ <h2>2. Additional instructions</h2>
+ <p style="white-space:pre-wrap">${safe(value(j.answers.notes))}</p>
+ <p style="white-space:pre-wrap">${safe(value(j.extra))}</p>
+ <h2>3. Proposed work and verification</h2>
+ <p>The contractor is to perform only the work described in the final approved scope.
+ Confirm measurements, access, materials, site conditions, applicable approvals,
+ and responsibilities before ordering materials or starting work.</p>
+ <h2>4. Scope review checklist</h2>
+ <ul>${t.checks.map(x=>"<li>"+safe(x)+"</li>").join("")}</ul>
+ <h2>5. Price and exclusions</h2>
+ <p><strong>Contractor's quoted price:</strong> ${j.price!==""?"$"+safe(Number(j.price).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})):"To be confirmed"}<br>
+ <strong>Exclusions, allowances and change-order terms:</strong> To be confirmed in the final agreement.</p>
+ <h2>6. Review and acknowledgment</h2>
+ <p>This draft records proposed work only. Review and attach an appropriate agreement
+ before treating it as authorization to proceed. Confirm all required permits and inspections.</p>
+ <div class="signatures">
+ <div class="signature">Owner / authorized representative<br>Date: __________________</div>
+ <div class="signature">Contractor / authorized representative<br>Date: __________________</div>
+ </div>`;
+}
+$("printDoc").onclick=()=>{
+ if(!saveDocumentFields())return;
+ makePaper();window.print();
+};
+$("exportBackup").onclick=()=>{
+ const blob=new Blob([JSON.stringify({app:"A7-V7",data:db},null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="a7-v7-backup.json";document.body.append(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),30000);
+};
+$("importBackup").onclick=()=>$("backupFile").click();
+$("backupFile").onchange=async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{
+  if(file.size>5*1024*1024)throw Error("Too large");
+  const parsed=JSON.parse(await file.text());
+  if(parsed.app!=="A7-V7"||!Array.isArray(parsed.data?.parcels)||!Array.isArray(parsed.data?.contractors))throw Error("Invalid");
+  if(!confirm("Replace all current V7 records with this backup?"))return;
+  db=parsed.data;activeParcel=db.parcels[0]?.id||"";activeTrade="clearing";save();page("home");
+ }catch(err){alert("That is not a valid V7 backup.");}
+ finally{e.target.value="";}
+};
+render();
+</script>
+</body>
+</html>
