@@ -1,0 +1,540 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>A7 Superintendent</title>
+<style>
+:root{
+  --navy:#103354;
+  --navy2:#092842;
+  --ink:#172b43;
+  --muted:#63758a;
+  --line:#dce5ef;
+  --soft:#f4f7fb;
+  --green:#0c9b66;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#fff;
+  color:var(--ink);
+  font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{
+  outline:3px solid #72b7f2;
+  outline-offset:2px;
+}
+header{
+  padding:17px 16px 14px;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  border-bottom:1px solid var(--line);
+}
+.logo{
+  width:43px;height:43px;
+  display:grid;place-items:center;
+  background:var(--navy);
+  color:white;
+  border-radius:13px;
+  font-size:19px;
+  font-weight:900;
+}
+.brand{font-size:17px;font-weight:850;line-height:1.1}
+.brand small{
+  display:block;
+  margin-top:5px;
+  font-size:10px;
+  letter-spacing:.08em;
+  color:var(--muted);
+  font-weight:750;
+}
+main{
+  max-width:1040px;
+  margin:auto;
+  padding:17px 14px 105px;
+}
+.card{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:17px;
+  padding:17px;
+  margin-bottom:14px;
+  box-shadow:0 3px 14px rgba(16,51,84,.045);
+}
+.eyebrow{
+  color:#36638b;
+  font-size:11px;
+  letter-spacing:.1em;
+  font-weight:850;
+  text-transform:uppercase;
+}
+h1{font-size:23px;line-height:1.2;margin:7px 0}
+h2{font-size:18px;margin:4px 0 12px}
+h3{font-size:15px;margin:10px 0}
+p{color:var(--muted);margin:8px 0;line-height:1.5}
+.hero{background:linear-gradient(135deg,#f6faff,#fff)}
+.project-name{font-size:19px;font-weight:850;margin-top:7px}
+.notice{
+  background:#fff8e9;
+  color:#72551c;
+  border:1px solid #f0dca9;
+  border-radius:11px;
+  padding:10px 12px;
+  font-size:12px;
+  margin-bottom:14px;
+}
+.btn{
+  background:var(--navy);
+  color:white;
+  border:1px solid var(--navy);
+  border-radius:10px;
+  padding:11px 13px;
+  font-weight:750;
+}
+.btn.light{
+  background:#eef4fa;
+  color:var(--navy);
+  border-color:#d5e2ef;
+}
+.btn:active{transform:scale(.99)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
+.actions .btn{flex:1 1 130px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.stat{
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:12px 10px;
+  min-width:0;
+}
+.stat small{font-size:11px;color:var(--muted)}
+.stat strong{display:block;font-size:24px;margin-top:4px;color:var(--navy)}
+.progress-track{height:10px;background:#e8eef5;border-radius:20px;overflow:hidden;margin:14px 0 9px}
+.progress-fill{height:100%;width:0;background:var(--green);transition:width .2s}
+.task{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  border-top:1px solid var(--line);
+  padding:12px 0;
+}
+.task input{width:19px;height:19px;accent-color:var(--navy);flex:none;margin-top:1px}
+.task span{flex:1}
+.record{padding:12px 0;border-top:1px solid var(--line)}
+.record strong{display:block}
+.record small{color:var(--muted)}
+input.text,textarea{
+  width:100%;
+  background:#fff;
+  border:1px solid #bdccdc;
+  color:var(--ink);
+  border-radius:10px;
+  padding:12px;
+  margin:6px 0 12px;
+}
+textarea{min-height:185px;resize:vertical}
+.field-label{font-size:12px;font-weight:750;color:var(--muted)}
+.empty{
+  background:var(--soft);
+  border-radius:11px;
+  padding:14px;
+  color:var(--muted);
+}
+.chat{
+  background:#f0f5fb;
+  padding:13px;
+  border-radius:13px;
+  margin:11px 0;
+  white-space:pre-wrap;
+}
+.chat.me{background:#e1edf8;margin-left:25px}
+.page{display:none}
+.page.active{display:block}
+.quick{display:grid;gap:8px}
+.quick .btn{text-align:left;width:100%}
+.two-col{display:grid;gap:0}
+.bottom-nav{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  z-index:10;
+  display:flex;
+  background:var(--navy2);
+  padding:8px 5px calc(9px + env(safe-area-inset-bottom));
+  gap:2px;
+  box-shadow:0 -4px 20px rgba(0,0,0,.1);
+}
+.bottom-nav button{
+  flex:1;
+  min-width:0;
+  background:transparent;
+  color:#c7d7e7;
+  border:0;
+  border-radius:9px;
+  padding:7px 1px;
+  font-size:10px;
+}
+.bottom-nav button b{display:block;font-size:20px;line-height:1.3}
+.bottom-nav button.active{background:#245174;color:white}
+.status{
+  display:inline-block;
+  background:#e7f7ef;
+  color:#08784e;
+  border-radius:20px;
+  padding:4px 9px;
+  font-size:11px;
+  font-weight:800;
+}
+@media(min-width:760px){
+  main{padding-bottom:35px}
+  .two-col{grid-template-columns:1fr 1fr;gap:14px}
+  .bottom-nav{position:static;justify-content:center}
+  .bottom-nav button{flex:0 1 150px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">A7</div>
+  <div class="brand">
+    A7 SUPERINTENDENT
+    <small>PLAN · MANAGE · BUILD · COMPLETE</small>
+  </div>
+</header>
+
+<main>
+  <div class="notice">
+    PUBLIC DEMO — Use sample information only. AI, email, live weather
+    and supplier search are not connected. Your entries stay in this browser.
+  </div>
+
+  <section id="home" class="page active">
+    <div class="card hero">
+      <div class="eyebrow">Selected project</div>
+      <div class="project-name">Talco Development</div>
+      <p>Talco, Texas · 2 tracts · 2 homes</p>
+      <div class="actions">
+        <button class="btn" onclick="go('projects')">Open project →</button>
+        <button class="btn light" onclick="go('files')">Project files</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">AI Superintendent · Preview</div>
+      <h1>How can I help with your project?</h1>
+      <p>Explore the future AI workspace. These buttons show example responses.</p>
+      <div class="actions">
+        <button class="btn" onclick="go('contractors')">＋ Add contractor</button>
+        <button class="btn" onclick="go('files')">▤ Create scope</button>
+        <button class="btn light" onclick="go('ai')">✦ AI Desk</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><small>Tasks done</small><strong id="taskCount">0/4</strong></div>
+      <div class="stat"><small>Contractors</small><strong id="tradeCount">0</strong></div>
+      <div class="stat"><small>Project tracts</small><strong>2</strong></div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="card">
+          <div class="eyebrow">Project progress</div>
+          <h2>Sitework planning</h2>
+          <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+          <p id="progressLabel">0 of 4 tasks complete</p>
+          <div id="homeTasks"></div>
+        </div>
+
+        <div class="card">
+          <div class="eyebrow">Project filing cabinet</div>
+          <h2>Your project records</h2>
+          <p>Keep planning tasks, contractor files and draft scopes together.</p>
+          <button class="btn" onclick="go('projects')">View project →</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="eyebrow">Quick actions</div>
+          <h2>What would you like to do?</h2>
+          <div class="quick">
+            <button class="btn" onclick="go('contractors')">＋ Add a contractor →</button>
+            <button class="btn" onclick="go('files')">▤ Draft a scope of work →</button>
+            <button class="btn" onclick="go('projects')">✓ Review project tasks →</button>
+            <button class="btn" onclick="go('ai')">✦ Ask the AI Desk preview →</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="eyebrow">System status</div>
+          <h2>Demo workspace</h2>
+          <p><span class="status">Browser storage working locally</span></p>
+          <p>Live AI, real contractor emails, weather, schedules and supplier quotes
+          will require separate connections.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="page">
+    <div class="card hero">
+      <div class="eyebrow">Project file 001</div>
+      <h1>Talco Development</h1>
+      <p>Two 5-acre tracts · Two manufactured homes · Planning stage</p>
+    </div>
+    <div class="card">
+      <h2>Project checklist</h2>
+      <div id="projectTasks"></div>
+    </div>
+    <div class="card">
+      <h2>Planning notes</h2>
+      <p>Confirm property boundaries, approved highway entrances and culvert
+      requirements before ordering materials. Verify clearing limits,
+      driveway and pad specifications, water connections and septic plans.</p>
+      <p>These are reminders, not permits or engineering specifications.</p>
+    </div>
+  </section>
+
+  <section id="contractors" class="page">
+    <div class="card">
+      <div class="eyebrow">Contractor filing cabinet</div>
+      <h1>Your contractors</h1>
+      <div id="contractorList"></div>
+    </div>
+    <div class="card">
+      <h2>Add a test contractor</h2>
+      <form id="contractorForm">
+        <label class="field-label" for="name">Contractor name</label>
+        <input class="text" id="name" required maxlength="80"
+          placeholder="Example: Test Contractor">
+        <label class="field-label" for="trade">Trades or services</label>
+        <input class="text" id="trade" required maxlength="200"
+          placeholder="Example: Clearing, culverts, driveways">
+        <button class="btn" type="submit">Save contractor</button>
+      </form>
+      <p>No contact information is sent or shared by this demo.</p>
+    </div>
+  </section>
+
+  <section id="ai" class="page">
+    <div class="card">
+      <div class="eyebrow">AI Superintendent · Preview</div>
+      <h1>Your project assistant</h1>
+      <p>Choose an example below. This is a scripted preview,
+      not a live AI conversation.</p>
+      <div class="actions">
+        <button class="btn" onclick="reply('contractor')">File a contractor</button>
+        <button class="btn" onclick="reply('scope')">Plan a scope</button>
+        <button class="btn" onclick="reply('supplier')">Find culverts</button>
+      </div>
+      <div id="chat">
+        <div class="chat">Welcome to the A7 AI Desk preview.
+          Choose a topic above to explore the planned workflow.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="files" class="page">
+    <div class="card">
+      <div class="eyebrow">Document filing cabinet</div>
+      <h1>Scope-of-work draft</h1>
+      <p>This is an editable example. Verify every requirement before use.</p>
+      <textarea id="scope">PROJECT: Talco Development
+TRADE: Sitework
+
+1. Confirm property boundaries and approved entrance permits.
+2. Verify required culvert sizes and specifications.
+3. Identify clearing limits for each tract.
+4. Price driveways and home pads separately.
+5. List materials, exclusions and permit responsibilities.
+6. Provide a written price and schedule for owner approval.
+
+DRAFT ONLY — NOT APPROVED OR SENT.</textarea>
+      <button class="btn" onclick="copyScope()">Copy draft</button>
+      <p id="copyStatus">Nothing has been sent.</p>
+    </div>
+  </section>
+</main>
+
+<nav class="bottom-nav" aria-label="App navigation">
+  <button class="active" data-page="home" onclick="go('home')"><b>⌂</b>Home</button>
+  <button data-page="projects" onclick="go('projects')"><b>▤</b>Projects</button>
+  <button data-page="contractors" onclick="go('contractors')"><b>♙</b>Trades</button>
+  <button data-page="ai" onclick="go('ai')"><b>✦</b>AI Desk</button>
+  <button data-page="files" onclick="go('files')"><b>▣</b>Files</button>
+</nav>
+
+<script>
+"use strict";
+
+const taskNames=[
+  "Confirm sitework contractor",
+  "Confirm culvert permit requirements",
+  "Plan clearing and driveways",
+  "Coordinate water and septic"
+];
+
+function readList(key){
+  try{
+    const value=JSON.parse(localStorage.getItem(key)||"[]");
+    return Array.isArray(value)?value:[];
+  }catch(error){
+    return [];
+  }
+}
+
+let tasks=readList("a7tasks").slice(0,4).map(Boolean);
+let contractors=readList("a7contractors").filter(
+  item=>item&&typeof item.name==="string"&&typeof item.trade==="string"
+);
+
+function save(key,value){
+  try{
+    localStorage.setItem(key,JSON.stringify(value));
+  }catch(error){
+    alert("This browser could not save your demo changes.");
+  }
+}
+
+function go(id){
+  document.querySelectorAll(".page").forEach(page=>{
+    page.classList.toggle("active",page.id===id);
+  });
+  document.querySelectorAll(".bottom-nav button").forEach(button=>{
+    button.classList.toggle("active",button.dataset.page===id);
+  });
+  window.scrollTo(0,0);
+}
+
+function renderTasks(){
+  ["homeTasks","projectTasks"].forEach(id=>{
+    const area=document.getElementById(id);
+    area.replaceChildren();
+
+    taskNames.forEach((name,index)=>{
+      const label=document.createElement("label");
+      label.className="task";
+
+      const checkbox=document.createElement("input");
+      checkbox.type="checkbox";
+      checkbox.checked=!!tasks[index];
+
+      checkbox.addEventListener("change",()=>{
+        tasks[index]=checkbox.checked;
+        save("a7tasks",tasks);
+        renderTasks();
+      });
+
+      const text=document.createElement("span");
+      text.textContent=name;
+      label.append(checkbox,text);
+      area.append(label);
+    });
+  });
+
+  const done=tasks.filter(Boolean).length;
+  document.getElementById("taskCount").textContent=done+"/4";
+  document.getElementById("progressLabel").textContent=
+    done+" of 4 tasks complete";
+  document.getElementById("progressFill").style.width=
+    (done*25)+"%";
+}
+
+function renderContractors(){
+  const area=document.getElementById("contractorList");
+  area.replaceChildren();
+  document.getElementById("tradeCount").textContent=contractors.length;
+
+  if(!contractors.length){
+    const empty=document.createElement("div");
+    empty.className="empty";
+    empty.textContent="No contractor records yet. Add a test contractor below.";
+    area.append(empty);
+    return;
+  }
+
+  contractors.forEach((contractor,index)=>{
+    const row=document.createElement("div");
+    row.className="record";
+
+    const name=document.createElement("strong");
+    name.textContent=contractor.name;
+
+    const trade=document.createElement("small");
+    trade.textContent=contractor.trade;
+
+    const remove=document.createElement("button");
+    remove.className="btn light";
+    remove.style.marginTop="9px";
+    remove.textContent="Delete test record";
+    remove.addEventListener("click",()=>{
+      if(confirm("Delete this contractor record from this browser?")){
+        contractors.splice(index,1);
+        save("a7contractors",contractors);
+        renderContractors();
+      }
+    });
+
+    row.append(name,trade,document.createElement("br"),remove);
+    area.append(row);
+  });
+}
+
+document.getElementById("contractorForm").addEventListener("submit",event=>{
+  event.preventDefault();
+
+  const name=document.getElementById("name").value.trim();
+  const trade=document.getElementById("trade").value.trim();
+  if(!name||!trade)return;
+
+  contractors.push({name,trade});
+  save("a7contractors",contractors);
+  event.target.reset();
+  renderContractors();
+});
+
+const answers={
+  contractor:"In a connected version, you could describe a contractor and review a proposed contact card before saving it. For now, use Trades to create a test record.",
+  scope:"A scope should identify the project, trade, quantities to verify, permits, materials, exclusions, pricing, schedule and approval steps. Open Files to edit a sample.",
+  supplier:"Live supplier search is not connected. A future version could compare nearby suppliers, verify TxDOT requirements and display sourced prices instead of inventing quotes."
+};
+
+function reply(topic){
+  const chat=document.getElementById("chat");
+  const bubble=document.createElement("div");
+  bubble.className="chat";
+  bubble.textContent=answers[topic];
+  chat.append(bubble);
+  bubble.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
+function copyScope(){
+  const field=document.getElementById("scope");
+  const status=document.getElementById("copyStatus");
+
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(field.value).then(()=>{
+      status.textContent="Draft copied. Nothing was sent.";
+    }).catch(()=>{
+      field.focus();
+      field.select();
+      status.textContent="Choose Copy from the iPhone text menu.";
+    });
+  }else{
+    field.focus();
+    field.select();
+    status.textContent="Choose Copy from the iPhone text menu.";
+  }
+}
+
+renderTasks();
+renderContractors();
+</script>
+</body>
+</html>
