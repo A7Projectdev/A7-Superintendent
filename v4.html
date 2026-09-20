@@ -1,0 +1,812 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071827">
+<title>A7 Superintendent</title>
+<style>
+:root{--dark:#071827;--navy:#102d4b;--blue:#1767b5;--gold:#f1b52d;--paper:#eaf1f8;--ink:#17314b;--muted:#5c7186;--line:#d5e1ec}
+*{box-sizing:border-box}
+body{margin:0;background:var(--dark);color:var(--ink);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #74b9ff;outline-offset:2px}
+.shell{min-height:100vh}
+.sidebar{background:var(--dark);color:#d9e7f4;padding:18px 12px}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.logo{display:grid;place-items:center;background:var(--gold);color:var(--dark);font-size:21px;font-weight:900;width:44px;height:44px;border-radius:11px}
+.brand strong{display:block;color:white;font-size:17px}
+.brand small{display:block;color:#a9c3d9;font-size:10px;letter-spacing:.08em}
+.menu{display:grid;gap:4px}
+.menu button{border:0;background:transparent;color:#c4d7e8;text-align:left;padding:12px;border-radius:9px;font-weight:650}
+.menu button.active{background:#174d7d;color:white}
+.side-note{border:1px solid #31506b;border-radius:10px;padding:12px;margin-top:24px;font-size:12px;color:#adc6db}
+.workspace{background:var(--paper);min-width:0}
+.topbar{background:var(--navy);color:white;padding:13px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.topbar strong{font-size:15px}
+.topbar small{display:block;color:#b9d0e5;font-size:11px}
+.topbar select{width:46%;max-width:220px;background:#1d486d;color:white;border:1px solid #547998}
+main{max-width:1200px;margin:auto;padding:14px 12px 110px}
+.page{display:none}
+.page.active{display:block}
+.card{background:white;border:1px solid var(--line);border-radius:13px;padding:16px;margin-bottom:13px;box-shadow:0 4px 14px #0b294309}
+.hero{background:linear-gradient(120deg,#174b79,#081e32);color:white;border-color:#315c7d}
+.hero h1{color:white}
+.hero p{color:#c5d9e9}
+.eyebrow{font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:850;color:#2c6596}
+.hero .eyebrow{color:#a6d2f4}
+h1{font-size:24px;line-height:1.2;margin:6px 0 9px}
+h2{font-size:17px;margin:3px 0 12px}
+p{color:var(--muted);margin:7px 0 12px}
+.grid{display:grid;gap:13px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:13px}
+.stat{background:white;border:1px solid var(--line);border-radius:11px;padding:11px}
+.stat small{display:block;color:var(--muted);font-size:11px}
+.stat strong{display:block;color:var(--navy);font-size:24px}
+.btn{background:var(--blue);color:white;border:1px solid var(--blue);border-radius:8px;padding:10px 12px;min-height:42px;font-weight:750}
+.btn.light{background:#edf4fb;border-color:#c7daeb;color:#174b79}
+.btn.danger{background:white;border-color:#edc4ca;color:#a22c39}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.actions .btn{flex:1 1 115px}
+.field{display:block;font-size:12px;font-weight:750;color:#4f667d;margin:12px 0 4px}
+input:not([type=checkbox]),select,textarea{width:100%;min-width:0;min-height:44px;padding:11px;background:white;color:var(--ink);border:1px solid #b9cadb;border-radius:8px}
+textarea{min-height:105px;resize:vertical}
+.row{border-top:1px solid var(--line);padding:12px 0;overflow-wrap:anywhere}
+.row strong{display:block}
+.row small{display:block;color:var(--muted)}
+.task{display:flex;align-items:flex-start;gap:10px;border-top:1px solid var(--line);padding:11px 0}
+.task input{width:19px;height:19px;flex:none;accent-color:var(--blue)}
+.task span{flex:1;overflow-wrap:anywhere}
+.progress{height:9px;background:#e4edf5;border-radius:20px;overflow:hidden;margin:12px 0}
+.progress div{height:100%;background:#09936c;width:0}
+.notice{background:#fff7e8;color:#74551d;border:1px solid #e8d5a7;border-radius:9px;padding:11px;font-size:12px;margin-bottom:13px}
+.empty{background:#f0f5fa;color:var(--muted);padding:12px;border-radius:9px}
+.chat{white-space:pre-wrap;overflow-wrap:anywhere;background:#e9f3fc;border-radius:11px;padding:12px;margin:9px 0}
+.chat.me{background:#d4e8fb;margin-left:20px}
+.muted{font-size:12px;color:var(--muted)}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:var(--dark);display:flex;gap:2px;overflow-x:auto;padding:7px 5px calc(8px + env(safe-area-inset-bottom));z-index:20}
+.bottom button{flex:1 0 auto;min-width:55px;background:transparent;border:0;border-radius:8px;color:#bdd0e2;padding:7px 4px;font-size:10px}
+.bottom button b{display:block;font-size:19px}
+.bottom button.active{background:#195b97;color:white}
+#toast{display:none;position:fixed;top:12px;left:12px;right:12px;max-width:500px;margin:auto;z-index:30;background:#103b5e;color:white;padding:13px;border-radius:10px}
+#toast.show{display:block}
+@media(min-width:800px){.shell{display:grid;grid-template-columns:235px minmax(0,1fr)}.sidebar{min-height:100vh}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding:22px}.bottom{display:none}}
+@media(max-width:799px){.sidebar{display:none}.topbar{position:sticky;top:0;z-index:10}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+<div class="brand"><div class="logo">A7</div><div><strong>SUPERINTENDENT</strong><small>PLAN · MANAGE · BUILD</small></div></div>
+<nav class="menu" aria-label="Desktop navigation">
+<button class="active" data-go="home">⌂ &nbsp; Dashboard</button>
+<button data-go="projects">▤ &nbsp; Projects & tasks</button>
+<button data-go="trades">♙ &nbsp; Contractors</button>
+<button data-go="scopes">▣ &nbsp; Scopes of work</button>
+<button data-go="ai">✦ &nbsp; AI Desk preview</button>
+<button data-go="materials">▦ &nbsp; Materials & suppliers</button>
+<button data-go="email">✉ &nbsp; Email drafts</button>
+<button data-go="backup">⚙ &nbsp; Backup</button>
+</nav>
+<div class="side-note">Prototype mode: records stay in this browser. No live AI, cloud sync, automatic emails, or verified live supplier prices.</div>
+</aside>
+<div class="workspace">
+<header class="topbar">
+<div><strong>A7 Superintendent</strong><small>Project command center · V4</small></div>
+<select id="projectSwitch" aria-label="Selected project"></select>
+</header>
+<main>
+<div class="notice">PUBLIC PROTOTYPE — use sample information only. Data is stored in this browser, not a private account. Verify all permits, specifications, prices and contractor details.</div>
+
+<section class="page active" id="home">
+<div class="card hero">
+<div class="eyebrow">Project command center</div>
+<h1 id="heroName">A7 Superintendent</h1>
+<p id="heroLocation"></p>
+<div class="actions"><button class="btn" data-go="projects">Open project</button><button class="btn light" data-go="ai">✦ AI Desk</button></div>
+</div>
+<div class="stats">
+<div class="stat"><small>Projects</small><strong id="countProjects">0</strong></div>
+<div class="stat"><small>Contractors</small><strong id="countTrades">0</strong></div>
+<div class="stat"><small>Tasks done</small><strong id="countTasks">0/0</strong></div>
+</div>
+<div class="grid">
+<div class="card"><div class="eyebrow">Selected property</div><h2>Project progress</h2><div class="progress"><div id="progressFill"></div></div><p id="progressLabel"></p><div id="homeTasks"></div></div>
+<div class="card"><div class="eyebrow">Quick actions</div><h2>What are we working on?</h2><div class="actions"><button class="btn" data-go="trades">Contractor files</button><button class="btn" data-go="scopes">Draft a scope</button><button class="btn light" data-go="materials">Supplier quotes</button><button class="btn light" data-go="email">Prepare email</button></div></div>
+</div>
+</section>
+
+<section class="page" id="projects">
+<div class="card"><div class="eyebrow">Filing cabinet / Properties</div><h1>Projects</h1><p>Each property has its own checklist, contractors, scope drafts and quotes.</p><div id="projectList"></div></div>
+<div class="grid">
+<div class="card"><h2>Create project</h2><form id="projectForm"><label class="field" for="projectName">Project name</label><input id="projectName" required maxlength="100" placeholder="Example: Tract 2"><label class="field" for="projectLocation">Location</label><input id="projectLocation" maxlength="120" placeholder="Example: Talco, Texas"><div class="actions"><button class="btn" type="submit">Create project</button></div></form></div>
+<div class="card"><h2 id="taskHeading">Project checklist</h2><div id="taskList"></div><form id="taskForm"><label class="field" for="taskName">New task</label><input id="taskName" required maxlength="160" placeholder="Example: Verify culvert requirements"><div class="actions"><button class="btn" type="submit">Add task</button></div></form></div>
+</div>
+</section>
+
+<section class="page" id="trades">
+<div class="card"><div class="eyebrow">Filing cabinet / Trades</div><h1>Contractors</h1><p>Showing contractors assigned to the selected project.</p><div id="contractorList"></div></div>
+<div class="card"><h2 id="contractorHeading">Add contractor</h2><form id="contractorForm">
+<input type="hidden" id="contractorId">
+<label class="field" for="contractorName">Name or company</label><input id="contractorName" required maxlength="100">
+<label class="field" for="contractorTrades">Trades / specialties</label><input id="contractorTrades" required maxlength="250" placeholder="Clearing, culverts, driveways, pads">
+<div class="grid"><div><label class="field" for="contractorEmail">Email</label><input id="contractorEmail" type="email" maxlength="150"></div><div><label class="field" for="contractorPhone">Phone</label><input id="contractorPhone" type="tel" maxlength="40"></div></div>
+<label class="field" for="contractorNotes">Notes to verify</label><textarea id="contractorNotes" maxlength="1000"></textarea>
+<div class="actions"><button class="btn" type="submit">Review & save</button><button class="btn light" type="button" id="clearContractor">Clear form</button></div>
+</form></div>
+</section>
+
+<section class="page" id="scopes">
+<div class="card"><div class="eyebrow">Document drawer</div><h1>Scope-of-work builder</h1><p>Generate an editable draft for the selected property. Nothing is approved or sent automatically.</p>
+<label class="field" for="scopeTrade">Trade</label><input id="scopeTrade" maxlength="100" placeholder="Example: Sitework">
+<label class="field" for="scopeDetails">Work requested</label><textarea id="scopeDetails" maxlength="3000" placeholder="Describe the work, boundaries and details to verify."></textarea>
+<div class="actions"><button class="btn" id="generateScope" type="button">Generate draft</button></div>
+<label class="field" for="scopeText">Editable scope</label><textarea id="scopeText" maxlength="12000" style="min-height:290px"></textarea>
+<div class="actions"><button class="btn" id="saveScope" type="button">Save draft</button><button class="btn light" id="copyScope" type="button">Copy draft</button></div>
+<p class="muted">Draft only. Confirm plans, permits, engineering, specifications and contractual terms.</p>
+</div>
+<div class="card"><h2>Saved drafts · selected project</h2><div id="scopeList"></div></div>
+</section>
+
+<section class="page" id="ai">
+<div class="card"><div class="eyebrow">AI Superintendent / Guided preview</div><h1>Talk to your superintendent</h1><p>This preview can prepare a contractor form for your review. It is not connected to a live AI model.</p>
+<div id="chatLog" aria-live="polite"><div class="chat">Tell me about a contractor you met, or ask about scopes or suppliers.</div></div>
+<form id="chatForm"><label class="field" for="chatInput">Your message</label><textarea id="chatInput" required maxlength="2000" placeholder="I met Zach. He does clearing, culverts, driveways and pads."></textarea><div class="actions"><button class="btn" type="submit">Ask A7</button></div></form>
+<div id="aiProposal"></div>
+</div>
+</section>
+
+<section class="page" id="materials">
+<div class="card"><div class="eyebrow">Materials desk</div><h1>Supplier search</h1><p>Search Google Maps for leads. Contact suppliers to verify stock, specifications, delivery and prices.</p>
+<label class="field" for="materialQuery">Material</label><input id="materialQuery" maxlength="120" placeholder="Concrete culverts">
+<label class="field" for="materialLocation">Search location</label><input id="materialLocation" maxlength="120" placeholder="Mount Pleasant, Texas">
+<div class="actions"><button class="btn" id="searchMaps" type="button">Find suppliers on Maps</button></div>
+<p class="muted">A map listing does not establish TxDOT approval or a current price.</p></div>
+<div class="card"><h2>Record a verified quote</h2><form id="quoteForm">
+<label class="field" for="quoteSupplier">Supplier</label><input id="quoteSupplier" required maxlength="120">
+<label class="field" for="quoteMaterial">Material / specification</label><input id="quoteMaterial" required maxlength="180">
+<label class="field" for="quotePrice">Verified price in USD (optional)</label><input id="quotePrice" type="number" min="0" step=".01">
+<label class="field" for="quoteSource">Source / quote reference</label><input id="quoteSource" required maxlength="400" placeholder="Written quote number or dated phone call">
+<label class="field" for="quoteNotes">Availability / delivery notes</label><textarea id="quoteNotes" maxlength="1200"></textarea>
+<div class="actions"><button class="btn" type="submit">Save verified quote</button></div></form></div>
+<div class="card"><h2>Saved quotes · selected project</h2><div id="quoteList"></div></div>
+</section>
+
+<section class="page" id="email">
+<div class="card"><div class="eyebrow">Communications desk</div><h1>Contractor email draft</h1><p>Review the message before opening your email app. A7 never sends it automatically.</p>
+<label class="field" for="emailContractor">Contractor</label><select id="emailContractor"></select>
+<label class="field" for="emailSubject">Subject</label><input id="emailSubject" maxlength="160" value="Request for project quote">
+<label class="field" for="emailBody">Message</label><textarea id="emailBody" maxlength="8000" style="min-height:230px"></textarea>
+<div class="actions"><button class="btn light" id="draftEmail" type="button">Prepare draft</button><button class="btn" id="openEmail" type="button">Review in email app</button></div>
+<p id="emailStatus" class="muted">Nothing has been sent.</p></div>
+</section>
+
+<section class="page" id="backup">
+<div class="card"><div class="eyebrow">Local records</div><h1>Backup & restore</h1><p>Export V4 sample records to a JSON file. Importing replaces the current V4 records.</p>
+<div class="actions"><button class="btn" id="exportData" type="button">Export backup</button><button class="btn light" id="importData" type="button">Import backup</button></div>
+<input id="importFile" type="file" accept=".json,application/json" hidden>
+<p class="muted">V4 uses separate storage from V3. Earlier records are not imported automatically.</p></div>
+</section>
+</main>
+</div>
+</div>
+
+<nav class="bottom" aria-label="Mobile navigation">
+<button class="active" data-go="home"><b>⌂</b>Home</button>
+<button data-go="projects"><b>▤</b>Projects</button>
+<button data-go="trades"><b>♙</b>Trades</button>
+<button data-go="scopes"><b>▣</b>Scopes</button>
+<button data-go="ai"><b>✦</b>AI</button>
+<button data-go="materials"><b>▦</b>Materials</button>
+<button data-go="email"><b>✉</b>Email</button>
+<button data-go="backup"><b>⚙</b>Backup</button>
+</nav>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const KEY="a7-v4-records";
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,9);
+const el=(tag,value,cls)=>{
+ const n=document.createElement(tag);
+ n.textContent=String(value??"");
+ if(cls)n.className=cls;
+ return n;
+};
+const action=(label,fn,cls="btn light")=>{
+ const b=el("button",label,cls);
+ b.type="button";
+ b.addEventListener("click",fn);
+ return b;
+};
+let toastTimer;
+function toast(message){
+ const box=$("toast");
+ box.textContent=message;
+ box.classList.add("show");
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>box.classList.remove("show"),3500);
+}
+function seed(){
+ const id=uid();
+ return {
+  selected:id,
+  projects:[{
+   id,
+   name:"Talco Development (sample)",
+   location:"Talco, Texas",
+   tasks:[
+    "Verify entrance and culvert requirements",
+    "Confirm clearing limits and site plan",
+    "Plan rock driveways and home pads",
+    "Coordinate water and septic"
+   ].map(name=>({id:uid(),name,done:false}))
+  }],
+  contractors:[],scopes:[],quotes:[]
+ };
+}
+function validData(d){
+ return d&&Array.isArray(d.projects)&&d.projects.length>0&&
+ Array.isArray(d.contractors)&&Array.isArray(d.scopes)&&
+ Array.isArray(d.quotes)&&d.projects.every(p=>
+ typeof p.id==="string"&&typeof p.name==="string"&&
+ Array.isArray(p.tasks));
+}
+function load(){
+ try{
+  const d=JSON.parse(localStorage.getItem(KEY));
+  if(validData(d))return d;
+ }catch(error){}
+ return seed();
+}
+let data=load();
+function save(){
+ try{
+  localStorage.setItem(KEY,JSON.stringify(data));
+  return true;
+ }catch(error){
+  toast("Could not save. Browser storage may be full.");
+  return false;
+ }
+}
+function project(){
+ return data.projects.find(p=>p.id===data.selected)||data.projects[0];
+}
+function go(page){
+ document.querySelectorAll(".page").forEach(n=>
+  n.classList.toggle("active",n.id===page));
+ document.querySelectorAll("[data-go]").forEach(n=>
+  n.classList.toggle("active",n.dataset.go===page));
+ render();
+ window.scrollTo(0,0);
+}
+document.querySelectorAll("[data-go]").forEach(n=>
+ n.addEventListener("click",()=>go(n.dataset.go)));
+function fillSelect(select,items,placeholder){
+ const old=select.value;
+ select.replaceChildren();
+ if(placeholder!==undefined)select.add(new Option(placeholder,""));
+ items.forEach(item=>select.add(new Option(item.name,item.id)));
+ if([...select.options].some(o=>o.value===old)){
+  select.value=old;
+ }else if(placeholder!==undefined){
+  select.value="";
+ }else{
+  select.value=data.selected;
+ }
+}
+function render(){
+ if(!validData(data))data=seed();
+ if(!data.projects.some(p=>p.id===data.selected)){
+  data.selected=data.projects[0].id;
+ }
+ const p=project();
+ const done=p.tasks.filter(t=>t.done).length;
+ const assigned=data.contractors.filter(c=>c.projectId===p.id);
+ fillSelect($("projectSwitch"),data.projects);
+ $("projectSwitch").value=p.id;
+ $("heroName").textContent=p.name;
+ $("heroLocation").textContent=p.location||"Location not entered";
+ $("countProjects").textContent=data.projects.length;
+ $("countTrades").textContent=assigned.length;
+ $("countTasks").textContent=done+"/"+p.tasks.length;
+ $("progressLabel").textContent=done+" of "+p.tasks.length+" tasks complete";
+ $("progressFill").style.width=
+  (p.tasks.length?100*done/p.tasks.length:0)+"%";
+ renderTasks($("homeTasks"),p,true);
+ renderTasks($("taskList"),p,false);
+ $("taskHeading").textContent="Checklist · "+p.name;
+ renderProjects();
+ renderContractors();
+ renderScopes();
+ renderQuotes();
+ fillSelect($("emailContractor"),assigned,"Select contractor");
+}
+$("projectSwitch").addEventListener("change",e=>{
+ data.selected=e.target.value;
+ clearContractor();
+ save();
+ render();
+ toast("Project switched");
+});
+function renderTasks(root,p,compact){
+ root.replaceChildren();
+ if(!p.tasks.length)root.append(el("p","No tasks yet.","empty"));
+ p.tasks.forEach(t=>{
+  const row=document.createElement("div");
+  row.className="task";
+  const check=document.createElement("input");
+  check.type="checkbox";
+  check.checked=!!t.done;
+  check.setAttribute("aria-label","Complete "+t.name);
+  check.addEventListener("change",()=>{
+   t.done=check.checked;
+   save();
+   render();
+  });
+  const name=el("span",t.name);
+  if(t.done)name.style.textDecoration="line-through";
+  row.append(check,name);
+  if(!compact){
+   row.append(action("Delete",()=>{
+    if(!confirm("Delete this task?"))return;
+    p.tasks=p.tasks.filter(x=>x.id!==t.id);
+    save();
+    render();
+   },"btn danger"));
+  }
+  root.append(row);
+ });
+}
+function renderProjects(){
+ const root=$("projectList");
+ root.replaceChildren();
+ data.projects.forEach(p=>{
+  const row=document.createElement("div");
+  row.className="row";
+  row.append(
+   el("strong",p.name),
+   el("small",(p.location||"No location")+" · "+p.tasks.length+" tasks")
+  );
+  const buttons=document.createElement("div");
+  buttons.className="actions";
+  buttons.append(action(
+   p.id===data.selected?"Selected ✓":"Open project",
+   ()=>{
+    data.selected=p.id;
+    clearContractor();
+    save();
+    render();
+   },
+   p.id===data.selected?"btn":"btn light"
+  ));
+  if(data.projects.length>1){
+   buttons.append(action("Delete",()=>{
+    if(!confirm("Delete this project and all its linked records?"))return;
+    data.projects=data.projects.filter(x=>x.id!==p.id);
+    data.contractors=data.contractors.filter(x=>x.projectId!==p.id);
+    data.scopes=data.scopes.filter(x=>x.projectId!==p.id);
+    data.quotes=data.quotes.filter(x=>x.projectId!==p.id);
+    if(data.selected===p.id)data.selected=data.projects[0].id;
+    clearContractor();
+    save();
+    render();
+   },"btn danger"));
+  }
+  row.append(buttons);
+  root.append(row);
+ });
+}
+$("projectForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const name=$("projectName").value.trim();
+ if(!name)return;
+ const p={
+  id:uid(),name,
+  location:$("projectLocation").value.trim(),
+  tasks:[]
+ };
+ data.projects.push(p);
+ data.selected=p.id;
+ save();
+ e.target.reset();
+ render();
+ toast("Project created");
+});
+$("taskForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const name=$("taskName").value.trim();
+ if(!name)return;
+ project().tasks.push({id:uid(),name,done:false});
+ save();
+ e.target.reset();
+ render();
+ toast("Task added");
+});
+function clearContractor(){
+ $("contractorForm").reset();
+ $("contractorId").value="";
+ $("contractorHeading").textContent="Add contractor";
+}
+$("clearContractor").addEventListener("click",clearContractor);
+function renderContractors(){
+ const root=$("contractorList");
+ root.replaceChildren();
+ const list=data.contractors.filter(c=>c.projectId===data.selected);
+ if(!list.length){
+  root.append(el("p","No contractors assigned yet.","empty"));
+ }
+ list.forEach(c=>{
+  const row=document.createElement("div");
+  row.className="row";
+  row.append(el("strong",c.name),el("small",c.trades));
+  if(c.email)row.append(el("small","Email: "+c.email));
+  if(c.phone)row.append(el("small","Phone: "+c.phone));
+  if(c.notes)row.append(el("p",c.notes));
+  const buttons=document.createElement("div");
+  buttons.className="actions";
+  buttons.append(action("Edit",()=>{
+   $("contractorId").value=c.id;
+   $("contractorName").value=c.name;
+   $("contractorTrades").value=c.trades;
+   $("contractorEmail").value=c.email||"";
+   $("contractorPhone").value=c.phone||"";
+   $("contractorNotes").value=c.notes||"";
+   $("contractorHeading").textContent="Edit contractor";
+   $("contractorName").focus();
+  }));
+  buttons.append(action("Delete",()=>{
+   if(!confirm("Delete this contractor?"))return;
+   data.contractors=data.contractors.filter(x=>x.id!==c.id);
+   clearContractor();
+   save();
+   render();
+  },"btn danger"));
+  row.append(buttons);
+  root.append(row);
+ });
+}
+$("contractorForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const c={
+  id:$("contractorId").value||uid(),
+  projectId:data.selected,
+  name:$("contractorName").value.trim(),
+  trades:$("contractorTrades").value.trim(),
+  email:$("contractorEmail").value.trim(),
+  phone:$("contractorPhone").value.trim(),
+  notes:$("contractorNotes").value.trim()
+ };
+ if(!c.name||!c.trades)return;
+ if(!confirm(
+  "Review contractor:\n\n"+
+  "Name: "+c.name+"\n"+
+  "Trades: "+c.trades+"\n"+
+  "Email: "+(c.email||"Not entered")+"\n"+
+  "Phone: "+(c.phone||"Not entered")+
+  "\n\nSave this record?"
+ ))return;
+ const i=data.contractors.findIndex(x=>x.id===c.id);
+ if(i<0)data.contractors.push(c);
+ else data.contractors[i]=c;
+ save();
+ clearContractor();
+ render();
+ toast("Contractor saved");
+});
+$("generateScope").addEventListener("click",()=>{
+ const trade=$("scopeTrade").value.trim();
+ const details=$("scopeDetails").value.trim();
+ const p=project();
+ if(!trade)return toast("Enter a trade first");
+ $("scopeText").value=
+`SCOPE OF WORK — DRAFT / NOT APPROVED
+
+Project: ${p.name}
+Location: ${p.location||"Confirm location"}
+Trade: ${trade}
+Date: ${new Date().toLocaleDateString()}
+
+1. WORK REQUESTED
+${details||"[Describe the requested work.]"}
+
+2. CONTRACTOR TO VERIFY
+- Site conditions, dimensions and access.
+- Utility locates and applicable permits.
+- Materials, specifications and inspections.
+- Delivery, disposal and site cleanup.
+
+3. WRITTEN QUOTE TO INCLUDE
+- Itemized labor, materials and equipment.
+- Exclusions and allowances.
+- Proposed schedule and payment milestones.
+- Insurance and warranty information.
+
+4. OWNER APPROVAL
+No work is authorized until the owner approves
+the final scope and written agreement.
+
+DRAFT ONLY — verify all project requirements.`;
+ toast("Editable draft generated");
+});
+$("saveScope").addEventListener("click",()=>{
+ const body=$("scopeText").value.trim();
+ const name=$("scopeTrade").value.trim()||"Untitled scope";
+ if(!body)return toast("Generate or enter a draft first");
+ data.scopes.push({
+  id:uid(),projectId:data.selected,name,body,
+  created:new Date().toISOString()
+ });
+ if(save()){
+  render();
+  toast("Scope draft saved");
+ }
+});
+$("copyScope").addEventListener("click",async()=>{
+ const value=$("scopeText").value;
+ if(!value.trim())return toast("There is no draft to copy");
+ try{
+  await navigator.clipboard.writeText(value);
+  toast("Draft copied");
+ }catch(error){
+  $("scopeText").focus();
+  $("scopeText").select();
+  toast("Select Copy from the iPhone text menu");
+ }
+});
+function renderScopes(){
+ const root=$("scopeList");
+ root.replaceChildren();
+ const list=data.scopes.filter(s=>s.projectId===data.selected);
+ if(!list.length)root.append(el("p","No saved drafts yet.","empty"));
+ list.forEach(s=>{
+  const row=document.createElement("div");
+  row.className="row";
+  row.append(
+   el("strong",s.name),
+   el("small","Draft · "+new Date(s.created).toLocaleDateString())
+  );
+  const buttons=document.createElement("div");
+  buttons.className="actions";
+  buttons.append(action("Open draft",()=>{
+   $("scopeTrade").value=s.name;
+   $("scopeText").value=s.body;
+   toast("Draft opened. Save a new copy after editing.");
+  }));
+  buttons.append(action("Delete",()=>{
+   if(!confirm("Delete this draft?"))return;
+   data.scopes=data.scopes.filter(x=>x.id!==s.id);
+   save();
+   render();
+  },"btn danger"));
+  row.append(buttons);
+  root.append(row);
+ });
+}
+$("searchMaps").addEventListener("click",()=>{
+ const material=$("materialQuery").value.trim();
+ const location=$("materialLocation").value.trim();
+ if(!material||!location)return toast("Enter material and location");
+ const url="https://www.google.com/maps/search/?api=1&query="+
+  encodeURIComponent(material+" suppliers near "+location);
+ window.open(url,"_blank","noopener,noreferrer");
+});
+$("quoteForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const supplier=$("quoteSupplier").value.trim();
+ const material=$("quoteMaterial").value.trim();
+ const source=$("quoteSource").value.trim();
+ const raw=$("quotePrice").value.trim();
+ if(!supplier||!material||!source)return;
+ const price=raw===""?null:Number(raw);
+ if(price!==null&&(!Number.isFinite(price)||price<0)){
+  return toast("Enter a valid price");
+ }
+ if(!confirm(
+  "Save this as a quote you verified?\n\n"+
+  supplier+"\n"+material+"\n"+
+  (price===null?"Price not entered":"$"+price.toFixed(2))+
+  "\nSource: "+source
+ ))return;
+ data.quotes.push({
+  id:uid(),projectId:data.selected,supplier,material,price,source,
+  notes:$("quoteNotes").value.trim(),
+  created:new Date().toISOString()
+ });
+ if(save()){
+  e.target.reset();
+  render();
+  toast("Quote saved");
+ }
+});
+function renderQuotes(){
+ const root=$("quoteList");
+ root.replaceChildren();
+ const list=data.quotes.filter(q=>q.projectId===data.selected);
+ if(!list.length)root.append(el("p","No verified quotes saved.","empty"));
+ list.forEach(q=>{
+  const row=document.createElement("div");
+  row.className="row";
+  row.append(
+   el("strong",q.supplier),
+   el("small",q.material),
+   el("small",q.price==null?"Price not entered":
+    "$"+Number(q.price).toFixed(2)),
+   el("small","Source: "+q.source)
+  );
+  if(q.notes)row.append(el("p",q.notes));
+  row.append(action("Delete quote",()=>{
+   if(!confirm("Delete this quote?"))return;
+   data.quotes=data.quotes.filter(x=>x.id!==q.id);
+   save();
+   render();
+  },"btn danger"));
+  root.append(row);
+ });
+}
+function addChat(message,mine=false){
+ const n=el("div",message,mine?"chat me":"chat");
+ $("chatLog").append(n);
+ n.scrollIntoView({block:"nearest",behavior:"smooth"});
+}
+$("chatForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const message=$("chatInput").value.trim();
+ if(!message)return;
+ addChat(message,true);
+ $("chatInput").value="";
+ $("aiProposal").replaceChildren();
+ const lower=message.toLowerCase();
+ if(/contractor|met |clearing|culvert|driveway|pads/i.test(message)){
+  const match=message.match(/(?:met|named|name is)\s+([a-z][a-z'-]*)/i);
+  const name=match?match[1]:"";
+  const trades=[
+   ["clearing",/clear/i],["culverts",/culvert/i],
+   ["driveways",/driveway/i],["pads",/\bpad/i],
+   ["septic",/septic/i],["water",/\bwater\b/i],
+   ["electrical",/electric/i],["concrete",/concrete/i],
+   ["grading",/grad/i],["plumbing",/plumb/i]
+  ].filter(item=>item[1].test(message)).map(item=>item[0]);
+  addChat(
+   "I can prepare a contractor form for your review. "+
+   "Confirm the name, trades and contact details before saving."
+  );
+  $("aiProposal").append(action("Review contractor record",()=>{
+   go("trades");
+   clearContractor();
+   $("contractorName").value=name;
+   $("contractorTrades").value=trades.join(", ");
+   $("contractorNotes").value=
+    "Suggested from the AI Desk preview. Verify details.";
+   $("contractorName").focus();
+  },"btn"));
+ }else if(/scope|work|bid/i.test(lower)){
+  addChat(
+   "Open Scopes to prepare an editable work description. "+
+   "Review all requirements before sharing."
+  );
+  $("aiProposal").append(action(
+   "Open scope builder",()=>go("scopes"),"btn"
+  ));
+ }else if(/supplier|material|price|buy/i.test(lower)){
+  addChat(
+   "Open Materials to search for suppliers and record quotes "+
+   "you verify. Live prices and stock are not connected."
+  );
+  $("aiProposal").append(action(
+   "Open Materials",()=>go("materials"),"btn"
+  ));
+ }else{
+  addChat(
+   "This is a guided preview, not a live AI connection. "+
+   "Try asking about a contractor, scope or supplier."
+  );
+ }
+});
+$("draftEmail").addEventListener("click",()=>{
+ const c=data.contractors.find(x=>
+  x.id===$("emailContractor").value&&x.projectId===data.selected
+ );
+ if(!c)return toast("Select a contractor");
+ const p=project();
+ $("emailSubject").value="Quote request — "+p.name;
+ $("emailBody").value=
+`Hello ${c.name},
+
+I am requesting a written quote for:
+
+Project: ${p.name}
+Location: ${p.location||"[Confirm location]"}
+Trade: ${c.trades}
+
+Requested work:
+[Describe the exact work and attach an approved scope.]
+
+Please include an itemized price, availability,
+estimated schedule, exclusions, and any questions
+about site conditions or specifications.
+
+Please do not begin work without written authorization.
+
+Thank you.`;
+ $("emailStatus").textContent=
+  "Draft prepared. Review and edit before opening your email app.";
+ toast("Email draft prepared");
+});
+$("openEmail").addEventListener("click",()=>{
+ const c=data.contractors.find(x=>
+  x.id===$("emailContractor").value&&x.projectId===data.selected
+ );
+ if(!c||!c.email)return toast("Select a contractor with an email");
+ const subject=$("emailSubject").value.trim();
+ const body=$("emailBody").value.trim();
+ if(!subject||!body)return toast("Prepare a subject and message");
+ if(!confirm(
+  "Open this draft in your email app?\n\n"+
+  "Recipient: "+c.email+"\nSubject: "+subject+
+  "\n\nA7 will not send it."
+ ))return;
+ $("emailStatus").textContent=
+  "Draft opened for review. A7 has not sent anything.";
+ window.location.href="mailto:"+encodeURIComponent(c.email)+
+  "?subject="+encodeURIComponent(subject)+
+  "&body="+encodeURIComponent(body);
+});
+$("exportData").addEventListener("click",()=>{
+ const blob=new Blob([
+  JSON.stringify({
+   app:"A7 Superintendent V4",
+   exported:new Date().toISOString(),
+   records:data
+  },null,2)
+ ],{type:"application/json"});
+ const url=URL.createObjectURL(blob);
+ const link=document.createElement("a");
+ link.href=url;
+ link.download="a7-superintendent-v4-backup.json";
+ document.body.append(link);
+ link.click();
+ link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),30000);
+ toast("Backup prepared for download");
+});
+$("importData").addEventListener("click",()=>{
+ $("importFile").click();
+});
+$("importFile").addEventListener("change",async e=>{
+ const file=e.target.files[0];
+ if(!file)return;
+ try{
+  if(file.size>5*1024*1024)throw Error("File too large");
+  const parsed=JSON.parse(await file.text());
+  if(parsed.app!=="A7 Superintendent V4"||
+   !validData(parsed.records)){
+   throw Error("Invalid backup");
+  }
+  if(!confirm(
+   "Replace all current V4 records? Export a backup first "+
+   "if you want to keep them."
+  ))return;
+  const previous=data;
+  data=parsed.records;
+  if(!save()){
+   data=previous;
+   return;
+  }
+  clearContractor();
+  render();
+  toast("Backup imported");
+ }catch(error){
+  toast("Could not import this V4 backup");
+ }finally{
+  e.target.value="";
+ }
+});
+save();
+render();
+</script>
+</body>
+</html>
