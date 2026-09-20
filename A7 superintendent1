@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A7 Superintendent</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #101827;
+      color: #f3f6fb;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      padding: 22px;
+      background: #182438;
+      border-bottom: 1px solid #334155;
+    }
+    h1 { margin: 8px 0; font-size: 26px; }
+    p { color: #aebdd0; line-height: 1.5; }
+    main { max-width: 650px; margin: auto; padding: 18px; }
+    .card {
+      background: #1c2a40;
+      border: 1px solid #35455e;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .tag { color: #72d7b4; font-size: 13px; font-weight: bold; }
+    h2 { margin: 10px 0; }
+    button, input {
+      font: inherit;
+      border-radius: 10px;
+      padding: 13px;
+      width: 100%;
+      margin-top: 10px;
+    }
+    button {
+      background: #57bfa0;
+      color: #10221d;
+      border: 0;
+      font-weight: bold;
+    }
+    input {
+      background: #101827;
+      color: white;
+      border: 1px solid #64748b;
+    }
+    input[type="checkbox"] { width: auto; margin-right: 8px; }
+    label { display: block; padding: 8px 0; }
+    .item { border-top: 1px solid #35455e; padding: 12px 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="tag">A7 • PROJECT COMMAND CENTER</div>
+    <h1>A7 Superintendent</h1>
+    <p>Your construction project, organized in one place.</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="tag">ACTIVE PROJECT</div>
+      <h2>Talco Property Development</h2>
+      <p>Two 5-acre tracts • Two manufactured homes</p>
+      <p>Planning and contractor coordination</p>
+    </section>
+
+    <section class="card">
+      <div class="tag">PROJECT FILING CABINET</div>
+      <h2>Project checklist</h2>
+      <label><input type="checkbox" class="task"> Confirm sitework contractor</label>
+      <label><input type="checkbox" class="task"> Confirm culvert permit requirements</label>
+      <label><input type="checkbox" class="task"> Plan clearing and driveways</label>
+      <label><input type="checkbox" class="task"> Coordinate water and septic</label>
+    </section>
+
+    <section class="card">
+      <div class="tag">CONTRACTOR FILE</div>
+      <h2>Add a contractor</h2>
+      <input id="name" placeholder="Contractor name">
+      <input id="trade" placeholder="Trades or services">
+      <button onclick="addContractor()">Save contractor</button>
+      <div id="contractors"></div>
+    </section>
+
+    <section class="card">
+      <div class="tag">AI SUPERINTENDENT</div>
+      <h2>Coming next</h2>
+      <p>We'll connect AI to help organize contractors, draft scopes of work, and prepare emails for your approval.</p>
+      <p>This first version is a demo. AI and email are not connected yet.</p>
+    </section>
+  </main>
+
+  <script>
+    const tasks = document.querySelectorAll(".task");
+    const saved = JSON.parse(localStorage.getItem("a7tasks") || "[]");
+
+    tasks.forEach((task, i) => {
+      task.checked = !!saved[i];
+      task.addEventListener("change", () => {
+        localStorage.setItem(
+          "a7tasks",
+          JSON.stringify([...tasks].map(t => t.checked))
+        );
+      });
+    });
+
+    let contractors = JSON.parse(
+      localStorage.getItem("a7contractors") || "[]"
+    );
+
+    function showContractors() {
+      const area = document.getElementById("contractors");
+      area.replaceChildren();
+
+      contractors.forEach(c => {
+        const row = document.createElement("div");
+        row.className = "item";
+
+        const title = document.createElement("strong");
+        title.textContent = c.name;
+
+        const detail = document.createElement("p");
+        detail.textContent = c.trade;
+
+        row.append(title, detail);
+        area.append(row);
+      });
+    }
+
+    function addContractor() {
+      const name = document.getElementById("name");
+      const trade = document.getElementById("trade");
+
+      if (!name.value.trim() || !trade.value.trim()) {
+        alert("Enter a name and trade first.");
+        return;
+      }
+
+      contractors.push({
+        name: name.value.trim(),
+        trade: trade.value.trim()
+      });
+
+      localStorage.setItem(
+        "a7contractors",
+        JSON.stringify(contractors)
+      );
+
+      name.value = "";
+      trade.value = "";
+      showContractors();
+    }
+
+    showContractors();
+  </script>
+</body>
+</html>
