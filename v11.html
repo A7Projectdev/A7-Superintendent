@@ -1,0 +1,988 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#092e29">
+<title>A7 Superintendent · V11</title>
+<style>
+:root{--forest:#092e29;--forest2:#164b40;--bg:#f3f7f6;--ink:#182a29;--muted:#667977;--line:#e1e9e7;--white:#fff;--mint:#e8f5f0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:92px}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #74bba7;outline-offset:2px}
+.top{background:linear-gradient(125deg,#072922,#165447);color:white;padding:calc(15px + env(safe-area-inset-top)) 17px 15px}
+.topinner,.shell,.navinner{max-width:820px;margin:auto}
+.brand{display:flex;align-items:center;gap:10px}
+.mark{font-size:30px;font-weight:950;letter-spacing:-3px}
+.brand strong{font-size:18px}
+.brand small{display:block;color:#c1ded4;font-size:11px}
+.grow{flex:1}
+.tiny{font-size:11px;color:#b7d6ca}
+.selectors{display:grid;grid-template-columns:1fr 1.25fr;gap:9px;margin-top:14px}
+.selectors label{font-size:10px;font-weight:850;letter-spacing:1px;color:#c5e2d7;display:block;margin-bottom:5px}
+.selectors select{width:100%;min-width:0;background:white;border:0;border-radius:10px;padding:10px 8px;color:#16372f;font-size:13px;font-weight:750}
+.shell{padding:13px}
+.hero{position:relative;overflow:hidden;border-radius:16px;background:radial-gradient(ellipse at 83% 20%,#c7954c 0%,#547464 24%,#143e34 59%,#082922 100%);color:white;padding:21px 18px;min-height:156px}
+.hero:after{content:"⌂";position:absolute;right:14px;bottom:-39px;font-size:158px;line-height:1;color:#ffffff18}
+.hero small{color:#e4f1e7;font-size:10px;letter-spacing:1px;font-weight:800}
+.hero h1{font-size:26px;line-height:1.12;max-width:260px;margin:12px 0}
+.hero p{font-size:12px;line-height:1.5;max-width:285px;color:#e1ece7}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:10px 0}
+.kpi{border-radius:12px;text-align:center;padding:10px 4px;min-width:0;border:1px solid #ffffff}
+.kpi span{font-size:21px;display:block}
+.kpi strong{font-size:22px;display:block}
+.kpi small{font-size:10px;display:block}
+.kpi.gold{background:#fff3d5;color:#684b07}
+.kpi.blue{background:#e5f1ff;color:#174c86}
+.kpi.green{background:#e2f5e9;color:#145c37}
+.kpi.red{background:#ffeded;color:#96383b}
+.panel{background:white;border:1px solid var(--line);border-radius:15px;padding:14px;margin-bottom:11px;box-shadow:0 2px 7px #092e2908}
+.panel h2{font-size:18px;margin:0 0 9px}
+.panel h3{font-size:15px;margin:0 0 7px}
+.sub{font-size:12px;color:var(--muted);line-height:1.45}
+.heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:15px 2px 10px}
+.heading h2{margin:0;font-size:20px}
+.link{border:0;background:none;color:#145b49;font-weight:800;font-size:12px}
+.jobgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.tile{border:0;border-radius:13px;padding:12px 10px;text-align:left;color:white;min-height:98px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:inset 0 -13px 25px #0000000a}
+.tile.light{color:#292f2c}
+.tilehead{display:flex;align-items:center;gap:8px}
+.tile .ico{font-size:23px;width:27px;text-align:center;flex:none}
+.tile b{font-size:13px;line-height:1.2;overflow-wrap:anywhere}
+.tilefoot{font-size:10px;display:flex;align-items:center;gap:5px;opacity:.95}
+.tilefoot .arrow{margin-left:auto;font-size:19px}
+.dot{width:7px;height:7px;border-radius:50%;background:#b7c4c1;display:inline-block;flex:none}
+.dot.ok{background:#42c478}
+.dot.warn{background:#ffcf70}
+.search{width:100%;padding:12px;border:1px solid var(--line);border-radius:11px;background:white;font-size:15px;margin:0 0 10px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px}
+.chip{border:1px solid var(--line);background:white;color:#506360;padding:8px 11px;border-radius:20px;white-space:nowrap;font-size:11px;font-weight:750}
+.chip.on{background:var(--forest);color:white}
+.joblist{display:grid;gap:7px}
+.jobrow{display:flex;align-items:center;gap:11px;width:100%;border:0;border-radius:12px;padding:13px 12px;text-align:left;color:white}
+.jobrow.light{color:#24312e}
+.jobrow .ico{font-size:23px;width:27px}
+.jobrow b{display:block;font-size:13px}
+.jobrow small{font-size:10px;opacity:.9}
+.jobrow .end{margin-left:auto;text-align:right;font-size:13px;font-weight:800}
+.detailhero{padding:15px;color:white;border-radius:14px;margin-bottom:10px}
+.detailhero .back{background:none;color:inherit;border:0;padding:0 0 9px;font-size:13px}
+.detailhero h1{margin:2px 0;font-size:22px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:5px;background:#e9f1ef;border-radius:11px;margin:10px 0}
+.tabs button{border:0;background:none;border-radius:8px;padding:10px 2px;font-size:11px;font-weight:750;color:#566965}
+.tabs button.on{background:var(--forest);color:white}
+.progress{height:8px;background:#e3ece9;border-radius:30px;overflow:hidden}
+.progress i{display:block;height:100%;background:#1c9a62;border-radius:30px}
+.between{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.between>*{min-width:0}
+.line{padding:11px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:9px;font-size:13px}
+.line:last-child{border-bottom:0}
+.line strong{text-align:right}
+.line small{display:block;color:var(--muted);font-size:11px}
+.amount{font-size:27px;font-weight:900;letter-spacing:-1px}
+.btn{border:0;border-radius:10px;background:var(--forest);color:white;padding:12px 14px;font-weight:800;font-size:13px}
+.btn.secondary{background:#eaf4f0;color:#154b3f}
+.btn.ghost{background:white;color:var(--forest);border:1px solid #d3e1dc}
+.btn.danger{background:#fff0ef;color:#a33535}
+.btn.full{width:100%;margin-top:9px}
+.field{display:block;font-size:12px;font-weight:750;margin:12px 0 5px}
+.entry{width:100%;border:1px solid #d6e3de;border-radius:10px;padding:11px;background:#fff;color:var(--ink);font-size:16px;min-width:0}
+textarea.entry{min-height:76px;resize:vertical}
+.note{background:#fff3e4;color:#7a521a;border-radius:10px;padding:11px;font-size:12px;margin:10px 0;line-height:1.5}
+.note.green{background:#e6f6ec;color:#1b663f}
+.check{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}
+.check input{width:20px;height:20px;accent-color:#11754e;flex:none}
+.check span{flex:1}
+.person{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line)}
+.avatar{width:39px;height:39px;border-radius:50%;background:#164e41;color:white;display:grid;place-items:center;font-size:12px;font-weight:900;flex:none}
+.person b{font-size:13px}
+.person small{font-size:11px;color:var(--muted);display:block}
+.person .grow{min-width:0;overflow-wrap:anywhere}
+.circle{border:1px solid var(--line);border-radius:50%;background:white;width:34px;height:34px;display:grid;place-items:center;text-decoration:none;color:var(--forest);flex:none}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.mini{background:#f0f6f5;border-radius:10px;padding:11px}
+.mini small{font-size:11px;color:var(--muted)}
+.mini strong{display:block;font-size:18px;margin-top:4px}
+.bar{height:8px;background:#dfeae6;border-radius:20px;overflow:hidden;margin:8px 0}
+.bar i{height:100%;display:block;background:#1d9b63}
+.budgetrow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid #eef2f1;font-size:12px}
+.budgetrow .swatch{width:9px;height:9px;border-radius:50%;flex:none}
+.budgetrow b{margin-left:auto;text-align:right}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#fffffffa;border-top:1px solid var(--line);padding:6px 9px calc(6px + env(safe-area-inset-bottom));z-index:20}
+.navinner{display:flex;align-items:center;justify-content:space-around}
+.nav button{border:0;background:none;color:#647571;font-size:10px;font-weight:800;min-width:53px;padding:5px 2px}
+.nav button span{font-size:21px;display:block;margin-bottom:2px}
+.nav button.on{color:var(--forest)}
+.nav .plus{background:var(--forest);color:white;border:4px solid white;box-shadow:0 0 0 1px #dbe8e3,0 2px 8px #092e2930;width:49px;height:49px;border-radius:50%;font-size:29px;line-height:1}
+.nav .plus span{font-size:27px;margin:0}
+details{background:white;border:1px solid var(--line);border-radius:12px;margin-bottom:10px}
+summary{padding:14px;font-weight:800;font-size:13px;cursor:pointer}
+details .inside{padding:0 14px 14px}
+a{color:#11604d}
+.hidden{display:none}
+@media(min-width:600px){.jobgrid{grid-template-columns:repeat(3,1fr)}.shell{padding:18px}.hero{min-height:185px}}
+</style>
+</head>
+<body>
+<header class="top">
+ <div class="topinner">
+  <div class="brand">
+   <div class="mark">A7⌂</div>
+   <div>
+    <strong>Superintendent</strong>
+    <small>PLAN · MANAGE · BUILD · FINISH</small>
+   </div>
+   <div class="grow"></div>
+   <span class="tiny">V11</span>
+  </div>
+  <div class="selectors">
+   <label>PARCEL
+    <select id="parcelSelect" onchange="chooseParcel(this.value)">
+     <option value="1">Parcel 1 · 5 ac</option>
+     <option value="2">Parcel 2 · 5 ac</option>
+    </select>
+   </label>
+   <label>JUMP TO A JOB
+    <select id="jobSelect" onchange="openJob(this.value)"></select>
+   </label>
+  </div>
+ </div>
+</header>
+
+<main class="shell" id="app"></main>
+
+<nav class="nav">
+ <div class="navinner">
+  <button id="nav-home" onclick="go('home')"><span>⌂</span>Home</button>
+  <button id="nav-jobs" onclick="go('jobs')"><span>☑</span>Jobs</button>
+  <button class="plus" aria-label="Add a contact or bid" onclick="quickAdd()"><span>＋</span></button>
+  <button id="nav-people" onclick="go('people')"><span>♟</span>People</button>
+  <button id="nav-budget" onclick="go('budget')"><span>▥</span>Budget</button>
+ </div>
+</nav>
+
+<script>
+'use strict';
+
+const KEY='a7-superintendent-v11',OLD='a7-superintendent-v10';
+
+const TRADES=[
+ ['home','Manufactured home','⌂','#104a3c',false],
+ ['tax','Home sales tax','%','#ffd05a',true],
+ ['transport','Transportation','▰','#1766bd',false],
+ ['setup','Home setup','⚒','#5d48bb',false],
+ ['septic','Septic installation','▣','#ee6019',false],
+ ['clearing','Land clearing','♠','#147a38',false],
+ ['pad','Home pad','▰','#82542e',false],
+ ['culvert','Entrance & culvert','▥','#46595c',false],
+ ['driveway','Rock driveway','◆','#cc303b',false],
+ ['frontDeck','Front deck · 8′ × 10′','▤','#f448a3',false],
+ ['backDeck','Back deck · 8′ × 10′','▤','#00999d',false],
+ ['steps','Steps & access','▟','#5043a7',false],
+ ['skirting','Home skirting','▦','#007c8e',false],
+ ['water','Water connection','◉','#e64b59',false],
+ ['electrical','Electrical connection','ϟ','#ffd34f',true],
+ ['hvac','HVAC','✣','#8b72df',false],
+ ['other','Other parcel costs','•••','#5c9a79',false]
+];
+
+const DEFAULTS={
+ home:['Confirm delivered home matches the order and model','Document visible damage or missing items','Collect home paperwork and warranties','Record unresolved seller or manufacturer items'],
+ tax:['Confirm actual tax amount in writing','Keep final invoice or tax documentation'],
+ transport:['Confirm delivery location and access','Document visible damage at arrival','Collect delivery paperwork'],
+ setup:['Review manufacturer installation instructions','Confirm support, anchoring and access are addressed','Collect applicable installer and inspection documents','Document unresolved work'],
+ septic:['Compare installation to approved design','Collect required inspection or approval records','Collect maintenance information','Document unfinished work'],
+ clearing:['Confirm agreed clearing boundaries','Check agreed debris removal','Record remaining work'],
+ pad:['Confirm location and dimensions','Collect agreed material or compaction documents','Confirm readiness with installer','Record drainage concerns'],
+ culvert:['Confirm location and approved requirements','Check agreed inlet, outlet and backfill work','Collect required road-authority approval','Document drainage concerns'],
+ driveway:['Confirm agreed location and dimensions','Check agreed base, rock and finish','Document drainage concerns'],
+ frontDeck:['Confirm dimensions and materials','Check agreed steps, railings and access','Collect required inspection or approval','Record unfinished work'],
+ backDeck:['Confirm dimensions and materials','Check agreed steps, railings and access','Collect required inspection or approval','Record unfinished work'],
+ steps:['Confirm agreed entrances have access','Check agreed scope and applicable requirements','Record incomplete work'],
+ skirting:['Confirm agreed material and finish','Check required ventilation and access','Record incomplete work'],
+ water:['Confirm agreed connection is complete','Collect applicable utility and inspection records','Record unresolved issues for qualified installer'],
+ electrical:['Confirm agreed connection is complete','Collect applicable utility and inspection records','Record unresolved issues for qualified electrician'],
+ hvac:['Confirm equipment matches agreed scope','Collect startup, warranty and inspection records','Record unresolved issues'],
+ other:['Confirm agreed scope is complete','Collect applicable approvals','Document outstanding work']
+};
+
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+
+function fresh(){
+ let jobs={};
+ for(let p of [1,2])for(let [key,name] of TRADES){
+  let id=p+'-'+key;
+  jobs[id]={
+   id,parcel:p,key,name,
+   scope:key==='home'
+    ?'Manufactured home only. $47,009 quoted before tax. Transportation, setup, steps, skirting and decks excluded. Confirm other inclusions.'
+    :'Confirm the written scope, price, inclusions, exclusions and applicable approvals.',
+   requested:false,
+   bids:key==='home'?[{
+    id:id+'-initial',
+    contractor:'Home seller — name to confirm',
+    amount:47009,
+    notes:'Before tax; unapproved and unpaid. Transport, setup, steps, skirting and decks excluded.',
+    receivedDate:'',paid:0
+   }]:[],
+   approvedBidId:null,
+   completed:false,
+   contractorId:'',
+   inspection:DEFAULTS[key].map(text=>({id:uid(),text,checked:false})),
+   inspectionNotes:'',
+   documentReferences:'',
+   signedOffAt:''
+  };
+ }
+ return{
+  version:11,
+  development:{
+   name:'Talco Development',
+   landPrice:173000,landPaid:173000,
+   acres:[5,5],
+   saleTarget:[250000,250000],
+   profitLow:[45000,45000],
+   profitHigh:[75000,75000],
+   sharedCosts:[]
+  },
+  contacts:[],
+  homeRoles:{
+   1:{manufacturer:'',seller:'',delivery:'',setup:'',model:''},
+   2:{manufacturer:'',seller:'',delivery:'',setup:'',model:''}
+  },
+  jobs,activity:[]
+ };
+}
+
+function valid(d){
+ return d&&d.development&&d.jobs&&
+  Array.isArray(d.development.acres)&&
+  TRADES.every(([k])=>d.jobs['1-'+k]&&d.jobs['2-'+k]);
+}
+
+function migrate(d){
+ let x=JSON.parse(JSON.stringify(d));
+ x.version=11;
+ x.contacts=Array.isArray(x.contacts)?x.contacts:[];
+ x.activity=Array.isArray(x.activity)?x.activity:[];
+ x.homeRoles=x.homeRoles||{};
+ for(let p of [1,2]){
+  x.homeRoles[p]=Object.assign(
+   {manufacturer:'',seller:'',delivery:'',setup:'',model:''},
+   x.homeRoles[p]||{}
+  );
+  for(let [k,name] of TRADES){
+   let j=x.jobs[p+'-'+k];
+   j.name=name;
+   j.inspection=Array.isArray(j.inspection)
+    ?j.inspection
+    :DEFAULTS[k].map(text=>({id:uid(),text,checked:false}));
+   j.bids=Array.isArray(j.bids)?j.bids:[];
+   j.contractorId=j.contractorId||'';
+   j.inspectionNotes=j.inspectionNotes||'';
+   j.documentReferences=j.documentReferences||'';
+   j.signedOffAt=j.signedOffAt||'';
+  }
+ }
+ x.development.sharedCosts=x.development.sharedCosts||[];
+ return x;
+}
+
+let migration='',data;
+try{
+ let raw=localStorage.getItem(KEY);
+ if(raw&&valid(JSON.parse(raw))){
+  data=migrate(JSON.parse(raw));
+ }else{
+  raw=localStorage.getItem(OLD);
+  data=raw&&valid(JSON.parse(raw))?migrate(JSON.parse(raw)):fresh();
+  if(raw&&valid(JSON.parse(raw))){
+   migration='Your V10 records were copied into V11. V10 remains unchanged.';
+  }
+  localStorage.setItem(KEY,JSON.stringify(data));
+ }
+}catch(e){
+ data=fresh();
+ migration='Could not read previous browser data. Your V10 data was not deleted; restore a backup if needed.';
+}
+
+let parcel=1,selected='home',view='home',tab='overview';
+let filter='all',search='',editing='',notice=migration;
+
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'')
+ .replaceAll('&','&amp;')
+ .replaceAll('<','&lt;')
+ .replaceAll('>','&gt;')
+ .replaceAll('"','&quot;')
+ .replaceAll("'",'&#39;');
+const num=v=>Number.isFinite(Number(v))?Math.max(0,Number(v)):0;
+const fmt=v=>new Intl.NumberFormat('en-US',{
+ style:'currency',currency:'USD',maximumFractionDigits:0
+}).format(v);
+const trade=k=>TRADES.find(t=>t[0]===k);
+const job=()=>data.jobs[parcel+'-'+selected];
+const jobs=()=>TRADES.map(t=>data.jobs[parcel+'-'+t[0]]);
+const person=id=>data.contacts.find(c=>c.id===id);
+const approved=j=>j.bids.find(b=>b.id===j.approvedBidId);
+const priced=j=>approved(j)||j.bids[j.bids.length-1];
+const status=j=>j.completed?'Completed':
+ approved(j)?'Approved':
+ j.bids.length?'Bid received':
+ j.requested?'Quote requested':'Quote needed';
+
+function save(){
+ try{
+  localStorage.setItem(KEY,JSON.stringify(data));
+  return true;
+ }catch(e){
+  alert('Safari could not save. Export a backup and check storage.');
+  return false;
+ }
+}
+function log(action,detail){
+ data.activity.unshift({id:uid(),date:new Date().toISOString(),action,detail});
+ data.activity=data.activity.slice(0,50);
+}
+function flash(s){notice=s;render()}
+function go(v){view=v;notice='';render();window.scrollTo(0,0)}
+function chooseParcel(v){parcel=Number(v);notice='';render()}
+function openJob(k,t='overview'){selected=k;tab=t;go('detail')}
+
+function quickAdd(){
+ if(view==='detail'){
+  tab='bids';
+  render();
+  $('bidForm')?.scrollIntoView({behavior:'smooth',block:'center'});
+ }else{
+  go('people');
+  $('addPerson')?.scrollIntoView({behavior:'smooth',block:'center'});
+  $('addPerson').open=true;
+ }
+}
+
+function options(current,kind){
+ let cs=data.contacts.filter(c=>
+  !kind||c.trades.includes(kind)||c.id===current
+ );
+ return '<option value="">Not selected</option>'+
+  cs.map(c=>'<option value="'+esc(c.id)+'" '+
+   (c.id===current?'selected':'')+'>'+
+   esc(c.name)+'</option>').join('');
+}
+
+function render(){
+ let ps=$('parcelSelect');
+ ps.options[0].textContent='Parcel 1 · '+data.development.acres[0]+' ac';
+ ps.options[1].textContent='Parcel 2 · '+data.development.acres[1]+' ac';
+ ps.value=String(parcel);
+ $('jobSelect').innerHTML=TRADES.map(t=>
+  '<option value="'+t[0]+'">'+esc(t[1])+'</option>'
+ ).join('');
+ $('jobSelect').value=selected;
+ for(let v of ['home','jobs','people','budget']){
+  $('nav-'+v).classList.toggle(
+   'on',view===v||(view==='detail'&&v==='jobs')
+  );
+ }
+ $('app').innerHTML=
+  (notice?'<div class="note green" role="status">'+esc(notice)+'</div>':'')+
+  ({home:home,jobs:jobsPage,detail:detail,people:peoplePage,
+    budget:budgetPage,settings:settingsPage}[view]||home)();
+}
+
+function tile(j){
+ let t=trade(j.key),light=t[4];
+ return '<button class="tile '+(light?'light':'')+
+  '" style="background:'+t[3]+
+  '" onclick="openJob(\''+j.key+'\')">'+
+  '<div class="tilehead"><span class="ico">'+t[2]+
+  '</span><b>'+esc(t[1])+'</b></div>'+
+  '<div class="tilefoot"><i class="dot '+
+  (j.completed?'ok':approved(j)?'warn':'')+
+  '"></i>'+status(j)+
+  '<span class="arrow">›</span></div></button>';
+}
+
+function home(){
+ let js=jobs();
+ let needed=js.filter(j=>!j.bids.length&&!j.requested).length;
+ let bids=js.reduce((n,j)=>n+j.bids.length,0);
+ let done=js.filter(j=>j.completed).length;
+ let active=js.filter(j=>j.requested||approved(j))
+  .filter(j=>!j.completed).length;
+ return '<section class="hero"><small>'+
+  esc(data.development.name.toUpperCase())+
+  ' · PARCEL '+parcel+'</small>'+
+  '<h1>Let’s build something great.</h1>'+
+  '<p>All your contractors, bids and field inspections in one place.</p>'+
+  '</section>'+
+  '<div class="kpis">'+
+   '<div class="kpi gold"><span>▤</span><strong>'+needed+
+   '</strong><small>Quotes needed</small></div>'+
+   '<div class="kpi blue"><span>＄</span><strong>'+bids+
+   '</strong><small>Bids received</small></div>'+
+   '<div class="kpi green"><span>✓</span><strong>'+done+
+   '</strong><small>Completed</small></div>'+
+   '<div class="kpi red"><span>◷</span><strong>'+active+
+   '</strong><small>In progress</small></div>'+
+  '</div>'+
+  '<div class="heading"><h2>Parcel '+parcel+
+  ' jobs</h2><button class="link" onclick="go(\'jobs\')">View all →</button></div>'+
+  '<div class="jobgrid">'+js.map(tile).join('')+'</div>'+
+  '<section class="panel" style="margin-top:12px">'+
+   '<div class="between"><h3>Recent activity</h3>'+
+   '<button class="link" onclick="go(\'settings\')">Settings →</button></div>'+
+   (data.activity.length
+    ?data.activity.slice(0,4).map(a=>
+      '<div class="line"><span>'+esc(a.action)+
+      '<small>'+esc(a.detail)+'</small></span><small>'+
+      new Date(a.date).toLocaleDateString()+'</small></div>'
+     ).join('')
+    :'<p class="sub">Actions you record in V11 will appear here. No activity has been added yet.</p>')+
+  '</section>';
+}
+
+function jobsPage(){
+ let js=jobs().filter(j=>
+  (filter==='all'||
+   (filter==='needed'&&!j.bids.length&&!j.requested)||
+   (filter==='active'&&!j.completed&&(j.requested||!!approved(j)))||
+   (filter==='done'&&j.completed))&&
+  trade(j.key)[1].toLowerCase().includes(search.toLowerCase())
+ );
+ return '<div class="heading"><h2>Parcel '+parcel+
+  ' jobs</h2><span class="sub">'+js.length+' shown</span></div>'+
+  '<input class="search" placeholder="⌕ Search jobs…" value="'+esc(search)+
+  '" oninput="search=this.value;updateJobList()">'+
+  '<div class="chips">'+
+  [['all','All'],['needed','Quote needed'],['active','In progress'],
+   ['done','Completed']].map(([v,l])=>
+   '<button class="chip '+(filter===v?'on':'')+
+   '" onclick="filter=\''+v+'\';render()">'+l+'</button>'
+  ).join('')+
+  '</div><div class="joblist" id="jobList">'+jobRows(js)+'</div>';
+}
+
+function jobRows(js){
+ return js.length?js.map(j=>{
+  let t=trade(j.key),b=priced(j);
+  return '<button class="jobrow '+(t[4]?'light':'')+
+   '" style="background:'+t[3]+'" onclick="openJob(\''+
+   j.key+'\')"><span class="ico">'+t[2]+'</span><span><b>'+
+   esc(t[1])+'</b><small>● '+status(j)+
+   '</small></span><span class="end">'+
+   (b?fmt(num(b.amount)):'')+'　›</span></button>';
+ }).join(''):'<div class="panel sub">No jobs match this filter.</div>';
+}
+
+function updateJobList(){
+ let js=jobs().filter(j=>
+  (filter==='all'||
+   (filter==='needed'&&!j.bids.length&&!j.requested)||
+   (filter==='active'&&!j.completed&&(j.requested||!!approved(j)))||
+   (filter==='done'&&j.completed))&&
+  trade(j.key)[1].toLowerCase().includes(search.toLowerCase())
+ );
+ $('jobList').innerHTML=jobRows(js);
+}
+
+function detail(){
+ let j=job(),t=trade(j.key),b=priced(j),a=approved(j);
+ let count=j.inspection.filter(x=>x.checked).length;
+ return '<div class="detailhero" style="background:'+t[3]+
+  ';color:'+(t[4]?'#24312e':'white')+'">'+
+  '<button class="back" onclick="go(\'jobs\')">‹ All jobs</button>'+
+  '<h1>'+t[2]+' '+esc(t[1])+'</h1>'+
+  '<small>Parcel '+parcel+' · '+status(j)+'</small></div>'+
+  '<div class="tabs">'+
+  [['overview','Overview'],['bids','Bids'],
+   ['contractor','Contractor'],['inspection','Inspection']]
+   .map(([v,l])=>
+    '<button class="'+(tab===v?'on':'')+
+    '" onclick="tab=\''+v+'\';render()">'+l+'</button>'
+   ).join('')+
+  '</div>'+
+  ({overview:detailOverview,bids:detailBids,
+    contractor:detailContractor,inspection:detailInspection}
+   [tab]||detailOverview)(j,b,a,count);
+}
+
+function detailOverview(j,b,a,count){
+ return '<section class="panel"><h2>Scope of work</h2>'+
+  '<textarea id="scope" class="entry">'+esc(j.scope)+'</textarea>'+
+  '<button class="btn secondary full" onclick="jSaveScope()">Save scope</button>'+
+  '<div class="grid2" style="margin-top:10px">'+
+   '<div class="mini"><small>Current quoted cost</small><strong>'+
+   (b?fmt(num(b.amount)):'Not quoted')+'</strong></div>'+
+   '<div class="mini"><small>Status</small><strong style="font-size:14px">'+
+   status(j)+'</strong></div>'+
+  '</div>'+
+  '<div class="line"><span>Who is the contractor?</span><strong>'+
+  esc(person(j.contractorId)?.name||'Not assigned')+'</strong></div>'+
+  '<div class="line"><span>Inspection checklist</span><strong>'+
+  count+' / '+j.inspection.length+'</strong></div>'+
+  '<button class="btn full" onclick="tab=\'bids\';render()">View / add bids →</button>'+
+  '</section>'+
+  (j.key==='home'
+   ?'<div class="note">The $47,009 home quote is before tax, unapproved and unpaid. Transportation, setup, steps, skirting and decks need separate prices.</div>'
+   :'')+
+  '<section class="panel"><h3>Completion</h3>'+
+  '<p class="sub">A7 requires an approved bid and checked owner walk-through items before a new sign-off. Required official inspections remain separate.</p>'+
+  (j.completed
+   ?'<div class="note green">Marked complete'+
+    (j.signedOffAt
+     ?' · '+new Date(j.signedOffAt).toLocaleDateString()
+     :' (carried over from V10)')+
+    '</div><button class="btn ghost full" onclick="reopen()">Reopen job</button>'
+   :'<button class="btn full" onclick="finish()">Review & sign off</button>')+
+  '</section>';
+}
+
+function detailBids(j,b,a){
+ return '<section class="panel"><h2>Contractor bids</h2>'+
+  '<p class="sub">Each job has its own bids. Assigning a contractor is not approving a bid.</p>'+
+  j.bids.map(x=>
+   '<div class="line"><span><b>'+esc(x.contractor)+'</b>'+
+   '<small>'+esc(x.notes||'No notes')+'</small>'+
+   '<small>Paid: '+fmt(num(x.paid))+'</small></span>'+
+   '<span><strong>'+fmt(num(x.amount))+'</strong>'+
+   '<small>'+(a?.id===x.id?'✓ Approved':'Not approved')+'</small>'+
+   (a?.id!==x.id
+    ?'<button class="btn secondary" onclick="approve(\''+
+      esc(x.id)+'\')">Approve</button>'
+    :'')+
+   '</span></div>'
+  ).join('')+
+  (j.bids.length?'':'<p class="sub">No bids yet.</p>')+
+  '</section>'+
+  '<section class="panel" id="bidForm"><h3>Add a bid</h3>'+
+  '<form onsubmit="addBid(event)">'+
+  '<label class="field">Contractor or supplier</label>'+
+  '<input class="entry" id="bidWho" required value="'+
+   esc(person(j.contractorId)?.name||'')+'">'+
+  '<label class="field">Quoted amount ($)</label>'+
+  '<input class="entry" id="bidAmount" type="number" min="0" step=".01" required>'+
+  '<label class="field">Inclusions / exclusions</label>'+
+  '<textarea class="entry" id="bidNotes"></textarea>'+
+  '<button class="btn full" type="submit">Save bid</button>'+
+  '</form></section>'+
+  (a
+   ?'<section class="panel"><h3>Payments on approved bid</h3>'+
+    '<p class="sub">Recorded: '+fmt(num(a.paid))+
+    ' of '+fmt(num(a.amount))+'</p>'+
+    '<input class="entry" type="number" id="payment" min="0.01" step=".01" placeholder="Payment amount">'+
+    '<button class="btn secondary full" onclick="pay()">Record payment</button>'+
+    '<p class="sub">A7 records the payment; it does not transfer money.</p></section>'
+   :'');
+}
+
+function detailContractor(j){
+ let roles=data.homeRoles[parcel];
+ return '<section class="panel"><h2>Who is the contractor?</h2>'+
+  '<p class="sub">Choose a person or company from your shared directory. This is an assignment, not an approval or email.</p>'+
+  '<label class="field">Assigned contractor / supplier</label>'+
+  '<select class="entry" onchange="assign(this.value)">'+
+  options(j.contractorId,j.key)+'</select>'+
+  '<button class="btn secondary full" onclick="go(\'people\')">Manage people directory</button>'+
+  '</section>'+
+  (j.key==='home'
+   ?'<section class="panel"><h3>Manufactured home contacts</h3>'+
+    '<p class="sub">The manufacturer, seller, delivery company and setup contractor may all be different.</p>'+
+    [['manufacturer','Manufacturer'],['seller','Seller / dealer'],
+     ['delivery','Delivery company'],['setup','Setup contractor']]
+     .map(([key,label])=>
+      '<label class="field">'+label+'</label>'+
+      '<select class="entry" onchange="role(\''+key+'\',this.value)">'+
+      options(roles[key])+'</select>'
+     ).join('')+
+    '<label class="field">Home model / details</label>'+
+    '<input class="entry" id="model" value="'+esc(roles.model)+'">'+
+    '<button class="btn secondary full" onclick="saveModel()">Save home details</button>'+
+    '</section>'
+   :'');
+}
+
+function detailInspection(j,b,a,count){
+ return '<section class="panel">'+
+  '<div class="between"><h2>Field inspection</h2>'+
+  '<b style="font-size:12px">'+count+' of '+j.inspection.length+'</b></div>'+
+  '<div class="progress"><i style="width:'+
+  (j.inspection.length?100*count/j.inspection.length:0)+'%"></i></div>'+
+  '<p class="sub">Owner walk-through only. Check items after reviewing them; this is not a code-compliance certification.</p>'+
+  j.inspection.map(x=>
+   '<label class="check"><input type="checkbox" '+
+   (x.checked?'checked':'')+
+   ' onchange="checkItem(\''+esc(x.id)+'\',this.checked)">'+
+   '<span>'+esc(x.text)+'</span></label>'
+  ).join('')+
+  '<label class="field">Add an inspection item</label>'+
+  '<input class="entry" id="item" placeholder="Something else to verify">'+
+  '<button class="btn secondary full" onclick="addItem()">＋ Add checklist item</button>'+
+  '</section>'+
+  '<section class="panel"><h3>Inspection notes & documents</h3>'+
+  '<label class="field">Notes / outstanding issues</label>'+
+  '<textarea class="entry" id="inspectNotes">'+esc(j.inspectionNotes)+'</textarea>'+
+  '<label class="field">Photo or document references</label>'+
+  '<textarea class="entry" id="docs" placeholder="File names or links">'+
+  esc(j.documentReferences)+'</textarea>'+
+  '<button class="btn full" onclick="saveNotes()">Save notes</button>'+
+  '<p class="sub">This version saves references, not actual photo uploads.</p>'+
+  '</section>';
+}
+
+function jSaveScope(){
+ job().scope=$('scope').value;
+ log('Scope updated','Parcel '+parcel+' · '+job().name);
+ if(save())flash('Scope saved.');
+}
+function assign(id){
+ job().contractorId=id;
+ log('Contractor assigned','Parcel '+parcel+' · '+job().name);
+ if(save())flash('Contractor assignment saved. No message sent.');
+}
+function role(key,id){
+ data.homeRoles[parcel][key]=id;
+ if(save())flash('Home '+key+' saved.');
+}
+function saveModel(){
+ data.homeRoles[parcel].model=$('model').value.trim();
+ if(save())flash('Home model saved.');
+}
+function addBid(e){
+ e.preventDefault();
+ let amount=Number($('bidAmount').value),who=$('bidWho').value.trim();
+ if(!who||!Number.isFinite(amount)||amount<0){
+  return alert('Enter a name and valid amount.');
+ }
+ job().bids.push({
+  id:uid(),contractor:who,amount,
+  notes:$('bidNotes').value.trim(),receivedDate:'',paid:0
+ });
+ job().requested=true;
+ log('Bid received','Parcel '+parcel+' · '+job().name+' · '+fmt(amount));
+ if(save())flash('Bid saved; not approved.');
+}
+function approve(id){
+ let j=job(),b=j.bids.find(x=>x.id===id);
+ if(!b||!confirm(
+  'Approve '+b.contractor+' for '+fmt(num(b.amount))+
+  ' on Parcel '+parcel+'? This only records approval in A7.'
+ ))return;
+ j.approvedBidId=id;
+ j.completed=false;
+ j.signedOffAt='';
+ log('Bid approved','Parcel '+parcel+' · '+j.name);
+ if(save())flash('Bid approved in A7. No email or payment sent.');
+}
+function pay(){
+ let b=approved(job()),raw=$('payment').value,v=Number(raw);
+ if(!b||!raw||!Number.isFinite(v)||v<=0){
+  return alert('Enter a valid payment.');
+ }
+ if(num(b.paid)+v>num(b.amount)&&
+  !confirm('This exceeds the approved bid. Continue?'))return;
+ if(!confirm('Record '+fmt(v)+' as paid?'))return;
+ b.paid=num(b.paid)+v;
+ log('Payment recorded','Parcel '+parcel+' · '+job().name+' · '+fmt(v));
+ if(save())flash('Payment recorded. No money was transferred.');
+}
+function checkItem(id,v){
+ let x=job().inspection.find(i=>i.id===id);
+ if(x){
+  x.checked=v;
+  save();
+  let count=job().inspection.filter(i=>i.checked).length;
+  let p=$('app').querySelector('.progress i');
+  if(p)p.style.width=(100*count/job().inspection.length)+'%';
+  let heading=$('app').querySelector('.panel .between b');
+  if(heading)heading.textContent=count+' of '+job().inspection.length;
+ }
+}
+function addItem(){
+ let v=$('item').value.trim();
+ if(!v)return alert('Enter an item.');
+ job().inspection.push({id:uid(),text:v,checked:false});
+ if(save())flash('Inspection item added.');
+}
+function saveNotes(){
+ job().inspectionNotes=$('inspectNotes').value;
+ job().documentReferences=$('docs').value;
+ log('Inspection notes saved','Parcel '+parcel+' · '+job().name);
+ if(save())flash('Inspection notes saved.');
+}
+function finish(){
+ let j=job();
+ if(!approved(j))return alert('Approve a bid before sign-off.');
+ if(!j.inspection.length||j.inspection.some(i=>!i.checked)){
+  return alert('Review every checklist item first.');
+ }
+ if(!confirm(
+  'Mark this job complete? Confirm applicable official inspections and approvals have been addressed. A7 does not certify compliance.'
+ ))return;
+ j.completed=true;
+ j.signedOffAt=new Date().toISOString();
+ log('Job completed','Parcel '+parcel+' · '+j.name);
+ if(save())flash('Job marked complete.');
+}
+function reopen(){
+ if(!confirm('Reopen this job?'))return;
+ job().completed=false;
+ job().signedOffAt='';
+ if(save())flash('Job reopened.');
+}
+
+function peoplePage(){
+ let c=person(editing);
+ return '<div class="heading"><h2>Contractors & contacts</h2>'+
+  '<button class="btn secondary" onclick="editing=\'\';render();$(\'addPerson\').open=true">＋ Add</button></div>'+
+  '<section class="panel">'+
+  '<p class="sub">Add a contact once, tag their trades, and assign them separately to each parcel.</p>'+
+  data.contacts.map(p=>
+   '<div class="person"><span class="avatar">'+
+   esc(p.name.split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase())+
+   '</span><span class="grow"><b>'+esc(p.name)+'</b><small>'+
+   esc((p.trades||[]).map(k=>trade(k)?.[1]||k).join(' · ')||
+    'No trades selected')+
+   '</small></span>'+
+   (p.phone?'<a class="circle" href="tel:'+esc(p.phone)+
+    '" aria-label="Call '+esc(p.name)+'">☎</a>':'')+
+   (p.email?'<a class="circle" href="mailto:'+esc(p.email)+
+    '" aria-label="Email '+esc(p.name)+'">✉</a>':'')+
+   '<button class="circle" onclick="editing=\''+esc(p.id)+
+   '\';render();$(\'addPerson\').open=true">✎</button></div>'
+  ).join('')+
+  (data.contacts.length?'':'<p class="sub">No contacts added yet.</p>')+
+  '</section>'+
+  '<details id="addPerson" '+(editing?'open':'')+'>'+
+  '<summary>'+(c?'Edit contact':'＋ Add a contact')+'</summary>'+
+  '<div class="inside"><form onsubmit="savePerson(event)">'+
+  '<label class="field">Name or company</label>'+
+  '<input class="entry" id="pName" required value="'+esc(c?.name||'')+'">'+
+  '<label class="field">Phone</label>'+
+  '<input class="entry" type="tel" id="pPhone" value="'+esc(c?.phone||'')+'">'+
+  '<label class="field">Email</label>'+
+  '<input class="entry" type="email" id="pEmail" value="'+esc(c?.email||'')+'">'+
+  '<label class="field">Trades handled (choose several)</label>'+
+  TRADES.map(([k,n])=>
+   '<label class="check"><input type="checkbox" name="trade" value="'+k+
+   '" '+(c?.trades?.includes(k)?'checked':'')+
+   '><span>'+esc(n)+'</span></label>'
+  ).join('')+
+  '<label class="field">Notes</label>'+
+  '<textarea class="entry" id="pNotes">'+esc(c?.notes||'')+'</textarea>'+
+  '<button class="btn full" type="submit">Save contact</button>'+
+  '</form></div></details>';
+}
+
+function savePerson(e){
+ e.preventDefault();
+ let name=$('pName').value.trim();
+ if(!name)return;
+ let value={
+  name,
+  phone:$('pPhone').value.trim(),
+  email:$('pEmail').value.trim(),
+  notes:$('pNotes').value,
+  trades:[...document.querySelectorAll('input[name="trade"]:checked')]
+   .map(x=>x.value)
+ };
+ if(editing){
+  Object.assign(person(editing),value);
+ }else{
+  data.contacts.push({id:uid(),...value});
+ }
+ editing='';
+ log('Contact saved',name);
+ if(save())flash('Contact saved.');
+}
+
+function allocated(p){
+ let a=data.development.acres,total=num(a[0])+num(a[1]);
+ return total?num(data.development.landPrice)*num(a[p-1])/total:0;
+}
+function calc(){
+ let d=data.development,lo=allocated(parcel),hi=lo,missing=0;
+ for(let j of jobs()){
+  let b=priced(j);
+  if(b){
+   lo+=num(b.amount);
+   hi+=num(b.amount);
+  }else if(j.key==='septic'){
+   lo+=7809;
+   hi+=8500;
+  }else missing++;
+ }
+ let total=num(d.acres[0])+num(d.acres[1]);
+ let share=total?num(d.acres[parcel-1])/total:0;
+ for(let c of d.sharedCosts){
+  lo+=num(c.amount)*share;
+  hi+=num(c.amount)*share;
+ }
+ return{lo,hi,missing,share};
+}
+
+function budgetPage(){
+ let b=calc(),d=data.development,i=parcel-1;
+ let goal=num(d.saleTarget[i]),cap=goal-num(d.profitLow[i]);
+ return '<div class="heading"><h2>Parcel '+parcel+
+  ' budget</h2><button class="link" onclick="go(\'settings\')">Settings ⚙</button></div>'+
+  '<section class="panel">'+
+  '<small class="sub">CURRENT PRICED SUBTOTAL · INCLUDES LAND</small>'+
+  '<div class="amount">'+fmt(b.lo)+
+  (b.hi!==b.lo?' – '+fmt(b.hi):'')+'</div>'+
+  '<div class="bar"><i style="width:'+
+  Math.min(100,cap>0?100*b.hi/cap:0)+'%"></i></div>'+
+  '<p class="sub">'+b.missing+
+  ' categories unpriced. This is not final cost or projected profit.</p>'+
+  '<div class="grid2">'+
+   '<div class="mini"><small>Target sale price</small><strong>'+
+   fmt(goal)+'</strong></div>'+
+   '<div class="mini"><small>Minimum profit goal</small><strong>'+
+   fmt(num(d.profitLow[i]))+'</strong></div>'+
+  '</div>'+
+  '<div class="note">Remaining room toward the minimum profit goal: '+
+  fmt(cap-b.hi)+' to '+fmt(cap-b.lo)+
+  '. This still must cover unpriced work, taxes, selling costs and contingency.</div>'+
+  '</section>'+
+  '<section class="panel"><h3>Cost breakdown</h3>'+
+  '<div class="budgetrow"><i class="swatch" style="background:#092e29"></i>'+
+  'Allocated land purchase<b>'+fmt(allocated(parcel))+'</b></div>'+
+  jobs().map(j=>{
+   let t=trade(j.key),p=priced(j);
+   return '<div class="budgetrow"><i class="swatch" style="background:'+
+    t[3]+'"></i><span>'+esc(t[1])+
+    '<small style="display:block;color:var(--muted)">'+
+    (approved(j)?'Approved bid':
+     p?'Unapproved quote':
+     j.key==='septic'?'Planning estimate':'Unpriced')+
+    '</small></span><b>'+
+    (p?fmt(num(p.amount)):
+     j.key==='septic'?fmt(7809)+'–'+fmt(8500):'—')+
+    '</b></div>';
+  }).join('')+
+  d.sharedCosts.map(c=>
+   '<div class="budgetrow"><i class="swatch" style="background:#6a8e7b"></i>'+
+   esc(c.name)+' (shared)<b>'+fmt(num(c.amount)*b.share)+'</b></div>'
+  ).join('')+
+  '</section>';
+}
+
+function settingsPage(){
+ let d=data.development;
+ return '<div class="heading"><h2>Settings & backup</h2>'+
+  '<button class="link" onclick="go(\'home\')">Home →</button></div>'+
+  '<section class="panel"><h3>Development figures</h3>'+
+  '<p class="sub">The whole-property land cost is counted once, then allocated by acreage.</p>'+
+  '<label class="field">Land purchase ($)</label>'+
+  '<input class="entry" id="landPrice" type="number" min="0" value="'+d.landPrice+'">'+
+  '<label class="field">Land paid ($)</label>'+
+  '<input class="entry" id="landPaid" type="number" min="0" value="'+d.landPaid+'">'+
+  '<label class="field">Parcel '+parcel+' acreage</label>'+
+  '<input class="entry" id="acres" type="number" min=".01" step=".01" value="'+
+  d.acres[parcel-1]+'">'+
+  '<label class="field">Target sale price ($)</label>'+
+  '<input class="entry" id="sale" type="number" min="0" value="'+
+  d.saleTarget[parcel-1]+'">'+
+  '<label class="field">Minimum profit goal ($)</label>'+
+  '<input class="entry" id="low" type="number" min="0" value="'+
+  d.profitLow[parcel-1]+'">'+
+  '<label class="field">Higher profit goal ($)</label>'+
+  '<input class="entry" id="high" type="number" min="0" value="'+
+  d.profitHigh[parcel-1]+'">'+
+  '<button class="btn full" onclick="saveSettings()">Save figures</button>'+
+  '</section>'+
+  '<section class="panel"><h3>Shared costs</h3>'+
+  d.sharedCosts.map((c,i)=>
+   '<div class="line"><span>'+esc(c.name)+'</span><strong>'+
+   fmt(num(c.amount))+'</strong><button class="link" onclick="removeShared('+
+   i+')">Remove</button></div>'
+  ).join('')+
+  '<form onsubmit="shared(event)">'+
+  '<label class="field">Cost name</label>'+
+  '<input class="entry" id="sharedName" required placeholder="Survey, subdivision…">'+
+  '<label class="field">Total amount ($)</label>'+
+  '<input class="entry" id="sharedValue" type="number" min="0" step=".01" required>'+
+  '<button class="btn secondary full" type="submit">Add shared cost</button>'+
+  '</form></section>'+
+  '<section class="panel"><h3>Back up your work</h3>'+
+  '<p class="sub">V11 saves only in this browser. It does not sync to other devices. V10 is left unchanged. Save backups outside Safari.</p>'+
+  '<button class="btn full" onclick="backup()">Download V11 backup</button>'+
+  '<label class="field">Restore a V11 backup</label>'+
+  '<input class="entry" type="file" accept=".json,application/json" onchange="restore(event)">'+
+  '</section>'+
+  '<section class="panel"><h3>Current limitations</h3>'+
+  '<p class="sub">This app records bids, contacts, checklists and payments. It does not send emails, transfer money, upload photos, verify contractors or replace official inspections. The illustrated mockup is a design reference; no invented activity or profit is shown.</p>'+
+  '</section>';
+}
+
+function saveSettings(){
+ let d=data.development;
+ let fields=['landPrice','landPaid','acres','sale','low','high']
+  .map(id=>Number($(id).value));
+ if(fields.some(v=>!Number.isFinite(v)||v<0)||
+  fields[2]===0||fields[5]<fields[4]){
+  return alert('Check the figures and profit goals.');
+ }
+ d.landPrice=fields[0];
+ d.landPaid=fields[1];
+ d.acres[parcel-1]=fields[2];
+ d.saleTarget[parcel-1]=fields[3];
+ d.profitLow[parcel-1]=fields[4];
+ d.profitHigh[parcel-1]=fields[5];
+ if(save())flash('Development figures saved.');
+}
+function shared(e){
+ e.preventDefault();
+ let name=$('sharedName').value.trim();
+ let v=Number($('sharedValue').value);
+ if(!name||!Number.isFinite(v)||v<0)return;
+ data.development.sharedCosts.push({name,amount:v});
+ if(save())flash('Shared cost added.');
+}
+function removeShared(i){
+ if(confirm('Remove this shared cost?')){
+  data.development.sharedCosts.splice(i,1);
+  if(save())flash('Shared cost removed.');
+ }
+}
+function backup(){
+ let blob=new Blob([JSON.stringify(data,null,2)],{
+  type:'application/json'
+ });
+ let url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;
+ a.download='a7-superintendent-v11-backup.json';
+ document.body.append(a);
+ a.click();
+ a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+async function restore(e){
+ let file=e.target.files[0];
+ if(!file)return;
+ try{
+  let x=JSON.parse(await file.text());
+  if(x.version!==11||!valid(x))throw Error('Not a V11 backup');
+  if(!confirm('Replace V11 data on this browser with the selected backup?')){
+   return;
+  }
+  data=migrate(x);
+  parcel=1;
+  selected='home';
+  view='home';
+  if(save())flash('V11 backup restored.');
+ }catch(err){
+  alert('Choose a valid V11 backup.');
+ }finally{
+  e.target.value='';
+ }
+}
+
+render();
+</script>
+</body>
+</html>
