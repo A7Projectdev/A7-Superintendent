@@ -1,0 +1,330 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>A7 Superintendent Dashboard</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101827;color:#f4f7fb;font:15px Arial,sans-serif}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+header{padding:20px;background:#172438;border-bottom:1px solid #34465e}
+.brand{font-size:23px;font-weight:bold}
+.tag{color:#75e0b8;font-size:12px;font-weight:bold;letter-spacing:1px}
+main{max-width:950px;margin:auto;padding:16px 16px 100px}
+.card{background:#1b2a40;border:1px solid #34465e;border-radius:16px;padding:18px;margin-bottom:15px}
+.hero{background:linear-gradient(120deg,#244b45,#203149)}
+h1{font-size:24px;margin:8px 0}
+h2{font-size:19px;margin:8px 0 14px}
+p{color:#b5c4d5;line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:#1b2a40;border:1px solid #34465e;border-radius:12px;padding:12px}
+.stat strong{display:block;font-size:23px;margin:6px 0}
+.stat small{color:#b5c4d5}
+button.primary{background:#75e0b8;color:#102820;border:0;border-radius:10px;padding:12px;font-weight:bold}
+button.secondary{background:#2a3d56;color:white;border:1px solid #53677e;border-radius:10px;padding:11px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+label.task{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-top:1px solid #34465e}
+.task input{width:18px;height:18px;accent-color:#75e0b8}
+input.text,textarea{width:100%;background:#101827;border:1px solid #53677e;border-radius:10px;padding:12px;color:white;margin:7px 0 12px}
+textarea{min-height:150px}
+.record{padding:12px 0;border-top:1px solid #34465e}
+.record strong{display:block}
+.record small{color:#b5c4d5}
+.notice{background:#352f25;border-left:3px solid #edc77e;padding:12px;border-radius:7px;font-size:12px;color:#f3dfb9;margin-bottom:15px}
+.progress{height:9px;background:#34465e;border-radius:20px;overflow:hidden}
+.progress div{height:100%;width:0;background:#75e0b8}
+.page{display:none}
+.page.active{display:block}
+.chat{background:#233850;border-radius:12px;padding:13px;margin:10px 0;line-height:1.5}
+.chat.me{background:#245045;margin-left:22px}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#142136;border-top:1px solid #34465e;padding:8px 5px 12px;gap:3px}
+nav button{flex:1;background:transparent;color:#b5c4d5;border:0;padding:10px 2px;font-size:12px;border-radius:9px}
+nav button.active{background:#285047;color:#b7ffdf}
+@media(min-width:850px){
+main{padding-bottom:35px}
+nav{position:static;justify-content:center}
+nav button{flex:0 1 150px}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="tag">A7 • PROJECT COMMAND CENTER</div>
+<div class="brand">A7 Superintendent</div>
+</header>
+
+<nav aria-label="App sections">
+<button class="active" onclick="showPage('home',this)">▦ Home</button>
+<button onclick="showPage('projects',this)">▤ Projects</button>
+<button onclick="showPage('contractors',this)">♙ Trades</button>
+<button onclick="showPage('ai',this)">✦ AI Desk</button>
+<button onclick="showPage('files',this)">▣ Files</button>
+</nav>
+
+<main>
+<div class="notice">
+PUBLIC DEMO — Use sample information only. AI, email, supplier search
+and cloud syncing are not connected. Records stay in this browser.
+</div>
+
+<section id="home" class="page active">
+<div class="card hero">
+<div class="tag">ACTIVE PROJECT · TALCO, TEXAS</div>
+<h1>Two tracts. One clear plan.</h1>
+<p>Two 5-acre tracts • Two manufactured homes • Sitework planning</p>
+<div class="actions">
+<button class="primary" onclick="go('ai')">Open AI Desk →</button>
+<button class="secondary" onclick="go('projects')">Project files</button>
+</div>
+</div>
+
+<div class="grid">
+<div class="stat"><small>Tasks done</small><strong id="taskCount">0/4</strong></div>
+<div class="stat"><small>Contractors</small><strong id="tradeCount">0</strong></div>
+<div class="stat"><small>Tracts</small><strong>2</strong></div>
+</div>
+
+<div class="card" style="margin-top:15px">
+<div class="tag">PROJECT PROGRESS</div>
+<h2>Sitework checklist</h2>
+<div id="homeTasks"></div>
+<div class="progress"><div id="progressBar"></div></div>
+<p id="progressLabel">0 of 4 tasks complete</p>
+</div>
+
+<div class="card">
+<div class="tag">YOUR FILING CABINET</div>
+<h2>Everything in one place</h2>
+<p>Open Projects for the work plan, Trades for contractor records,
+AI Desk for a preview, and Files for a scope-of-work draft.</p>
+</div>
+</section>
+
+<section id="projects" class="page">
+<div class="card hero">
+<div class="tag">PROJECT FILE 001</div>
+<h1>Talco Property Development</h1>
+<p>Two 5-acre tracts • Planning stage</p>
+</div>
+<div class="card">
+<h2>Project work plan</h2>
+<div id="projectTasks"></div>
+</div>
+<div class="card">
+<h2>Items to verify</h2>
+<p>Confirm entrance permits and approved culvert dimensions before
+buying materials. Confirm clearing limits, driveway specifications,
+home-pad requirements, water connections and septic plans.</p>
+<p>These are planning reminders—not approved construction specifications.</p>
+</div>
+</section>
+
+<section id="contractors" class="page">
+<div class="card">
+<div class="tag">CONTRACTOR FILING CABINET</div>
+<h2>Saved contractor records</h2>
+<div id="contractorList"></div>
+</div>
+<div class="card">
+<h2>Add a test contractor</h2>
+<form id="contractorForm">
+<input class="text" id="name" placeholder="Contractor name" required maxlength="80">
+<input class="text" id="trade" placeholder="Trades or services" required maxlength="200">
+<button class="primary" type="submit">Save contractor</button>
+</form>
+<p>These records are not shared or emailed.</p>
+</div>
+</section>
+
+<section id="ai" class="page">
+<div class="card">
+<div class="tag">AI SUPERINTENDENT · PREVIEW</div>
+<h2>What should we work on?</h2>
+<p>This is a guided demo with preset answers, not live AI.</p>
+<div class="actions">
+<button class="secondary" onclick="demoReply('contractor')">File a contractor</button>
+<button class="secondary" onclick="demoReply('scope')">Draft a scope</button>
+<button class="secondary" onclick="demoReply('supplier')">Find culverts</button>
+</div>
+<div id="chat">
+<div class="chat">Welcome to your AI Desk preview.
+Choose an example above to see how this could work.</div>
+</div>
+</div>
+</section>
+
+<section id="files" class="page">
+<div class="card">
+<div class="tag">DOCUMENT DRAWER · SAMPLE</div>
+<h2>Scope-of-work draft</h2>
+<p>Review and verify this outline before sharing it.</p>
+<textarea id="scope">PROJECT: Talco Property Development
+TRADE: Sitework
+
+1. Confirm property boundaries and approved entrance permits.
+2. Confirm required culvert sizes and specifications.
+3. Identify clearing limits for each tract.
+4. Price driveways and home pads separately.
+5. List materials, exclusions and permit responsibilities.
+6. Provide a written price and schedule for owner approval.
+
+DRAFT ONLY — NOT APPROVED OR SENT.</textarea>
+<button class="secondary" onclick="copyScope()">Copy draft</button>
+<p id="copyMessage">Nothing has been sent.</p>
+</div>
+</section>
+</main>
+
+<script>
+const taskNames=[
+"Confirm sitework contractor",
+"Confirm culvert permit requirements",
+"Plan clearing and driveways",
+"Coordinate water and septic"
+];
+
+function readList(key){
+try{
+const value=JSON.parse(localStorage.getItem(key)||"[]");
+return Array.isArray(value)?value:[];
+}catch(e){return [];}
+}
+
+let tasks=readList("a7tasks").slice(0,4).map(Boolean);
+let contractors=readList("a7contractors").filter(
+c=>c&&typeof c.name==="string"&&typeof c.trade==="string"
+);
+
+function save(key,value){
+try{localStorage.setItem(key,JSON.stringify(value));}
+catch(e){alert("Your browser could not save this change.");}
+}
+
+function renderTasks(){
+["homeTasks","projectTasks"].forEach(id=>{
+const area=document.getElementById(id);
+area.replaceChildren();
+
+taskNames.forEach((name,i)=>{
+const label=document.createElement("label");
+label.className="task";
+const box=document.createElement("input");
+box.type="checkbox";
+box.checked=!!tasks[i];
+box.addEventListener("change",()=>{
+tasks[i]=box.checked;
+save("a7tasks",tasks);
+renderTasks();
+});
+const text=document.createElement("span");
+text.textContent=name;
+label.append(box,text);
+area.append(label);
+});
+});
+
+const done=tasks.filter(Boolean).length;
+document.getElementById("taskCount").textContent=done+"/4";
+document.getElementById("progressLabel").textContent=
+done+" of 4 tasks complete";
+document.getElementById("progressBar").style.width=
+(done*25)+"%";
+}
+
+function renderContractors(){
+const area=document.getElementById("contractorList");
+area.replaceChildren();
+document.getElementById("tradeCount").textContent=
+contractors.length;
+
+if(!contractors.length){
+const p=document.createElement("p");
+p.textContent="No contractor records yet.";
+area.append(p);
+}
+
+contractors.forEach(c=>{
+const row=document.createElement("div");
+row.className="record";
+const name=document.createElement("strong");
+name.textContent=c.name;
+const trade=document.createElement("small");
+trade.textContent=c.trade;
+row.append(name,trade);
+area.append(row);
+});
+}
+
+document.getElementById("contractorForm")
+.addEventListener("submit",event=>{
+event.preventDefault();
+const name=document.getElementById("name");
+const trade=document.getElementById("trade");
+if(!name.value.trim()||!trade.value.trim())return;
+contractors.push({
+name:name.value.trim(),
+trade:trade.value.trim()
+});
+save("a7contractors",contractors);
+event.target.reset();
+renderContractors();
+});
+
+function showPage(id,button){
+document.querySelectorAll(".page").forEach(page=>{
+page.classList.toggle("active",page.id===id);
+});
+document.querySelectorAll("nav button").forEach(b=>{
+b.classList.toggle("active",b===button);
+});
+window.scrollTo(0,0);
+}
+
+function go(id){
+const buttons=[...document.querySelectorAll("nav button")];
+const index=["home","projects","contractors","ai","files"]
+.indexOf(id);
+showPage(id,buttons[index]);
+}
+
+const replies={
+contractor:"In the connected version, you could describe a contractor and review a proposed contact card before saving it. For now, use Trades to add a test record.",
+scope:"A scope should list the project, trade, quantities to verify, permits, materials, exclusions, price, schedule and approval steps. Open Files for a sample draft.",
+supplier:"Live supplier search is not connected yet. A future version could compare nearby suppliers, verify TxDOT requirements and show sourced prices instead of inventing quotes."
+};
+
+function demoReply(topic){
+const chat=document.getElementById("chat");
+const answer=document.createElement("div");
+answer.className="chat";
+answer.textContent=replies[topic];
+chat.append(answer);
+}
+
+function copyScope(){
+const field=document.getElementById("scope");
+const message=document.getElementById("copyMessage");
+if(navigator.clipboard&&navigator.clipboard.writeText){
+navigator.clipboard.writeText(field.value).then(()=>{
+message.textContent="Draft copied. Nothing was sent.";
+}).catch(()=>{
+field.focus();
+field.select();
+message.textContent="Select Copy from the iPhone text menu.";
+});
+}else{
+field.focus();
+field.select();
+message.textContent="Select Copy from the iPhone text menu.";
+}
+}
+
+renderTasks();
+renderContractors();
+</script>
+</body>
+</html>
