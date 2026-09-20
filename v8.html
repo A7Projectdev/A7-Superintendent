@@ -1,0 +1,1489 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#173b32">
+  <title>A7 Superintendent — V8</title>
+  <style>
+    :root {
+      --green: #173b32;
+      --green2: #287d64;
+      --bg: #f5f7f4;
+      --white: #ffffff;
+      --ink: #172923;
+      --muted: #61716b;
+      --line: #dce5df;
+      --soft: #edf4ef;
+      --amber: #94630d;
+      --amberbg: #fff4dc;
+      --red: #a33636;
+      --redbg: #fff0ef;
+      --blue: #245e85;
+      --bluebg: #eaf3fb;
+      --shadow: 0 7px 25px rgba(20, 50, 35, .06);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+      padding-bottom: 100px;
+    }
+
+    button, input, textarea, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: auto;
+      padding: 16px;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 3px 0 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      background: var(--green);
+      color: white;
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 23px;
+      font-weight: 800;
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 17px;
+    }
+
+    .muted, small {
+      color: var(--muted);
+    }
+
+    small {
+      font-size: 12px;
+    }
+
+    .hero {
+      background: var(--green);
+      color: white;
+      border-radius: 22px;
+      padding: 22px;
+      margin-bottom: 15px;
+    }
+
+    .hero small {
+      color: #d6e8dd;
+    }
+
+    .hero h1 {
+      font-size: 26px;
+      line-height: 1.15;
+      margin: 8px 0;
+    }
+
+    .hero p {
+      color: #d6e8dd;
+      margin: 8px 0 16px;
+      font-size: 14px;
+    }
+
+    .hero-grid, .two, .three {
+      display: grid;
+      gap: 10px;
+    }
+
+    .hero-grid, .two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .hero-grid strong {
+      display: block;
+      font-size: 21px;
+      margin-top: 4px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h2, .card h3 {
+      margin: 0 0 9px;
+    }
+
+    h2 { font-size: 20px; }
+    h3 { font-size: 16px; }
+
+    p { margin: 7px 0; }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: white;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 23px;
+      margin-top: 5px;
+    }
+
+    .tabs, .parcel-tabs {
+      display: flex;
+      gap: 6px;
+      background: #e9efea;
+      padding: 5px;
+      border-radius: 14px;
+      margin: 14px 0;
+    }
+
+    .tabs button, .parcel-tabs button {
+      flex: 1;
+      min-width: 0;
+      padding: 10px 5px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .tabs button.active, .parcel-tabs button.active {
+      background: white;
+      color: var(--green);
+      box-shadow: 0 2px 8px #0000000b;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .row > :first-child {
+      min-width: 0;
+    }
+
+    .badge {
+      display: inline-block;
+      border-radius: 100px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 750;
+      white-space: nowrap;
+      background: #edf0ee;
+      color: #53645b;
+    }
+
+    .badge.needed { background: #edf0ee; color: #53645b; }
+    .badge.requested { background: var(--amberbg); color: var(--amber); }
+    .badge.received { background: var(--bluebg); color: var(--blue); }
+    .badge.approved { background: #e4f4e9; color: #21683f; }
+
+    .job {
+      width: 100%;
+      display: block;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 14px;
+      padding: 13px;
+      margin: 8px 0;
+      color: var(--ink);
+    }
+
+    .job:active { background: var(--soft); }
+
+    .job-title {
+      font-weight: 750;
+      font-size: 14px;
+    }
+
+    .job-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .btn {
+      display: inline-block;
+      border: 0;
+      background: var(--green);
+      color: white;
+      border-radius: 12px;
+      padding: 12px 15px;
+      font-weight: 750;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .btn.secondary {
+      background: var(--soft);
+      color: var(--green);
+      border: 1px solid #c9ded0;
+    }
+
+    .btn.light {
+      background: white;
+      color: var(--green);
+      border: 1px solid var(--line);
+    }
+
+    .btn.danger {
+      background: var(--redbg);
+      color: var(--red);
+    }
+
+    .btn.full {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .btn.small {
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      font-size: 13px;
+      margin: 13px 0 5px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid #cbd8ce;
+      border-radius: 11px;
+      background: white;
+      color: var(--ink);
+      font-size: 16px;
+    }
+
+    textarea {
+      min-height: 85px;
+      resize: vertical;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: 2px solid #9bcbb3;
+      border-color: var(--green2);
+    }
+
+    .line {
+      border-top: 1px solid var(--line);
+      margin: 14px 0;
+    }
+
+    .money {
+      font-size: 27px;
+      font-weight: 800;
+      letter-spacing: -.7px;
+      overflow-wrap: anywhere;
+    }
+
+    .notice {
+      background: var(--amberbg);
+      color: #735014;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      margin: 10px 0;
+    }
+
+    .success {
+      background: #e8f5eb;
+      color: #245e37;
+    }
+
+    .error {
+      background: var(--redbg);
+      color: var(--red);
+    }
+
+    .budget-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid var(--line);
+      padding: 10px 0;
+      font-size: 13px;
+    }
+
+    .budget-line:last-child { border: 0; }
+
+    .budget-line strong {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .budget-line small {
+      display: block;
+      margin-top: 2px;
+    }
+
+    .bottom {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #ffffffee;
+      backdrop-filter: blur(14px);
+      border-top: 1px solid var(--line);
+      padding: 9px 12px calc(9px + env(safe-area-inset-bottom));
+      z-index: 10;
+    }
+
+    .bottom-inner {
+      max-width: 760px;
+      margin: auto;
+      display: flex;
+      gap: 5px;
+    }
+
+    .bottom button {
+      flex: 1;
+      background: transparent;
+      border: 0;
+      border-radius: 11px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+      padding: 10px 2px;
+    }
+
+    .bottom button.active {
+      color: var(--green);
+      background: var(--soft);
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 380px) {
+      .wrap { padding: 11px; }
+      .hero { padding: 17px; }
+      .three { gap: 5px; }
+      .stat { padding: 9px; }
+      .stat strong { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div class="brand">
+        <div class="logo">A7</div>
+        <div>
+          <strong>A7 Superintendent</strong>
+          <small>Development checklist + budget</small>
+        </div>
+      </div>
+      <span class="badge approved">V8</span>
+    </header>
+
+    <section class="hero">
+      <small>TALCO DEVELOPMENT</small>
+      <h1>Two properties.<br>One clear plan.</h1>
+      <p>10 acres purchased · Two planned 5-acre parcels</p>
+      <div class="hero-grid">
+        <div>
+          <small>Combined sale goal</small>
+          <strong>$500,000+</strong>
+        </div>
+        <div>
+          <small>Combined profit goal</small>
+          <strong>$90k–$150k</strong>
+        </div>
+      </div>
+    </section>
+
+    <div class="parcel-tabs">
+      <button id="parcel1" onclick="chooseParcel(1)">Parcel 1</button>
+      <button id="parcel2" onclick="chooseParcel(2)">Parcel 2</button>
+    </div>
+
+    <div id="app"></div>
+  </main>
+
+  <nav class="bottom">
+    <div class="bottom-inner">
+      <button id="nav-overview" onclick="go('overview')">⌂ Overview</button>
+      <button id="nav-checklist" onclick="go('checklist')">☑ Checklist</button>
+      <button id="nav-budget" onclick="go('budget')">$ Budget</button>
+      <button id="nav-settings" onclick="go('settings')">⚙ Settings</button>
+    </div>
+  </nav>
+
+  <script>
+    "use strict";
+
+    const STORAGE_KEY = "a7-superintendent-v8";
+
+    const TRADE_DEFS = [
+      ["home", "Manufactured home"],
+      ["tax", "Home sales tax"],
+      ["transport", "Home transportation"],
+      ["setup", "Home setup"],
+      ["septic", "Septic installation"],
+      ["clearing", "Land clearing"],
+      ["pad", "Home pad"],
+      ["culvert", "Entrance & culvert"],
+      ["driveway", "Rock driveway"],
+      ["frontDeck", "Front deck · 8′ × 10′"],
+      ["backDeck", "Back deck · 8′ × 10′"],
+      ["steps", "Steps & access"],
+      ["skirting", "Home skirting"],
+      ["water", "Water connection"],
+      ["electrical", "Electrical connection"],
+      ["hvac", "HVAC"],
+      ["other", "Other parcel costs"]
+    ];
+
+    const DEFAULT_SCOPES = {
+      home: "Manufactured home only. Quoted at $47,009 before tax. Transportation, setup, steps, skirting, and decks are excluded. Confirm all other inclusions with the seller.",
+      tax: "Confirm applicable tax and obtain the actual amount in writing.",
+      transport: "Obtain a separate quote to transport the manufactured home to this parcel.",
+      setup: "Obtain a separate quote for home installation and setup. Confirm exactly what is included.",
+      septic: "Obtain a written septic proposal based on the parcel's approved design and applicable requirements.",
+      clearing: "Confirm clearing boundaries and dimensions for this parcel.",
+      pad: "Confirm pad dimensions, material, elevation, compaction, and the home installer's requirements.",
+      culvert: "Confirm the responsible road authority's requirements and approved culvert specifications before ordering.",
+      driveway: "Confirm driveway length, width, base, rock type, depth, and drainage.",
+      frontDeck: "One planned 8′ × 10′ front deck. Confirm materials, footings, steps, railings, and applicable requirements.",
+      backDeck: "One planned 8′ × 10′ back deck. Confirm materials, footings, steps, railings, and applicable requirements.",
+      steps: "Confirm steps and safe access at each entrance. Check what is included in deck bids.",
+      skirting: "Confirm skirting material, ventilation, access panels, and installation.",
+      water: "Confirm water service availability, connection requirements, and costs.",
+      electrical: "Confirm service requirements, meter, pole or pedestal, trenching, and connection costs.",
+      hvac: "Confirm whether HVAC equipment and installation are included in the home quote.",
+      other: "Record additional parcel-specific costs here."
+    };
+
+    function newData() {
+      const jobs = {};
+
+      for (const parcel of [1, 2]) {
+        for (const [key, name] of TRADE_DEFS) {
+          const id = parcel + "-" + key;
+
+          jobs[id] = {
+            id,
+            parcel,
+            key,
+            name,
+            scope: DEFAULT_SCOPES[key] || "",
+            requested: false,
+            bids: [],
+            approvedBidId: null,
+            completed: false
+          };
+
+          if (key === "home") {
+            jobs[id].bids.push({
+              id: id + "-initial",
+              contractor: "Home seller — name to confirm",
+              amount: 47009,
+              notes: "Quoted before tax. Not approved or paid. Transportation, setup, steps, skirting, and decks excluded.",
+              receivedDate: "",
+              paid: 0
+            });
+          }
+        }
+      }
+
+      return {
+        version: 8,
+        development: {
+          name: "Talco Development",
+          landPrice: 173000,
+          landPaid: 173000,
+          acres: [5, 5],
+          saleTarget: [250000, 250000],
+          profitLow: [45000, 45000],
+          profitHigh: [75000, 75000],
+          sharedCosts: []
+        },
+        jobs
+      };
+    }
+
+    function loadData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return newData();
+
+        const parsed = JSON.parse(raw);
+
+        if (
+          parsed.version !== 8 ||
+          !parsed.development ||
+          !parsed.jobs ||
+          !Array.isArray(parsed.development.acres)
+        ) {
+          throw new Error("Invalid V8 data");
+        }
+
+        return parsed;
+      } catch (error) {
+        alert("Saved V8 data could not be read. A new preview has been opened. Your V7 data has not been changed.");
+        return newData();
+      }
+    }
+
+    let data = loadData();
+    let selectedParcel = 1;
+    let currentView = "overview";
+    let selectedJob = "1-home";
+    let notice = "";
+
+    const app = document.getElementById("app");
+
+    function save() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (error) {
+        alert("Your browser could not save this change. Please export a backup from Settings.");
+      }
+    }
+
+    function money(value) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0
+      }).format(value);
+    }
+
+    function num(value) {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function cleanMoney(value) {
+      return Math.max(0, num(value));
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function jobFor(parcel, key) {
+      return data.jobs[parcel + "-" + key];
+    }
+
+    function jobsFor(parcel) {
+      return TRADE_DEFS.map(([key]) => jobFor(parcel, key));
+    }
+
+    function chosenBid(job) {
+      return job.bids.find(b => b.id === job.approvedBidId) || null;
+    }
+
+    function planningBid(job) {
+      return chosenBid(job) || job.bids[job.bids.length - 1] || null;
+    }
+
+    function stage(job) {
+      if (job.completed) return ["Completed", "approved"];
+      if (job.approvedBidId) return ["Approved", "approved"];
+      if (job.bids.length) return ["Bid received", "received"];
+      if (job.requested) return ["Quote requested", "requested"];
+      return ["Quote needed", "needed"];
+    }
+
+    function badge(job) {
+      const [label, type] = stage(job);
+      return '<span class="badge ' + type + '">' + label + '</span>';
+    }
+
+    function landAllocation(parcel) {
+      const acres = data.development.acres;
+      const total = cleanMoney(acres[0]) + cleanMoney(acres[1]);
+      if (!total) return 0;
+
+      return cleanMoney(data.development.landPrice) *
+        cleanMoney(acres[parcel - 1]) / total;
+    }
+
+    function budget(parcel) {
+      let low = landAllocation(parcel);
+      let high = low;
+      let unpriced = 0;
+      let approved = 0;
+      let paid = 0;
+
+      for (const job of jobsFor(parcel)) {
+        const bid = planningBid(job);
+
+        if (bid) {
+          low += cleanMoney(bid.amount);
+          high += cleanMoney(bid.amount);
+        } else if (job.key === "septic") {
+          low += 7809;
+          high += 8500;
+        } else {
+          unpriced++;
+        }
+
+        const accepted = chosenBid(job);
+        if (accepted) approved += cleanMoney(accepted.amount);
+
+        for (const b of job.bids) {
+          paid += cleanMoney(b.paid);
+        }
+      }
+
+      const shared = data.development.sharedCosts || [];
+      const totalAcres =
+        cleanMoney(data.development.acres[0]) +
+        cleanMoney(data.development.acres[1]);
+
+      const share = totalAcres
+        ? cleanMoney(data.development.acres[parcel - 1]) / totalAcres
+        : 0;
+
+      for (const item of shared) {
+        low += cleanMoney(item.amount) * share;
+        high += cleanMoney(item.amount) * share;
+      }
+
+      return {
+        low,
+        high,
+        unpriced,
+        approved,
+        paid,
+        sale: cleanMoney(data.development.saleTarget[parcel - 1]),
+        profitLow: cleanMoney(data.development.profitLow[parcel - 1]),
+        profitHigh: cleanMoney(data.development.profitHigh[parcel - 1])
+      };
+    }
+
+    function stats(parcel) {
+      const jobs = jobsFor(parcel);
+      return {
+        needed: jobs.filter(j => !j.requested && !j.bids.length).length,
+        requested: jobs.filter(j => j.requested && !j.bids.length).length,
+        bids: jobs.reduce((sum, j) => sum + j.bids.length, 0),
+        approved: jobs.filter(j => j.approvedBidId).length,
+        completed: jobs.filter(j => j.completed).length
+      };
+    }
+
+    function chooseParcel(parcel) {
+      selectedParcel = parcel;
+      selectedJob = parcel + "-home";
+      notice = "";
+      render();
+    }
+
+    function go(view) {
+      currentView = view;
+      notice = "";
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openJob(id) {
+      selectedJob = id;
+      currentView = "job";
+      notice = "";
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function message(text) {
+      notice = text;
+      render();
+    }
+
+    function render() {
+      document.getElementById("parcel1").classList.toggle("active", selectedParcel === 1);
+      document.getElementById("parcel2").classList.toggle("active", selectedParcel === 2);
+
+      for (const view of ["overview", "checklist", "budget", "settings"]) {
+        document.getElementById("nav-" + view).classList.toggle(
+          "active",
+          currentView === view || (currentView === "job" && view === "checklist")
+        );
+      }
+
+      let html = "";
+
+      if (notice) {
+        html += '<div class="notice success">' + escapeHTML(notice) + '</div>';
+      }
+
+      if (currentView === "overview") html += renderOverview();
+      if (currentView === "checklist") html += renderChecklist();
+      if (currentView === "job") html += renderJob();
+      if (currentView === "budget") html += renderBudget();
+      if (currentView === "settings") html += renderSettings();
+
+      app.innerHTML = html;
+    }
+
+    function renderOverview() {
+      const s = stats(selectedParcel);
+      const b = budget(selectedParcel);
+
+      return `
+        <div class="card">
+          <h2>Parcel ${selectedParcel} · What needs attention?</h2>
+          <p class="muted">Your checklist updates when you record quotes and approve bids.</p>
+
+          <div class="three">
+            <div class="stat">
+              <small>Quotes needed</small>
+              <strong>${s.needed}</strong>
+            </div>
+            <div class="stat">
+              <small>Bids received</small>
+              <strong>${s.bids}</strong>
+            </div>
+            <div class="stat">
+              <small>Jobs approved</small>
+              <strong>${s.approved}</strong>
+            </div>
+          </div>
+
+          <button class="btn full" onclick="go('checklist')">
+            Open my job checklist →
+          </button>
+        </div>
+
+        <div class="card">
+          <h3>Your current budget picture</h3>
+          <small>Known prices and estimates · Parcel ${selectedParcel}</small>
+          <div class="money">${money(b.low)}–${money(b.high)}</div>
+          <div class="notice">
+            ${b.unpriced} cost categories are still unpriced.
+            This subtotal is not your final cost or profit.
+          </div>
+          <button class="btn secondary full" onclick="go('budget')">
+            View budget & profit goals
+          </button>
+        </div>
+
+        <div class="card">
+          <h3>AI Superintendent · Next steps</h3>
+          <p>Start by collecting the separate transportation and setup quotes
+          for this home. You also need prices for both 8′ × 10′ decks,
+          tax, steps, skirting, and other sitework.</p>
+          <p class="muted">
+            This V8 preview organizes your work. It does not contact contractors,
+            search for quotes, or send emails automatically.
+          </p>
+        </div>
+      `;
+    }
+
+    function renderChecklist() {
+      const s = stats(selectedParcel);
+
+      return `
+        <div class="card">
+          <h2>Parcel ${selectedParcel} · Job checklist</h2>
+          <p class="muted">
+            ${s.needed} quotes needed · ${s.requested} requested ·
+            ${s.approved} jobs approved
+          </p>
+          <p>Tap any job to record bids, review the scope, or approve a contractor.</p>
+        </div>
+
+        ${jobsFor(selectedParcel).map(job => `
+          <button class="job" onclick="openJob('${job.id}')">
+            <div class="row">
+              <div>
+                <div class="job-title">${escapeHTML(job.name)}</div>
+                <div class="job-sub">
+                  ${job.bids.length
+                    ? job.bids.length + " bid(s) recorded"
+                    : job.key === "septic"
+                      ? "Estimate: $7,809–$8,500"
+                      : "No price recorded yet"}
+                </div>
+              </div>
+              ${badge(job)}
+            </div>
+          </button>
+        `).join("")}
+      `;
+    }
+
+    function renderJob() {
+      const job = data.jobs[selectedJob];
+      if (!job) return "<p>Job not found.</p>";
+
+      const approved = chosenBid(job);
+
+      return `
+        <button class="btn light small" onclick="go('checklist')">
+          ← Back to checklist
+        </button>
+
+        <div class="card" style="margin-top:12px">
+          <div class="row">
+            <h2>${escapeHTML(job.name)}</h2>
+            ${badge(job)}
+          </div>
+
+          <small>Parcel ${job.parcel} · Independent job record</small>
+
+          <label for="scope">Scope of work / notes</label>
+          <textarea id="scope">${escapeHTML(job.scope)}</textarea>
+          <button class="btn secondary full" onclick="saveScope()">
+            Save job scope
+          </button>
+
+          ${job.key === "septic" && !job.bids.length
+            ? '<div class="notice">Planning estimate: $7,809–$8,500. A written bid is still needed.</div>'
+            : ""}
+
+          ${job.key === "home"
+            ? '<div class="notice">The $47,009 home quote is before tax, is not approved, and has not been paid. Delivery and setup are separate jobs.</div>'
+            : ""}
+
+          ${!job.requested && !job.bids.length
+            ? `<button class="btn light full" onclick="markRequested()">
+                 Mark quote as requested
+               </button>`
+            : ""}
+
+          ${job.requested && !job.bids.length
+            ? '<div class="notice">Quote request recorded. No email was sent by A7.</div>'
+            : ""}
+        </div>
+
+        <div class="card">
+          <h3>Contractor bids</h3>
+          <p class="muted">Record multiple bids for this same job. Only one can be approved.</p>
+
+          ${job.bids.length
+            ? job.bids.map(bid => `
+                <div class="stat" style="margin-bottom:10px">
+                  <div class="row">
+                    <strong>${escapeHTML(bid.contractor)}</strong>
+                    ${approved && approved.id === bid.id
+                      ? '<span class="badge approved">Approved</span>'
+                      : '<span class="badge received">Received</span>'}
+                  </div>
+
+                  <div class="money" style="font-size:23px;margin-top:8px">
+                    ${money(bid.amount)}
+                  </div>
+
+                  <p class="muted">${escapeHTML(bid.notes || "No inclusions entered.")}</p>
+
+                  <small>
+                    Paid against this bid: ${money(bid.paid || 0)}
+                  </small>
+
+                  ${approved && approved.id === bid.id
+                    ? `
+                      <label>Record an additional payment ($)</label>
+                      <input id="payment-${bid.id}" type="number"
+                             min="0" step="0.01" placeholder="Payment amount">
+                      <button class="btn secondary full"
+                              onclick="recordPayment('${bid.id}')">
+                        Record payment
+                      </button>
+                    `
+                    : `
+                      <button class="btn secondary full"
+                              onclick="approveBid('${bid.id}')">
+                        Review & approve this bid
+                      </button>
+                    `}
+                </div>
+              `).join("")
+            : '<p class="muted">No bids recorded yet.</p>'}
+
+          ${approved
+            ? `
+              <label>
+                <input type="checkbox" id="completed"
+                       style="width:auto"
+                       ${job.completed ? "checked" : ""}
+                       onchange="setCompleted(this.checked)">
+                Job completed
+              </label>
+            `
+            : ""}
+        </div>
+
+        <div class="card">
+          <h3>Record a new bid</h3>
+
+          <form onsubmit="addBid(event)">
+            <label for="contractor">Contractor or supplier</label>
+            <input id="contractor" required
+                   placeholder="Contractor name">
+
+            <label for="bidAmount">Bid amount ($)</label>
+            <input id="bidAmount" type="number"
+                   min="0" step="0.01" required
+                   placeholder="Enter quoted amount">
+
+            <label for="bidNotes">What is included or excluded?</label>
+            <textarea id="bidNotes"
+                      placeholder="Labor, materials, tax, exclusions, schedule..."></textarea>
+
+            <label for="bidDate">Date received (optional)</label>
+            <input id="bidDate" type="date">
+
+            <button class="btn full" type="submit">
+              Save this bid
+            </button>
+          </form>
+        </div>
+      `;
+    }
+
+    function saveScope() {
+      const job = data.jobs[selectedJob];
+      job.scope = document.getElementById("scope").value;
+      save();
+      message("Scope saved for Parcel " + job.parcel + " only.");
+    }
+
+    function markRequested() {
+      const job = data.jobs[selectedJob];
+      job.requested = true;
+      save();
+      message("Quote request marked as requested. No email was sent.");
+    }
+
+    function addBid(event) {
+      event.preventDefault();
+
+      const job = data.jobs[selectedJob];
+      const contractor = document.getElementById("contractor").value.trim();
+      const amount = Number(document.getElementById("bidAmount").value);
+      const notes = document.getElementById("bidNotes").value.trim();
+      const receivedDate = document.getElementById("bidDate").value;
+
+      if (!contractor || !Number.isFinite(amount) || amount < 0) {
+        alert("Enter a contractor name and a valid bid amount.");
+        return;
+      }
+
+      job.bids.push({
+        id: "bid-" + Date.now() + "-" + Math.random().toString(36).slice(2, 7),
+        contractor,
+        amount,
+        notes,
+        receivedDate,
+        paid: 0
+      });
+
+      job.requested = true;
+      save();
+      message("Bid saved for Parcel " + job.parcel + ". Nothing was sent or approved.");
+    }
+
+    function approveBid(bidId) {
+      const job = data.jobs[selectedJob];
+      const bid = job.bids.find(b => b.id === bidId);
+      if (!bid) return;
+
+      const approved = chosenBid(job);
+
+      const warning = approved
+        ? "\n\nThis will replace the previously approved bid."
+        : "";
+
+      const confirmed = confirm(
+        "Approve " + bid.contractor +
+        " for " + money(bid.amount) +
+        " on Parcel " + job.parcel +
+        " — " + job.name + "?" +
+        warning +
+        "\n\nThis records your decision in A7 only. No email or payment will be sent."
+      );
+
+      if (!confirmed) return;
+
+      job.approvedBidId = bid.id;
+      job.completed = false;
+      save();
+      message("Bid approved in A7. No email or payment was sent.");
+    }
+
+    function recordPayment(bidId) {
+      const job = data.jobs[selectedJob];
+      const bid = job.bids.find(b => b.id === bidId);
+      if (!bid || job.approvedBidId !== bidId) return;
+
+      const field = document.getElementById("payment-" + bidId);
+      const amount = Number(field.value);
+
+      if (!Number.isFinite(amount) || amount <= 0) {
+        alert("Enter a payment greater than $0.");
+        return;
+      }
+
+      const existing = cleanMoney(bid.paid);
+      if (existing + amount > cleanMoney(bid.amount)) {
+        const proceed = confirm(
+          "This would make recorded payments exceed the approved bid. " +
+          "Do you want to record it anyway?"
+        );
+        if (!proceed) return;
+      }
+
+      if (!confirm("Record a payment of " + money(amount) + "?")) return;
+
+      bid.paid = existing + amount;
+      save();
+      message("Payment recorded in A7. No actual payment was made by the app.");
+    }
+
+    function setCompleted(checked) {
+      const job = data.jobs[selectedJob];
+      if (!job.approvedBidId) return;
+
+      job.completed = checked;
+      save();
+      message(checked ? "Job marked completed." : "Job marked not completed.");
+    }
+
+    function renderBudget() {
+      const b = budget(selectedParcel);
+      const d = data.development;
+
+      const room45Low = b.sale - b.profitLow - b.high;
+      const room45High = b.sale - b.profitLow - b.low;
+      const room75Low = b.sale - b.profitHigh - b.high;
+      const room75High = b.sale - b.profitHigh - b.low;
+
+      const costLines = jobsFor(selectedParcel)
+        .filter(j => planningBid(j) || j.key === "septic")
+        .map(j => {
+          const bid = planningBid(j);
+          const value = bid
+            ? money(bid.amount)
+            : money(7809) + "–" + money(8500);
+
+          const status = chosenBid(j)
+            ? "Approved bid"
+            : bid
+              ? "Unapproved quote"
+              : "Estimate only";
+
+          return `
+            <div class="budget-line">
+              <div>
+                ${escapeHTML(j.name)}
+                <small>${status}</small>
+              </div>
+              <strong>${value}</strong>
+            </div>
+          `;
+        }).join("");
+
+      return `
+        <div class="card">
+          <h2>Parcel ${selectedParcel} · Budget calculator</h2>
+          <p class="muted">
+            The land purchase is recorded once for the development,
+            then allocated to each parcel by acreage.
+          </p>
+
+          <div class="two">
+            <div>
+              <label>Sale target ($)</label>
+              <input id="saleTarget" type="number" min="0"
+                     value="${d.saleTarget[selectedParcel - 1]}">
+            </div>
+            <div>
+              <label>Planned acreage</label>
+              <input id="acres" type="number" min="0.01" step="0.01"
+                     value="${d.acres[selectedParcel - 1]}">
+            </div>
+            <div>
+              <label>Minimum profit goal ($)</label>
+              <input id="profitLow" type="number" min="0"
+                     value="${d.profitLow[selectedParcel - 1]}">
+            </div>
+            <div>
+              <label>Higher profit goal ($)</label>
+              <input id="profitHigh" type="number" min="0"
+                     value="${d.profitHigh[selectedParcel - 1]}">
+            </div>
+          </div>
+
+          <button class="btn secondary full" onclick="saveBudgetTargets()">
+            Update budget goals
+          </button>
+        </div>
+
+        <div class="card">
+          <h3>Current priced subtotal</h3>
+          <div class="money">${money(b.low)}–${money(b.high)}</div>
+          <p class="muted">
+            Includes allocated land, recorded quotes, approved bids,
+            septic estimate where no bid exists, and entered shared costs.
+          </p>
+          <div class="notice">
+            ${b.unpriced} job categories remain unpriced.
+            This is not the final cost or a projected profit.
+          </div>
+
+          <div class="budget-line">
+            <div>
+              Allocated land purchase
+              <small>Paid as part of the $173,000 whole-property purchase</small>
+            </div>
+            <strong>${money(landAllocation(selectedParcel))}</strong>
+          </div>
+
+          ${costLines}
+
+          ${(d.sharedCosts || []).map(item => `
+            <div class="budget-line">
+              <div>
+                ${escapeHTML(item.name)}
+                <small>Shared cost · allocated by acreage</small>
+              </div>
+              <strong>${money(
+                cleanMoney(item.amount) *
+                cleanMoney(d.acres[selectedParcel - 1]) /
+                Math.max(1, cleanMoney(d.acres[0]) + cleanMoney(d.acres[1]))
+              )}</strong>
+            </div>
+          `).join("")}
+        </div>
+
+        <div class="card">
+          <h3>Spending room for remaining costs</h3>
+          <p class="muted">
+            Based on your ${money(b.sale)} sale target.
+            These amounts still need to cover every unpriced cost,
+            selling expenses, and contingency.
+          </p>
+
+          <div class="budget-line">
+            <div>
+              <strong>${money(b.profitLow)} profit goal</strong>
+              <small>Maximum all-in cost: ${money(b.sale - b.profitLow)}</small>
+            </div>
+            <strong>${money(room45Low)}–${money(room45High)}</strong>
+          </div>
+
+          <div class="budget-line">
+            <div>
+              <strong>${money(b.profitHigh)} profit goal</strong>
+              <small>Maximum all-in cost: ${money(b.sale - b.profitHigh)}</small>
+            </div>
+            <strong>${money(room75Low)}–${money(room75High)}</strong>
+          </div>
+
+          <div class="notice">
+            A negative amount means the priced subtotal already exceeds
+            the spending limit for that profit goal. A positive amount
+            is not profit—it must still cover the missing costs.
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Cost tracking</h3>
+          <div class="budget-line">
+            <span>Approved contractor bids</span>
+            <strong>${money(b.approved)}</strong>
+          </div>
+          <div class="budget-line">
+            <span>Payments recorded on bids</span>
+            <strong>${money(b.paid)}</strong>
+          </div>
+          <p class="muted">
+            Land payments are tracked separately at the development level.
+            Quotes are not treated as paid. Payments are not added again
+            to the cost subtotal.
+          </p>
+        </div>
+      `;
+    }
+
+    function saveBudgetTargets() {
+      const d = data.development;
+      const index = selectedParcel - 1;
+
+      const sale = Number(document.getElementById("saleTarget").value);
+      const acres = Number(document.getElementById("acres").value);
+      const low = Number(document.getElementById("profitLow").value);
+      const high = Number(document.getElementById("profitHigh").value);
+
+      if (
+        !Number.isFinite(sale) || sale < 0 ||
+        !Number.isFinite(acres) || acres <= 0 ||
+        !Number.isFinite(low) || low < 0 ||
+        !Number.isFinite(high) || high < low
+      ) {
+        alert("Check your acreage, sale target, and profit goals.");
+        return;
+      }
+
+      d.saleTarget[index] = sale;
+      d.acres[index] = acres;
+      d.profitLow[index] = low;
+      d.profitHigh[index] = high;
+
+      save();
+      message("Parcel " + selectedParcel + " budget goals updated.");
+    }
+
+    function renderSettings() {
+      const d = data.development;
+
+      return `
+        <div class="card">
+          <h2>Development settings</h2>
+          <p class="muted">
+            One property purchase. Two parcels. Land is allocated by acreage.
+          </p>
+
+          <label>Whole-property purchase price ($)</label>
+          <input id="landPrice" type="number" min="0"
+                 value="${d.landPrice}">
+
+          <label>Amount paid for the land ($)</label>
+          <input id="landPaid" type="number" min="0"
+                 value="${d.landPaid}">
+
+          <button class="btn secondary full" onclick="saveLand()">
+            Save land purchase
+          </button>
+
+          <div class="line"></div>
+
+          <div class="budget-line">
+            <span>Parcel 1 · ${d.acres[0]} acres</span>
+            <strong>${money(landAllocation(1))}</strong>
+          </div>
+          <div class="budget-line">
+            <span>Parcel 2 · ${d.acres[1]} acres</span>
+            <strong>${money(landAllocation(2))}</strong>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Shared development costs</h3>
+          <p class="muted">
+            Enter a cost once—such as a survey or subdivision expense.
+            A7 will allocate it between parcels by acreage.
+          </p>
+
+          ${(d.sharedCosts || []).map((item, index) => `
+            <div class="budget-line">
+              <span>${escapeHTML(item.name)}</span>
+              <strong>${money(item.amount)}</strong>
+              <button class="btn danger small"
+                      onclick="removeShared(${index})">
+                Remove
+              </button>
+            </div>
+          `).join("")}
+
+          <form onsubmit="addShared(event)">
+            <label>Cost name</label>
+            <input id="sharedName" required
+                   placeholder="Survey, subdivision, closing costs...">
+
+            <label>Total amount ($)</label>
+            <input id="sharedAmount" type="number"
+                   min="0" step="0.01" required>
+
+            <button class="btn secondary full" type="submit">
+              Add shared cost
+            </button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Back up your work</h3>
+          <p class="muted">
+            This version saves data in this browser on this device.
+            It does not sync across devices or connect to Google Drive.
+            Export a backup regularly.
+          </p>
+
+          <button class="btn full" onclick="exportBackup()">
+            Download V8 backup
+          </button>
+
+          <label>Restore a V8 backup</label>
+          <input type="file" accept=".json,application/json"
+                 onchange="importBackup(event)">
+        </div>
+
+        <div class="card">
+          <h3>Important</h3>
+          <p class="muted">
+            Prices and job scopes are your planning records.
+            A7 does not verify contractor licensing, permits, road-authority
+            requirements, tax amounts, or the property's eventual sale price.
+            No quote requests, approvals, or payments are transmitted
+            outside this browser.
+          </p>
+        </div>
+      `;
+    }
+
+    function saveLand() {
+      const price = Number(document.getElementById("landPrice").value);
+      const paid = Number(document.getElementById("landPaid").value);
+
+      if (
+        !Number.isFinite(price) || price < 0 ||
+        !Number.isFinite(paid) || paid < 0
+      ) {
+        alert("Enter valid land purchase and paid amounts.");
+        return;
+      }
+
+      data.development.landPrice = price;
+      data.development.landPaid = paid;
+      save();
+      message("Whole-property purchase updated.");
+    }
+
+    function addShared(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("sharedName").value.trim();
+      const amount = Number(document.getElementById("sharedAmount").value);
+
+      if (!name || !Number.isFinite(amount) || amount < 0) {
+        alert("Enter a name and valid amount.");
+        return;
+      }
+
+      if (!Array.isArray(data.development.sharedCosts)) {
+        data.development.sharedCosts = [];
+      }
+
+      data.development.sharedCosts.push({ name, amount });
+      save();
+      message("Shared cost added and allocated by acreage.");
+    }
+
+    function removeShared(index) {
+      if (!confirm("Remove this shared cost?")) return;
+
+      data.development.sharedCosts.splice(index, 1);
+      save();
+      message("Shared cost removed.");
+    }
+
+    function exportBackup() {
+      const blob = new Blob(
+        [JSON.stringify(data, null, 2)],
+        { type: "application/json" }
+      );
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = "a7-superintendent-v8-backup.json";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    async function importBackup(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        const parsed = JSON.parse(text);
+
+        if (
+          parsed.version !== 8 ||
+          !parsed.development ||
+          !parsed.jobs ||
+          !Array.isArray(parsed.development.acres) ||
+          !Array.isArray(parsed.development.saleTarget) ||
+          !Array.isArray(parsed.development.profitLow) ||
+          !Array.isArray(parsed.development.profitHigh) ||
+          !TRADE_DEFS.every(([key]) =>
+            parsed.jobs["1-" + key] && parsed.jobs["2-" + key]
+          )
+        ) {
+          throw new Error("Not a valid A7 V8 backup");
+        }
+
+        if (!confirm(
+          "Restore this V8 backup? It will replace the V8 data currently saved in this browser."
+        )) return;
+
+        data = parsed;
+        selectedParcel = 1;
+        selectedJob = "1-home";
+        currentView = "overview";
+        save();
+        message("V8 backup restored.");
+      } catch (error) {
+        alert("Could not restore this file. Please choose a valid A7 V8 backup.");
+      }
+
+      event.target.value = "";
+    }
+
+    render();
+  </script>
+</body>
+</html>
