@@ -1,0 +1,1250 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#081b2e">
+<title>A7 Superintendent V5</title>
+<style>
+:root{
+ --dark:#081b2e;--navy:#103354;--blue:#176bb8;
+ --gold:#f0b52d;--paper:#edf3f9;--ink:#19324a;
+ --muted:#60758a;--line:#d7e3ed;--green:#087b59;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--dark);color:var(--ink);
+ font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,
+textarea:focus-visible{outline:3px solid #70b7ff;outline-offset:2px}
+.shell{min-height:100vh}
+.sidebar{background:var(--dark);padding:18px 12px;color:#c9dbea}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:25px}
+.logo{display:grid;place-items:center;width:45px;height:45px;
+ border-radius:11px;background:var(--gold);color:var(--dark);
+ font-size:21px;font-weight:950}
+.brand strong{display:block;color:#fff;font-size:16px}
+.brand small{display:block;color:#a8c3d9;font-size:10px;letter-spacing:.08em}
+.menu{display:grid;gap:4px}
+.menu button{border:0;background:transparent;color:#c5d7e7;
+ text-align:left;padding:12px;border-radius:9px;font-weight:700}
+.menu button.active{background:#19527f;color:#fff}
+.side-note{border:1px solid #34516c;border-radius:10px;
+ padding:12px;margin-top:25px;font-size:12px;color:#aec8dc}
+.workspace{background:var(--paper);min-width:0}
+.topbar{background:var(--navy);color:#fff;padding:13px;
+ display:flex;align-items:center;justify-content:space-between;gap:10px}
+.topbar strong{display:block;font-size:15px}
+.topbar small{color:#b8d0e4;font-size:11px}
+.topbar select{max-width:48%;min-width:0;background:#1c496e;
+ color:#fff;border:1px solid #6282a0}
+main{max-width:1240px;margin:auto;padding:14px 12px 110px}
+.page{display:none}.page.active{display:block}
+.card{background:#fff;border:1px solid var(--line);border-radius:13px;
+ padding:16px;margin-bottom:13px;box-shadow:0 4px 14px #102c4708}
+.hero{background:linear-gradient(120deg,#174b77,#091e32);
+ border-color:#315b7b;color:#fff}
+.hero h1{color:#fff}.hero p{color:#c5d8e9}
+.hero .eyebrow{color:#a6d1f2}
+.eyebrow{font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+ font-weight:850;color:#2b679b}
+h1{font-size:24px;line-height:1.2;margin:6px 0 9px}
+h2{font-size:18px;margin:5px 0 12px}
+h3{font-size:15px;margin:10px 0}
+p{color:var(--muted);margin:8px 0 12px}
+.grid{display:grid;gap:13px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:8px;margin-bottom:13px}
+.stat{background:#fff;border:1px solid var(--line);
+ border-radius:11px;padding:11px}
+.stat small{display:block;color:var(--muted);font-size:11px}
+.stat strong{display:block;color:var(--navy);font-size:23px}
+.btn{background:var(--blue);color:#fff;border:1px solid var(--blue);
+ border-radius:8px;padding:10px 12px;min-height:42px;font-weight:750}
+.btn.light{background:#edf4fb;border-color:#c9dbea;color:#174c79}
+.btn.danger{background:#fff;border-color:#e9bec5;color:#a12c39}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.actions .btn{flex:1 1 120px}
+.field{display:block;font-size:12px;font-weight:750;
+ color:#4c657d;margin:12px 0 4px}
+input:not([type=checkbox]),select,textarea{
+ width:100%;min-width:0;min-height:44px;padding:10px;
+ border:1px solid #b8cadb;border-radius:8px;
+ background:#fff;color:var(--ink)}
+textarea{min-height:105px;resize:vertical}
+.notice{background:#fff8e9;color:#74561e;border:1px solid #e9d7ab;
+ border-radius:9px;padding:11px;font-size:12px;margin-bottom:13px}
+.row{padding:12px 0;border-top:1px solid var(--line);
+ overflow-wrap:anywhere}
+.row strong{display:block}.row small{display:block;color:var(--muted)}
+.check{display:flex;align-items:flex-start;gap:10px;
+ padding:11px 0;border-top:1px solid var(--line)}
+.check input{width:20px;height:20px;flex:none;accent-color:var(--blue)}
+.check span{flex:1;overflow-wrap:anywhere}
+.progress{height:9px;background:#e4edf5;border-radius:20px;
+ overflow:hidden;margin:12px 0}
+.progress div{height:100%;background:#07956c;width:0}
+.pill{display:inline-block;border-radius:20px;background:#e5f2ff;
+ color:#19598e;padding:4px 9px;font-size:11px;font-weight:800}
+.empty{background:#f0f5fa;border-radius:9px;padding:12px;color:var(--muted)}
+.muted{font-size:12px;color:var(--muted)}
+.trade-card{border:1px solid var(--line);border-radius:11px;
+ padding:13px;margin:10px 0;background:#fbfdff}
+.trade-card strong{display:block;font-size:15px}
+.trade-card small{color:var(--muted)}
+.doc-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.doc-tabs button{border:1px solid #cbdceb;background:#edf4fb;
+ color:#174a75;border-radius:8px;padding:10px;font-weight:750}
+.doc-tabs button.active{background:#174d7d;color:#fff}
+.bottom{position:fixed;bottom:0;left:0;right:0;z-index:20;
+ background:var(--dark);display:flex;gap:2px;overflow-x:auto;
+ padding:7px 5px calc(8px + env(safe-area-inset-bottom))}
+.bottom button{flex:1 0 auto;min-width:62px;background:transparent;
+ color:#bdd0e2;border:0;border-radius:8px;padding:7px 4px;font-size:10px}
+.bottom button b{display:block;font-size:19px}
+.bottom button.active{background:#195b97;color:#fff}
+#toast{display:none;position:fixed;z-index:30;top:12px;left:12px;
+ right:12px;max-width:500px;margin:auto;background:#103b5e;
+ color:#fff;padding:13px;border-radius:10px}
+#toast.show{display:block}
+@media(min-width:800px){
+ .shell{display:grid;grid-template-columns:235px minmax(0,1fr)}
+ .sidebar{min-height:100vh}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ main{padding:22px}
+ .bottom{display:none}
+}
+@media(max-width:799px){
+ .sidebar{display:none}
+ .topbar{position:sticky;top:0;z-index:10}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+ <div class="brand"><div class="logo">A7</div>
+ <div><strong>SUPERINTENDENT</strong>
+ <small>PLAN · MANAGE · BUILD</small></div></div>
+ <nav class="menu" aria-label="Desktop navigation">
+  <button data-go="home" class="active">⌂ &nbsp; Dashboard</button>
+  <button data-go="setup">＋ &nbsp; New project</button>
+  <button data-go="trades">▤ &nbsp; Trade checklist</button>
+  <button data-go="documents">▣ &nbsp; Trade documents</button>
+  <button data-go="records">♙ &nbsp; Contractors & bids</button>
+  <button data-go="backup">⚙ &nbsp; Backup</button>
+ </nav>
+ <div class="side-note">V5 planning prototype. Records stay in this browser.
+ Documents are drafts. No live AI, cloud sync or automatic emails.</div>
+</aside>
+
+<div class="workspace">
+<header class="topbar">
+ <div><strong>A7 Superintendent</strong>
+ <small>Start-to-finish project manager · V5</small></div>
+ <select id="projectSwitch" aria-label="Selected project"></select>
+</header>
+
+<main>
+<div class="notice">PUBLIC PROTOTYPE: Use sample information only.
+ Records are stored in this browser. Verify site conditions, permits,
+ specifications and prices. Hiring agreements require project-specific
+ review before signing.</div>
+
+<section class="page active" id="home">
+ <div class="card hero">
+  <div class="eyebrow">Your project command center</div>
+  <h1 id="heroName">Start your first project</h1>
+  <p id="heroLocation">A7 will build a trade-by-trade plan with you.</p>
+  <div class="actions">
+   <button class="btn" data-go="setup">＋ Start new project</button>
+   <button class="btn light" data-go="trades">Open trade checklist</button>
+  </div>
+ </div>
+ <div class="stats">
+  <div class="stat"><small>Projects</small><strong id="countProjects">0</strong></div>
+  <div class="stat"><small>Trades</small><strong id="countTrades">0</strong></div>
+  <div class="stat"><small>Steps done</small><strong id="countSteps">0/0</strong></div>
+ </div>
+ <div class="grid">
+  <div class="card">
+   <div class="eyebrow">Selected property</div>
+   <h2>Overall progress</h2>
+   <div class="progress"><div id="progressFill"></div></div>
+   <p id="progressLabel"></p>
+   <div id="homeTradeList"></div>
+  </div>
+  <div class="card">
+   <div class="eyebrow">Next steps</div>
+   <h2>What needs attention?</h2>
+   <div id="nextSteps"></div>
+   <div class="actions">
+    <button class="btn" data-go="trades">Manage trades</button>
+    <button class="btn light" data-go="documents">Prepare paperwork</button>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="page" id="setup">
+ <div class="card">
+  <div class="eyebrow">Step 1 / Guided project setup</div>
+  <h1>Tell A7 about the property</h1>
+  <p>Answer what you know. Mark uncertain details as
+  “To verify” rather than guessing. A7 will create the trade plan.</p>
+  <form id="projectForm">
+   <label class="field" for="pName">Project name *</label>
+   <input id="pName" required maxlength="100"
+    placeholder="Example: Talco Tract 1">
+   <label class="field" for="pLocation">Property location</label>
+   <input id="pLocation" maxlength="160"
+    placeholder="City, state, or general area">
+   <label class="field" for="pHomes">Number of homes</label>
+   <input id="pHomes" type="number" min="1" max="100" value="1">
+   <label class="field" for="pHomeType">Home type / manufacturer</label>
+   <input id="pHomeType" maxlength="160"
+    placeholder="Example: Clayton manufactured home — model to verify">
+   <div class="grid">
+    <div>
+     <label class="field" for="pEntrance">Road entrance / culvert</label>
+     <select id="pEntrance">
+      <option value="To verify">To verify</option>
+      <option value="Existing access">Existing access</option>
+      <option value="New entrance needed">New entrance needed</option>
+      <option value="No culvert expected; verify">No culvert expected; verify</option>
+     </select>
+    </div>
+    <div>
+     <label class="field" for="pWater">Water</label>
+     <select id="pWater">
+      <option value="To verify">To verify</option>
+      <option value="Existing service">Existing service</option>
+      <option value="New service needed">New service needed</option>
+      <option value="Well being considered">Well being considered</option>
+     </select>
+    </div>
+    <div>
+     <label class="field" for="pPower">Electrical service</label>
+     <select id="pPower">
+      <option value="To verify">To verify</option>
+      <option value="Existing service">Existing service</option>
+      <option value="New service needed">New service needed</option>
+     </select>
+    </div>
+    <div>
+     <label class="field" for="pSeptic">Wastewater</label>
+     <select id="pSeptic">
+      <option value="To verify">To verify</option>
+      <option value="Septic planned">Septic planned</option>
+      <option value="Existing system; verify suitability">Existing system; verify suitability</option>
+      <option value="Sewer connection planned">Sewer connection planned</option>
+     </select>
+    </div>
+    <div>
+     <label class="field" for="pHVAC">Who supplies and installs HVAC?</label>
+     <select id="pHVAC">
+      <option value="To verify">To verify</option>
+      <option value="Home manufacturer / dealer">Home manufacturer / dealer</option>
+      <option value="Separate HVAC contractor">Separate HVAC contractor</option>
+      <option value="Split responsibility; confirm in writing">Split responsibility; confirm in writing</option>
+     </select>
+    </div>
+    <div>
+     <label class="field" for="pInstall">Who delivers and sets the home?</label>
+     <select id="pInstall">
+      <option value="To verify">To verify</option>
+      <option value="Home manufacturer / dealer">Home manufacturer / dealer</option>
+      <option value="Separate installation contractor">Separate installation contractor</option>
+      <option value="Split responsibility; confirm in writing">Split responsibility; confirm in writing</option>
+     </select>
+    </div>
+   </div>
+   <label class="field" for="pNotes">Other details / questions</label>
+   <textarea id="pNotes" maxlength="2500"
+    placeholder="Acreage, planned driveway, schedule, utilities, unanswered questions..."></textarea>
+   <div class="actions">
+    <button class="btn" type="submit">Build my project checklist</button>
+   </div>
+  </form>
+ </div>
+</section>
+
+<section class="page" id="trades">
+ <div class="card">
+  <div class="eyebrow">Step 2 / Trade-by-trade workflow</div>
+  <h1>Construction checklist</h1>
+  <p id="tradeIntro">Choose a project to see its work packages.</p>
+  <div id="tradeList"></div>
+ </div>
+ <div class="card" id="tradeDetailCard">
+  <div class="eyebrow">Selected trade / Work package</div>
+  <h2 id="tradeTitle">Choose a trade</h2>
+  <p id="tradeDescription"></p>
+  <div class="progress"><div id="tradeProgressFill"></div></div>
+  <p id="tradeProgressLabel"></p>
+  <div id="tradeChecklist"></div>
+  <div class="actions">
+   <button class="btn" id="tradeDocsButton" type="button">Prepare trade documents</button>
+   <button class="btn light" id="tradeRecordsButton" type="button">Contractor & bid</button>
+  </div>
+ </div>
+</section>
+
+<section class="page" id="documents">
+ <div class="card">
+  <div class="eyebrow">Step 3 / Trade paperwork</div>
+  <h1>Document builder</h1>
+  <p>Choose a trade and document. Templates use your project
+  information but leave unknown prices, dates and specifications blank.</p>
+  <label class="field" for="documentTrade">Trade</label>
+  <select id="documentTrade"></select>
+  <div class="doc-tabs" id="docTabs">
+   <button type="button" data-doc="scope" class="active">Scope of work</button>
+   <button type="button" data-doc="bid">Bid sheet</button>
+   <button type="button" data-doc="agreement">Hiring agreement</button>
+   <button type="button" data-doc="completion">Completion checklist</button>
+  </div>
+  <label class="field" for="documentText">Editable document</label>
+  <textarea id="documentText" style="min-height:420px"
+   maxlength="50000"></textarea>
+  <div class="actions">
+   <button class="btn" id="saveDocument" type="button">Save this draft</button>
+   <button class="btn light" id="copyDocument" type="button">Copy text</button>
+   <button class="btn light" id="regenerateDocument" type="button">Reset to template</button>
+  </div>
+  <p class="muted">A saved draft stays attached to this project and trade.
+  Resetting to the template replaces the text in the editor only;
+  you must save to replace the stored draft.</p>
+ </div>
+</section>
+
+<section class="page" id="records">
+ <div class="card">
+  <div class="eyebrow">Step 4 / Hiring and bids</div>
+  <h1>Contractor & bid record</h1>
+  <p>Record the contractor and quote for one trade.
+  This does not hire anyone or send a contract.</p>
+  <label class="field" for="recordTrade">Trade</label>
+  <select id="recordTrade"></select>
+  <form id="recordForm">
+   <label class="field" for="rName">Contractor / company</label>
+   <input id="rName" maxlength="120" placeholder="Name to verify">
+   <div class="grid">
+    <div><label class="field" for="rEmail">Email</label>
+     <input id="rEmail" type="email" maxlength="160"></div>
+    <div><label class="field" for="rPhone">Phone</label>
+     <input id="rPhone" type="tel" maxlength="50"></div>
+    <div><label class="field" for="rPrice">Quoted price (USD)</label>
+     <input id="rPrice" type="number" min="0" step=".01"></div>
+    <div><label class="field" for="rDate">Quote date</label>
+     <input id="rDate" type="date"></div>
+   </div>
+   <label class="field" for="rStatus">Hiring stage</label>
+   <select id="rStatus">
+    <option>Not started</option>
+    <option>Requesting bids</option>
+    <option>Bid received</option>
+    <option>Reviewing agreement</option>
+    <option>Hired — owner confirmed</option>
+    <option>Work in progress</option>
+    <option>Work completed — owner confirmed</option>
+   </select>
+   <label class="field" for="rNotes">Quote source, exclusions and notes</label>
+   <textarea id="rNotes" maxlength="2500"></textarea>
+   <div class="actions">
+    <button class="btn" type="submit">Review & save record</button>
+   </div>
+  </form>
+  <p class="muted">Only enter a “hired” or “completed” status after
+  confirming that it actually happened. This record is not a signed agreement.</p>
+ </div>
+</section>
+
+<section class="page" id="backup">
+ <div class="card">
+  <div class="eyebrow">Your local records</div>
+  <h1>Backup & restore</h1>
+  <p>Download your V5 data as a JSON file. Importing a backup
+  replaces the current V5 data in this browser.</p>
+  <div class="actions">
+   <button class="btn" id="exportData" type="button">Export backup</button>
+   <button class="btn light" id="importData" type="button">Import backup</button>
+  </div>
+  <input id="importFile" type="file" accept=".json,application/json" hidden>
+  <p class="muted">V5 uses separate storage from V4. It does not
+  automatically move your older projects into this version.</p>
+ </div>
+</section>
+</main>
+</div>
+</div>
+
+<nav class="bottom" aria-label="Mobile navigation">
+ <button data-go="home" class="active"><b>⌂</b>Home</button>
+ <button data-go="setup"><b>＋</b>New</button>
+ <button data-go="trades"><b>▤</b>Trades</button>
+ <button data-go="documents"><b>▣</b>Docs</button>
+ <button data-go="records"><b>♙</b>Hiring</button>
+ <button data-go="backup"><b>⚙</b>Backup</button>
+</nav>
+<div id="toast" class="" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+const $=id=>document.getElementById(id);
+const KEY="a7-superintendent-v5";
+const uid=()=>Date.now().toString(36)+
+ Math.random().toString(36).slice(2,9);
+
+const DEFINITIONS=[
+ {
+  id:"planning",name:"Planning, permits & site verification",
+  description:"Confirm the property plan and requirements before committing to construction.",
+  scope:"Review proposed home locations, access, property boundaries, utilities, site conditions, and required approvals. Identify which party will obtain each required permit or inspection.",
+  items:[
+   "Confirm ownership information and property boundaries",
+   "Confirm proposed home locations and access",
+   "Identify easements, setbacks and restrictions to verify",
+   "Confirm applicable permits and inspection responsibilities",
+   "Confirm utility locations and site constraints",
+   "Approve a written site plan before field work"
+  ],
+  bids:["Site review","Survey or layout, if needed","Permit or plan assistance"],
+  finish:["Final site plan and responsibilities documented","Required approvals confirmed"]
+ },
+ {
+  id:"clearing",name:"Land clearing",
+  description:"Define exactly what may be cleared and what must remain.",
+  scope:"Clear only the owner-approved areas shown on the verified site plan. Identify trees and vegetation to preserve, access routes, debris handling, erosion controls and final cleanup. Do not disturb areas outside the agreed limits.",
+  items:[
+   "Confirm property lines and clearing limits",
+   "Mark trees and areas to preserve",
+   "Confirm utility locates and access",
+   "Check applicable clearing and erosion-control requirements",
+   "Obtain an itemized clearing bid",
+   "Review and approve scope and agreement",
+   "Walk the limits with the contractor before work",
+   "Inspect clearing, debris removal and cleanup"
+  ],
+  bids:["Mobilization","Clearing area or quantity","Stump and debris handling","Hauling or disposal","Final cleanup"],
+  finish:["Clearing stayed within approved limits","Preserved areas checked","Debris and cleanup reviewed"]
+ },
+ {
+  id:"dirt",name:"Dirt work, grading & home pads",
+  description:"Coordinate elevations, drainage, fill and pad requirements.",
+  scope:"Perform only the grading, fill, compaction and pad preparation described in approved plans and manufacturer or installer requirements. Confirm elevations, drainage, material suitability, testing and final tolerances before pricing.",
+  items:[
+   "Confirm home locations and pad dimensions",
+   "Obtain manufacturer or installer pad requirements",
+   "Confirm drainage and proposed elevations",
+   "Verify fill material and compaction requirements",
+   "Request an itemized dirt-work bid",
+   "Approve scope, testing and change-order process",
+   "Confirm work is ready before home delivery",
+   "Inspect finished pads and drainage"
+  ],
+  bids:["Mobilization","Excavation and grading","Imported fill","Placement and compaction","Testing, if required","Finish grading"],
+  finish:["Pad locations and elevations checked","Required compaction or testing records received","Drainage reviewed"]
+ },
+ {
+  id:"culvert",name:"Entrance & culvert",
+  description:"Verify road authority requirements before purchasing materials.",
+  scope:"Construct the approved entrance and drainage crossing using the location, dimensions, material and installation details required by the responsible road authority and approved plans. Do not assume a culvert size or TxDOT approval.",
+  items:[
+   "Identify the responsible road authority",
+   "Confirm entrance permit and inspection requirements",
+   "Confirm approved culvert type, size and length",
+   "Confirm ditch grades and drainage details",
+   "Obtain itemized material and installation bids",
+   "Approve the written scope before ordering",
+   "Coordinate any required inspection",
+   "Inspect the completed entrance and drainage"
+  ],
+  bids:["Permit or coordination","Culvert materials","Delivery","Excavation and bedding","Installation and backfill","Entrance finishing"],
+  finish:["Required inspection or acceptance confirmed","Approved material documentation collected","Drainage and entrance checked"]
+ },
+ {
+  id:"gravel",name:"Gravel & rock driveways",
+  description:"Define the driveway route, base and finished surface.",
+  scope:"Build the driveway within the owner-approved alignment using verified widths, depths, base preparation, drainage and material specifications. Separate material, hauling, placement and compaction in the quote.",
+  items:[
+   "Confirm driveway alignment and width",
+   "Confirm base and rock specifications",
+   "Check drainage and access for delivery trucks",
+   "Request quantities and delivered pricing",
+   "Approve the written scope and price",
+   "Inspect base preparation",
+   "Inspect rock placement and finished access"
+  ],
+  bids:["Subgrade preparation","Base material","Surface rock","Hauling","Spreading and compaction"],
+  finish:["Route and width reviewed","Drainage reviewed","Surface and cleanup inspected"]
+ },
+ {
+  id:"water",name:"Water service & plumbing connection",
+  description:"Assign responsibility for supply, trenching and final connections.",
+  scope:"Coordinate the verified water supply and required connections to the home. Identify who supplies materials, performs trenching, makes connections, obtains approvals and completes any required testing.",
+  items:[
+   "Confirm available water source and provider",
+   "Confirm meter or well responsibilities",
+   "Verify route, depth and material requirements",
+   "Coordinate trenching and other utilities",
+   "Request a written connection bid",
+   "Confirm required approvals and testing",
+   "Inspect completed connection and restore disturbed areas"
+  ],
+  bids:["Service or meter costs","Trenching","Pipe and fittings","Connection labor","Testing and restoration"],
+  finish:["Connection and required testing confirmed","Leaks and restoration checked","Provider or inspection records received"]
+ },
+ {
+  id:"electrical",name:"Electrical service",
+  description:"Coordinate the utility provider, electrician and home installer.",
+  scope:"Provide the agreed electrical service work according to approved plans, utility-provider requirements and applicable inspection requirements. Clearly assign responsibility for meter equipment, service conductors, trenching and the final home connection.",
+  items:[
+   "Confirm utility provider and service availability",
+   "Confirm load and service requirements",
+   "Assign meter, pole, trenching and connection responsibilities",
+   "Confirm permits and inspection requirements",
+   "Request an itemized electrical bid",
+   "Approve the scope and schedule",
+   "Coordinate energization and required inspections",
+   "Verify the completed service"
+  ],
+  bids:["Utility-provider charges","Meter or service equipment","Trenching","Conductors and materials","Installation labor","Testing and inspection"],
+  finish:["Required inspection or utility approval confirmed","Service operation checked","Final connection responsibility closed out"]
+ },
+ {
+  id:"septic",name:"Septic / wastewater",
+  description:"Confirm the approved wastewater solution before installation.",
+  scope:"Provide only the wastewater design, permitting, installation and testing included in the approved project requirements. Identify who is responsible for site evaluation, design, equipment, installation, inspections and owner instructions.",
+  items:[
+   "Confirm septic versus sewer plan",
+   "Identify responsible permitting authority",
+   "Confirm site evaluation and design requirements",
+   "Confirm approved system location and capacity",
+   "Obtain an itemized design and installation bid",
+   "Approve scope and required inspections",
+   "Coordinate installation with other sitework",
+   "Collect inspection and operating information"
+  ],
+  bids:["Site evaluation","Design and permits","Equipment and materials","Excavation and installation","Inspection or testing","Final grading"],
+  finish:["Required approval or inspection confirmed","System documentation received","Owner operation instructions received"]
+ },
+ {
+  id:"hvac",name:"HVAC / air conditioning",
+  description:"First determine what the home manufacturer or dealer already includes.",
+  scope:"Confirm in writing whether the home purchase includes HVAC equipment, delivery, installation, startup, duct connections and warranty service. Any separately contracted HVAC work must clearly exclude work already included elsewhere.",
+  items:[
+   "Confirm HVAC equipment included with the home",
+   "Confirm who installs and starts the system",
+   "Confirm equipment and installation requirements",
+   "Identify any separate electrical or duct work",
+   "Request a bid only for uncovered work",
+   "Approve responsibilities and warranty terms",
+   "Coordinate startup and any required inspection",
+   "Verify operation and collect warranty documents"
+  ],
+  bids:["Equipment, if not included","Installation labor","Duct or connection work","Startup and testing","Warranty or service items"],
+  finish:["System operation checked","Startup documentation received","Warranty and service contact recorded"]
+ },
+ {
+  id:"home",name:"Home manufacturer, delivery & installation",
+  description:"Separate the home purchase from transport, setup and utility connections.",
+  scope:"Document the selected home model, included options, delivery conditions, site readiness, transport, placement, setup, anchoring, finish work, utility connections, inspections and warranty responsibilities. Identify which items are included in the manufacturer or dealer agreement and which require separate contractors.",
+  items:[
+   "Confirm exact home model and included options",
+   "Review dealer or manufacturer purchase documents",
+   "Confirm delivery route and site access",
+   "Confirm pad and foundation or support requirements",
+   "Assign delivery, placement and setup responsibilities",
+   "Confirm HVAC and utility connection responsibilities",
+   "Coordinate required inspections and approvals",
+   "Inspect delivery damage and installation items",
+   "Complete punch list and collect warranty information"
+  ],
+  bids:["Home and options","Transportation","Placement and setup","Support or anchoring","Finish work","Utility connections, if included"],
+  finish:["Delivery and installation reviewed","Required approvals confirmed","Punch list addressed","Warranty documents collected"]
+ }
+];
+
+const DOC_NAMES={
+ scope:"Scope of work",
+ bid:"Bid sheet",
+ agreement:"Hiring agreement",
+ completion:"Completion checklist"
+};
+
+const fresh=()=>({selected:"",projects:[]});
+let data=load();
+let selectedTrade="planning";
+let selectedDoc="scope";
+let toastTimer;
+
+function valid(d){
+ return !!d&&Array.isArray(d.projects)&&
+ d.projects.every(p=>p&&typeof p.id==="string"&&
+ typeof p.name==="string"&&p.setup&&
+ Array.isArray(p.trades));
+}
+function load(){
+ try{
+  const d=JSON.parse(localStorage.getItem(KEY));
+  if(valid(d))return d;
+ }catch(e){}
+ return fresh();
+}
+function save(){
+ try{
+  localStorage.setItem(KEY,JSON.stringify(data));
+  return true;
+ }catch(e){
+  toast("Could not save. Browser storage may be full.");
+  return false;
+ }
+}
+function toast(message){
+ const n=$("toast");
+ n.textContent=message;
+ n.classList.add("show");
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>n.classList.remove("show"),3500);
+}
+function node(tag,text,cls){
+ const n=document.createElement(tag);
+ n.textContent=String(text??"");
+ if(cls)n.className=cls;
+ return n;
+}
+function button(text,fn,cls="btn light"){
+ const b=node("button",text,cls);
+ b.type="button";
+ b.addEventListener("click",fn);
+ return b;
+}
+function current(){
+ return data.projects.find(p=>p.id===data.selected)||null;
+}
+function definition(id){
+ return DEFINITIONS.find(d=>d.id===id)||DEFINITIONS[0];
+}
+function packageFor(id){
+ const p=current();
+ return p?p.trades.find(t=>t.id===id)||null:null;
+}
+function requireProject(){
+ if(current())return true;
+ toast("Create a project first");
+ go("setup");
+ return false;
+}
+function go(page){
+ if(["trades","documents","records"].includes(page)&&!current()){
+  page="setup";
+ }
+ document.querySelectorAll(".page").forEach(n=>
+  n.classList.toggle("active",n.id===page));
+ document.querySelectorAll("[data-go]").forEach(n=>
+  n.classList.toggle("active",n.dataset.go===page));
+ render();
+ window.scrollTo(0,0);
+}
+document.querySelectorAll("[data-go]").forEach(n=>
+ n.addEventListener("click",()=>go(n.dataset.go)));
+
+function setupValue(id){
+ return $(id).value.trim();
+}
+$("projectForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const name=setupValue("pName");
+ if(!name)return;
+ const homes=Number($("pHomes").value);
+ if(!Number.isInteger(homes)||homes<1||homes>100){
+  toast("Enter a valid number of homes");
+  return;
+ }
+ const setup={
+  location:setupValue("pLocation"),
+  homes,
+  homeType:setupValue("pHomeType"),
+  entrance:setupValue("pEntrance"),
+  water:setupValue("pWater"),
+  power:setupValue("pPower"),
+  septic:setupValue("pSeptic"),
+  hvac:setupValue("pHVAC"),
+  installation:setupValue("pInstall"),
+  notes:setupValue("pNotes")
+ };
+ if(!confirm(
+  "Create "+name+" with "+DEFINITIONS.length+
+  " trade work packages?\n\nYou can edit each checklist and document afterward."
+ ))return;
+ const p={
+  id:uid(),name,setup,
+  trades:DEFINITIONS.map(d=>({
+   id:d.id,
+   checks:d.items.map(()=>false),
+   documents:{},
+   contractor:{
+    name:"",email:"",phone:"",price:"",
+    date:"",status:"Not started",notes:""
+   }
+  }))
+ };
+ data.projects.push(p);
+ data.selected=p.id;
+ selectedTrade="planning";
+ selectedDoc="scope";
+ if(save()){
+  e.target.reset();
+  $("pHomes").value="1";
+  go("home");
+  toast("Project and trade checklist created");
+ }
+});
+
+$("projectSwitch").addEventListener("change",e=>{
+ data.selected=e.target.value;
+ selectedTrade="planning";
+ selectedDoc="scope";
+ save();
+ render();
+});
+
+function render(){
+ const p=current();
+ const switcher=$("projectSwitch");
+ switcher.replaceChildren();
+ if(!p){
+  switcher.add(new Option("No project yet",""));
+  switcher.disabled=true;
+ }else{
+  switcher.disabled=false;
+  data.projects.forEach(item=>
+   switcher.add(new Option(item.name,item.id)));
+  switcher.value=p.id;
+ }
+ $("heroName").textContent=p?p.name:"Start your first project";
+ $("heroLocation").textContent=p?
+  (p.setup.location||"Location to verify")+" · "+
+  p.setup.homes+" home(s)":
+  "A7 will build a trade-by-trade plan with you.";
+ $("countProjects").textContent=data.projects.length;
+ $("countTrades").textContent=p?p.trades.length:0;
+
+ let done=0,total=0;
+ if(p){
+  p.trades.forEach(t=>{
+   t.checks.forEach(c=>{
+    total++;
+    if(c)done++;
+   });
+  });
+ }
+ $("countSteps").textContent=done+"/"+total;
+ $("progressLabel").textContent=p?
+  done+" of "+total+" checklist steps complete":
+  "Create a project to begin.";
+ $("progressFill").style.width=
+  (total?100*done/total:0)+"%";
+
+ renderHomeTrades();
+ renderTradeList();
+ renderTradeDetail();
+ renderDocumentControls();
+ renderRecord();
+}
+
+function renderHomeTrades(){
+ const root=$("homeTradeList");
+ const next=$("nextSteps");
+ root.replaceChildren();
+ next.replaceChildren();
+ const p=current();
+ if(!p){
+  root.append(node("p","No project created yet.","empty"));
+  next.append(node("p","Start by answering the project setup questions.","empty"));
+  return;
+ }
+ p.trades.forEach(t=>{
+  const d=definition(t.id);
+  const complete=t.checks.filter(Boolean).length;
+  const row=document.createElement("div");
+  row.className="row";
+  row.append(
+   node("strong",d.name),
+   node("small",complete+" of "+t.checks.length+" steps complete")
+  );
+  row.append(button("Open",()=>{
+   selectedTrade=t.id;
+   go("trades");
+  }));
+  root.append(row);
+ });
+ const first=p.trades.find(t=>t.checks.some(c=>!c));
+ if(first){
+  const d=definition(first.id);
+  const index=first.checks.findIndex(c=>!c);
+  next.append(
+   node("strong",d.name),
+   node("p",d.items[index])
+  );
+ }else{
+  next.append(node("p","All checklist steps are marked complete. Review the records and closeout documents.","empty"));
+ }
+}
+
+function renderTradeList(){
+ const root=$("tradeList");
+ root.replaceChildren();
+ const p=current();
+ if(!p){
+  root.append(node("p","Create a project first.","empty"));
+  return;
+ }
+ $("tradeIntro").textContent="Project: "+p.name+
+  ". Open a trade to work through its individual steps.";
+ p.trades.forEach(t=>{
+  const d=definition(t.id);
+  const done=t.checks.filter(Boolean).length;
+  const card=document.createElement("div");
+  card.className="trade-card";
+  card.append(
+   node("strong",d.name),
+   node("small",done+"/"+t.checks.length+
+    " steps · "+t.contractor.status)
+  );
+  const progress=document.createElement("div");
+  progress.className="progress";
+  const fill=document.createElement("div");
+  fill.style.width=(t.checks.length?
+   100*done/t.checks.length:0)+"%";
+  progress.append(fill);
+  card.append(progress);
+  card.append(button(
+   t.id===selectedTrade?"Currently open ✓":"Open work package",
+   ()=>{
+    selectedTrade=t.id;
+    renderTradeList();
+    renderTradeDetail();
+    $("tradeDetailCard").scrollIntoView({behavior:"smooth",block:"start"});
+   },
+   t.id===selectedTrade?"btn":"btn light"
+  ));
+  root.append(card);
+ });
+}
+
+function renderTradeDetail(){
+ const root=$("tradeChecklist");
+ root.replaceChildren();
+ const t=packageFor(selectedTrade);
+ const d=definition(selectedTrade);
+ $("tradeTitle").textContent=t?d.name:"Choose a trade";
+ $("tradeDescription").textContent=t?d.description:"";
+ $("tradeDocsButton").disabled=!t;
+ $("tradeRecordsButton").disabled=!t;
+ if(!t){
+  $("tradeProgressLabel").textContent="";
+  $("tradeProgressFill").style.width="0%";
+  return;
+ }
+ const done=t.checks.filter(Boolean).length;
+ $("tradeProgressLabel").textContent=
+  done+" of "+t.checks.length+" steps complete";
+ $("tradeProgressFill").style.width=
+  (100*done/t.checks.length)+"%";
+ d.items.forEach((item,i)=>{
+  const label=document.createElement("label");
+  label.className="check";
+  const check=document.createElement("input");
+  check.type="checkbox";
+  check.checked=!!t.checks[i];
+  check.addEventListener("change",()=>{
+   t.checks[i]=check.checked;
+   save();
+   render();
+  });
+  const text=node("span",item);
+  if(t.checks[i])text.style.textDecoration="line-through";
+  label.append(check,text);
+  root.append(label);
+ });
+}
+$("tradeDocsButton").addEventListener("click",()=>{
+ if(requireProject())go("documents");
+});
+$("tradeRecordsButton").addEventListener("click",()=>{
+ if(requireProject())go("records");
+});
+
+function fillTradeSelect(select){
+ const p=current();
+ select.replaceChildren();
+ if(!p){
+  select.add(new Option("Create a project first",""));
+  select.disabled=true;
+  return;
+ }
+ select.disabled=false;
+ p.trades.forEach(t=>
+  select.add(new Option(definition(t.id).name,t.id)));
+ select.value=selectedTrade;
+}
+
+function docTemplate(kind,p,t,d){
+ const s=p.setup;
+ const header=
+`A7 SUPERINTENDENT — ${DOC_NAMES[kind].toUpperCase()}
+DRAFT FOR REVIEW — NOT APPROVED OR SIGNED
+
+Project: ${p.name}
+Location: ${s.location||"[Confirm property location]"}
+Homes: ${s.homes}
+Home: ${s.homeType||"[Confirm home manufacturer and model]"}
+Trade: ${d.name}
+Contractor: ${t.contractor.name||"[Contractor name]"}
+Date: ${new Date().toLocaleDateString()}
+
+`;
+
+ if(kind==="scope"){
+  return header+
+`1. PROJECT-SPECIFIC WORK
+${d.scope}
+
+2. ITEMS TO CONFIRM BEFORE PRICING
+${d.items.map((x,i)=>(i+1)+". "+x).join("\n")}
+
+3. SITE AND PROJECT INFORMATION
+Entrance: ${s.entrance}
+Water: ${s.water}
+Electrical: ${s.power}
+Wastewater: ${s.septic}
+HVAC responsibility: ${s.hvac}
+Home delivery and setup: ${s.installation}
+Additional notes: ${s.notes||"[None entered]"}
+
+4. SCOPE DETAILS TO COMPLETE
+Exact work limits: [Enter]
+Dimensions and quantities: [Enter]
+Approved plans or specifications: [Identify documents]
+Materials and quality requirements: [Enter]
+Permits and inspection responsibility: [Assign]
+Site access and working hours: [Enter]
+Cleanup and restoration: [Enter]
+Exclusions and work by others: [Enter]
+
+5. ACCEPTANCE
+Required inspections and records: [Enter]
+Completion criteria: [Enter]
+Owner review date: [Enter]
+
+No work is authorized by this draft. Confirm all details
+before incorporating it into a signed agreement.`;
+ }
+
+ if(kind==="bid"){
+  return header+
+`REQUEST FOR ITEMIZED BID
+
+Please price the same defined scope and identify all exclusions.
+Do not assume quantities, permit status or material approval.
+
+BID ITEMS
+${d.bids.map((x,i)=>(i+1)+". "+x+
+": Quantity [ ]  Unit [ ]  Unit price $[ ]  Total $[ ]").join("\n")}
+
+Additional items: [Enter]
+Subtotal: $[ ]
+Taxes, if applicable: $[ ]
+Delivery or mobilization: $[ ]
+Total proposed price: $[ ]
+
+Proposed start date: [ ]
+Estimated duration: [ ]
+Quote valid through: [ ]
+Payment milestones proposed: [ ]
+Allowances: [ ]
+Exclusions: [ ]
+Permits and inspections included: [ ]
+Material specifications and substitutions: [ ]
+Insurance information to verify: [ ]
+Warranty terms proposed: [ ]
+
+Contractor / company: [ ]
+Contact: [ ]
+Quote date: [ ]
+
+OWNER COMPARISON NOTES
+Scope matches request? [ ]
+Missing items or qualifications: [ ]
+Questions before selection: [ ]
+
+This is a bid request, not authorization to begin work.`;
+ }
+
+ if(kind==="agreement"){
+  return header+
+`PROPOSED TRADE HIRING AGREEMENT — REVIEW REQUIRED
+
+PARTIES
+Owner / contracting entity: [Full legal name]
+Contractor / contracting entity: [Full legal name]
+Project property description: [Verify]
+
+1. WORK
+The proposed work is described in the final, mutually
+approved scope of work attached as Exhibit A.
+Scope version and date: [Enter]
+Approved plans and specifications: [List]
+
+2. PRICE AND PAYMENT
+Agreed contract price: $[Enter]
+Deposit, if any: $[Enter]
+Milestone 1 and payment: [Enter]
+Milestone 2 and payment: [Enter]
+Final payment and conditions: [Enter]
+Required invoices and supporting records: [Enter]
+
+3. SCHEDULE
+Start conditions and date: [Enter]
+Substantial completion target: [Enter]
+Final completion target: [Enter]
+Known dependencies and access requirements: [Enter]
+
+4. RESPONSIBILITIES
+Owner-provided items: [Enter]
+Contractor-provided items: [Enter]
+Permits and inspections: [Assign]
+Materials, delivery and storage: [Assign]
+Utilities, protection and site cleanup: [Assign]
+Insurance and licensing details to verify: [Enter]
+
+5. CHANGES
+Any change in work, price or schedule must be
+documented and approved by the parties before the
+changed work proceeds. Define the actual change-order
+process and authorized signers here: [Enter]
+
+6. QUALITY, REVIEW AND CLOSEOUT
+Applicable plans and specifications: [Enter]
+Inspection and testing records: [Enter]
+Correction of incomplete or nonconforming work: [Enter]
+Final walkthrough and punch-list process: [Enter]
+Warranty documents and closeout deliverables: [Enter]
+
+7. TERMS REQUIRING PROJECT-SPECIFIC REVIEW
+Payment protections and required notices: [Review]
+Delays, suspension and termination: [Review]
+Dispute resolution and governing law: [Review]
+Risk allocation, indemnity and insurance: [Review]
+Any legally required contract terms: [Review]
+
+EXHIBITS
+A — Final scope of work: [Attach]
+B — Accepted itemized bid: [Attach]
+C — Plans, permits and specifications: [Attach]
+D — Schedule and payment milestones: [Attach]
+
+SIGNATURES — DO NOT SIGN THIS UNREVIEWED TEMPLATE
+Owner: __________________ Date: __________
+Contractor: ______________ Date: __________
+
+This is a planning draft, not legal advice or a complete
+jurisdiction-specific agreement. Have it reviewed for the
+actual parties, property, work and applicable law.`;
+ }
+
+ return header+
+`TRADE COMPLETION AND CLOSEOUT REVIEW
+
+WORK TO VERIFY
+${d.finish.map((x,i)=>(i+1)+". [ ] "+x).join("\n")}
+
+ADDITIONAL CLOSEOUT ITEMS
+[ ] Compare completed work with the approved scope.
+[ ] Record incomplete items and corrections.
+[ ] Confirm required inspections and approvals.
+[ ] Collect applicable warranties and instructions.
+[ ] Review approved changes and final invoice.
+[ ] Document owner acceptance or remaining exceptions.
+
+Punch-list items: [Enter]
+Photos or inspection references: [Enter]
+Outstanding documents: [Enter]
+Final walkthrough date: [Enter]
+Contractor comments: [Enter]
+Owner comments: [Enter]
+
+Status: [Open / Corrections needed / Reviewed]
+Owner confirmation: [Name and date]
+
+Checking items in A7 does not replace required
+inspections, contractual acceptance or legal approvals.`;
+}
+
+function renderDocumentControls(){
+ fillTradeSelect($("documentTrade"));
+ document.querySelectorAll("[data-doc]").forEach(b=>
+  b.classList.toggle("active",b.dataset.doc===selectedDoc));
+ const p=current();
+ const t=packageFor(selectedTrade);
+ if(!p||!t){
+  $("documentText").value="";
+  return;
+ }
+ const d=definition(selectedTrade);
+ $("documentText").value=
+  t.documents[selectedDoc]||
+  docTemplate(selectedDoc,p,t,d);
+}
+$("documentTrade").addEventListener("change",e=>{
+ selectedTrade=e.target.value;
+ render();
+});
+document.querySelectorAll("[data-doc]").forEach(b=>{
+ b.addEventListener("click",()=>{
+  selectedDoc=b.dataset.doc;
+  renderDocumentControls();
+ });
+});
+$("saveDocument").addEventListener("click",()=>{
+ const t=packageFor(selectedTrade);
+ if(!t)return toast("Create a project first");
+ const text=$("documentText").value.trim();
+ if(!text)return toast("Document is empty");
+ t.documents[selectedDoc]=text;
+ if(save())toast("Draft saved to this trade");
+});
+$("regenerateDocument").addEventListener("click",()=>{
+ const p=current();
+ const t=packageFor(selectedTrade);
+ if(!p||!t)return;
+ if(!confirm(
+  "Replace the text currently in the editor with the template? "+
+  "Your last saved draft will remain until you press Save."
+ ))return;
+ $("documentText").value=docTemplate(
+  selectedDoc,p,t,definition(selectedTrade));
+ toast("Template loaded into editor");
+});
+$("copyDocument").addEventListener("click",async()=>{
+ const text=$("documentText").value;
+ if(!text.trim())return toast("Nothing to copy");
+ try{
+  await navigator.clipboard.writeText(text);
+  toast("Document copied");
+ }catch(e){
+  $("documentText").focus();
+  $("documentText").select();
+  toast("Use Copy from your iPhone text menu");
+ }
+});
+
+function renderRecord(){
+ fillTradeSelect($("recordTrade"));
+ const t=packageFor(selectedTrade);
+ const c=t?t.contractor:null;
+ $("rName").value=c?.name||"";
+ $("rEmail").value=c?.email||"";
+ $("rPhone").value=c?.phone||"";
+ $("rPrice").value=c?.price??"";
+ $("rDate").value=c?.date||"";
+ $("rStatus").value=c?.status||"Not started";
+ $("rNotes").value=c?.notes||"";
+}
+$("recordTrade").addEventListener("change",e=>{
+ selectedTrade=e.target.value;
+ render();
+});
+$("recordForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const t=packageFor(selectedTrade);
+ if(!t)return toast("Create a project first");
+ const raw=$("rPrice").value.trim();
+ if(raw!==""&&(!Number.isFinite(Number(raw))||Number(raw)<0)){
+  return toast("Enter a valid price");
+ }
+ const c={
+  name:$("rName").value.trim(),
+  email:$("rEmail").value.trim(),
+  phone:$("rPhone").value.trim(),
+  price:raw,
+  date:$("rDate").value,
+  status:$("rStatus").value,
+  notes:$("rNotes").value.trim()
+ };
+ if(!confirm(
+  "Save this record for "+definition(selectedTrade).name+
+  "?\n\nContractor: "+(c.name||"Not assigned")+
+  "\nStage: "+c.status+
+  "\nPrice: "+(c.price===""?"Not entered":"$"+c.price)+
+  "\n\nThis does not hire or contact the contractor."
+ ))return;
+ t.contractor=c;
+ if(save()){
+  render();
+  toast("Contractor and bid record saved");
+ }
+});
+
+$("exportData").addEventListener("click",()=>{
+ const content=JSON.stringify({
+  app:"A7 Superintendent V5",
+  exported:new Date().toISOString(),
+  records:data
+ },null,2);
+ const blob=new Blob([content],{type:"application/json"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download="a7-superintendent-v5-backup.json";
+ document.body.append(a);
+ a.click();
+ a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),30000);
+ toast("Backup prepared for download");
+});
+$("importData").addEventListener("click",()=>{
+ $("importFile").click();
+});
+$("importFile").addEventListener("change",async e=>{
+ const file=e.target.files[0];
+ if(!file)return;
+ try{
+  if(file.size>5*1024*1024)throw Error("File too large");
+  const parsed=JSON.parse(await file.text());
+  if(parsed.app!=="A7 Superintendent V5"||
+     !valid(parsed.records)){
+   throw Error("Invalid V5 backup");
+  }
+  if(!confirm(
+   "Replace all current V5 records with this backup? "+
+   "Export your current data first if you want to keep it."
+  ))return;
+  const previous=data;
+  data=parsed.records;
+  if(!save()){
+   data=previous;
+   return;
+  }
+  selectedTrade="planning";
+  selectedDoc="scope";
+  render();
+  go("home");
+  toast("Backup imported");
+ }catch(error){
+  toast("Could not import this V5 backup");
+ }finally{
+  e.target.value="";
+ }
+});
+
+render();
+</script>
+</body>
+</html>
