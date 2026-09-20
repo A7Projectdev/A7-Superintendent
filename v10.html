@@ -231,7 +231,7 @@ const SCOPES={
 };
 
 /*
- These are owner walk-through prompts, NOT a substitute for
+ Owner walk-through prompts only. They do not replace
  manufacturer instructions, permits, licensed inspections,
  engineering, or approval by the responsible authority.
 */
@@ -330,6 +330,10 @@ const INSPECTIONS={
  ]
 };
 
+function uid(){
+ return "id-"+Date.now()+"-"+Math.random().toString(36).slice(2,9);
+}
+
 function fresh(){
  const jobs={};
  for(const parcel of [1,2]){
@@ -373,10 +377,6 @@ function fresh(){
   },
   jobs
  };
-}
-
-function uid(){
- return "id-"+Date.now()+"-"+Math.random().toString(36).slice(2,9);
 }
 
 function valid(d){
@@ -636,8 +636,6 @@ function render(){
  if(view==="budget")html+=budgetPage();
  if(view==="settings")html+=settingsPage();
  app.innerHTML=html;
-
- // Saving does not send the page back to the top.
 }
 
 function overview(){
@@ -697,7 +695,7 @@ function overview(){
  `;
 }
 
-function contactOptions(selected,filterKey="",includeAll=true){
+function contactOptions(selected,filterKey=""){
  let list=data.contacts;
  if(filterKey){
   list=list.filter(c=>
@@ -934,7 +932,7 @@ function jobPage(){
    `:""}
   </section>
 
-  ${de${details("assignment","1 · Who is the contractor?",
+  ${details("assignment","1 · Who is the contractor?",
    assignment,j.key==="home")}
 
   ${details("scope","2 · Scope of work",scope)}
@@ -1019,7 +1017,6 @@ function toggleInspection(id,checked){
  if(!item)return;
  item.checked=checked;
  save();
- // Keep the checkbox and scroll position exactly where they are.
 }
 function addInspectionItem(){
  const field=document.getElementById("newInspection");
