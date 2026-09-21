@@ -1,0 +1,945 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#082b2a">
+<title>A7 Superintendent V15</title>
+<style>
+*{box-sizing:border-box}
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#effff7;background:#061e21}
+body{margin:0;padding-bottom:92px;background:linear-gradient(#061d20,#0a3030);min-height:100dvh}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+header{position:sticky;top:0;z-index:5;background:#082427f5;border-bottom:1px solid #29584e;padding:12px 15px}
+header .inner,main{max-width:760px;margin:auto}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{font-size:32px;font-weight:1000;letter-spacing:-4px}
+.logo span{color:#44d995}
+.brand strong{letter-spacing:2px;font-size:15px}
+.brand small{display:block;color:#9bc6b6;font-size:9px;letter-spacing:1.5px;margin-top:4px}
+main{padding:15px}
+h1{font-size:25px;margin:5px 0 12px}
+h2{font-size:20px;margin:0 0 12px}
+h3{font-size:16px;margin:0 0 10px}
+p{line-height:1.5}
+.muted{font-size:12px;color:#bad1c8}
+.panel{background:#103537;border:1px solid #2c6256;border-radius:15px;padding:15px;margin-bottom:13px}
+.hero{width:100%;text-align:left;border:1px solid #358d70;border-radius:18px;padding:24px 17px;color:white;background:radial-gradient(ellipse at bottom,#326747,transparent 60%),linear-gradient(125deg,#155c4a,#082a35)}
+.hero h1{font-size:28px}
+.hero small{letter-spacing:2px;color:#b8ebd0;font-weight:800}
+.hero-stats{display:flex;justify-content:space-between;gap:8px;margin-top:25px}
+.hero-stats b{display:block;font-size:21px}
+.hero-stats span{font-size:11px;color:#d0e7dd}
+.section{display:flex;justify-content:space-between;align-items:center;margin:23px 0 12px}
+.section h2{margin:0}
+.parcels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.parcel{background:linear-gradient(130deg,#125344,#0b3136);border:1px solid #37c583;color:white;border-radius:16px;padding:14px;text-align:left}
+.parcel:nth-child(2){background:linear-gradient(130deg,#125069,#092b3b);border-color:#31b4ee}
+.parcel b{font-size:18px}
+.parcel small{display:block;color:#c4e2d5;margin:7px 0}
+.track{height:8px;background:#426c63;border-radius:30px;overflow:hidden;margin:13px 0 7px}
+.fill{height:100%;background:#48d995;border-radius:30px}
+.parcel:nth-child(2) .fill{background:#40baf5}
+.parcel .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:15px}
+.parcel .stats b{font-size:14px;overflow-wrap:anywhere}
+.parcel .stats small{font-size:10px;margin:0 0 5px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.job{position:relative;border:1px solid #ffffff35;border-radius:15px;color:white;padding:13px;min-height:135px;text-align:left;display:flex;flex-direction:column;gap:11px}
+.job .number{font-weight:900;font-size:15px}
+.job .symbol{position:absolute;right:12px;top:9px;font-size:25px}
+.job b{font-size:16px;line-height:1.2;padding-right:12px}
+.job small{margin-top:auto;font-size:11px}
+.job .arrow{position:absolute;right:12px;bottom:10px;font-size:23px}
+.job:nth-child(1){background:linear-gradient(130deg,#1c9365,#0b6c48)}
+.job:nth-child(2){background:linear-gradient(130deg,#657e92,#3b536a)}
+.job:nth-child(3){background:linear-gradient(130deg,#b77a50,#8b4b31)}
+.job:nth-child(4){background:linear-gradient(130deg,#ffdf79,#e5ae32);color:#443618}
+.job:nth-child(5){background:linear-gradient(130deg,#258be0,#0c4f9b)}
+.job:nth-child(6){background:linear-gradient(130deg,#ed7862,#b93d35)}
+.job:nth-child(7){background:linear-gradient(130deg,#21b3c2,#087d93)}
+.job:nth-child(8){background:linear-gradient(130deg,#8c64c4,#56358e)}
+.job:nth-child(9){background:linear-gradient(130deg,#d96187,#a82d58)}
+.job:nth-child(10){background:linear-gradient(130deg,#fa9954,#ca6028)}
+.job:nth-child(11){background:linear-gradient(130deg,#16b6a9,#08766e)}
+.job:nth-child(12){background:linear-gradient(130deg,#bd9470,#875e42)}
+.job:nth-child(13){background:linear-gradient(130deg,#a788d0,#6746a1)}
+.job:nth-child(14){background:linear-gradient(130deg,#e6779c,#ad4167)}
+.job:nth-child(15){background:linear-gradient(130deg,#41bbaa,#118478)}
+.job:nth-child(16){background:linear-gradient(130deg,#8297a8,#506577)}
+.btn{border:0;border-radius:10px;padding:12px 14px;background:#26986b;color:white;font-weight:750}
+.btn.alt{background:#20534b}
+.btn.outline{background:transparent;border:1px solid #659787}
+.wide{width:100%}
+.row{display:flex;align-items:center;justify-content:space-between;gap:9px}
+.entry{width:100%;background:#092b2e;color:white;border:1px solid #548277;border-radius:10px;padding:11px;font-size:16px}
+.entry::placeholder{color:#aac6bd}
+label{display:block;font-size:13px;font-weight:700;margin:11px 0 5px}
+.metric{background:#1a5148;padding:13px;border-radius:10px;margin:10px 0}
+.metric strong{display:block;font-size:20px}
+.tabs{display:flex;gap:6px;overflow:auto;margin:13px 0}
+.tabs button{border:0;border-radius:9px;background:#20534b;color:white;padding:10px;white-space:nowrap}
+.tabs button.on{background:#31a777}
+.line{padding:12px 0;border-bottom:1px solid #315b53}
+.line:last-child{border:0}
+.line small{display:block;color:#bdd4cb;margin-top:5px}
+.back{border:0;background:transparent;color:#65e5a4;padding:8px 0;margin-bottom:12px;font-weight:750}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#071e21f5;border-top:1px solid #29574f;display:flex;padding:8px 4px calc(8px + env(safe-area-inset-bottom));gap:2px}
+.bottom button{flex:1;border:0;background:transparent;color:#b8d2c8;padding:7px 2px;font-size:10px}
+.bottom button span{display:block;font-size:23px;margin-bottom:4px}
+.bottom button.on{background:#164b3e;color:#6aeeab;border-radius:10px}
+dialog{width:min(92vw,390px);max-height:88dvh;overflow:auto;border:1px solid #528b78;border-radius:18px;background:#103737;color:white;padding:17px}
+dialog::backdrop{background:#061b1bc9}
+.fieldtabs{display:flex;gap:5px;flex-wrap:wrap}
+.fieldtabs button{background:#174940;color:white;border:1px solid #4c7d6d;border-radius:8px;padding:9px;font-size:12px}
+.fieldtabs button.on{background:#30a575}
+.wheel{height:220px;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;touch-action:pan-y;text-align:center;scrollbar-width:none;margin:12px auto;max-width:210px}
+.wheel::-webkit-scrollbar{display:none}
+.option{height:44px;display:grid;place-items:center;scroll-snap-align:center;font-size:22px;color:#a7c4b9}
+.option.on{font-size:28px;color:white;font-weight:800;background:#ffffff12;border-radius:9px}
+@media(max-width:380px){.parcels{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="inner brand">
+    <div class="logo">A<span>7</span></div>
+    <div>
+      <strong>SUPERINTENDENT</strong>
+      <small>PLAN · BUILD · TRACK · COMPLETE</small>
+    </div>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<nav class="bottom">
+  <button id="navhome" onclick="go('home')"><span>⌂</span>Dashboard</button>
+  <button id="navjobs" onclick="go('jobs')"><span>▦</span>Jobs</button>
+  <button id="navpeople" onclick="go('people')"><span>♟</span>Contractors</button>
+  <button id="navbudget" onclick="go('budget')"><span>＄</span>Budget</button>
+  <button id="navsettings" onclick="go('settings')"><span>⚙</span>Settings</button>
+</nav>
+
+<dialog id="picker">
+  <div class="row">
+    <h2>Edit measurements</h2>
+    <button class="btn alt" onclick="closePicker()">✕</button>
+  </div>
+  <p class="muted">Spin one number at a time. Changes are saved only when you tap Save.</p>
+  <div id="fieldtabs" class="fieldtabs"></div>
+  <div id="material"></div>
+  <div id="wheel" class="wheel"></div>
+  <div id="draftResult" class="metric"></div>
+  <div class="row">
+    <button class="btn outline" onclick="closePicker()">Cancel</button>
+    <button class="btn" onclick="savePicker()">Save measurements</button>
+  </div>
+</dialog>
+
+<script>
+'use strict';
+
+const KEY='a7-superintendent-v15';
+
+const TRADES=[
+ ['land','Land Purchase Cost','▤'],
+ ['permits','Permits & Easements','▧'],
+ ['clearing','Land Clearing','♣'],
+ ['culvert','Entrance & Culvert','◉'],
+ ['driveway','Rock Driveway','▰'],
+ ['pad','Home Pad','▱'],
+ ['water','Water Connection','◆'],
+ ['electrical','Electrical Connection','ϟ'],
+ ['home','Manufactured Home','⌂'],
+ ['transport','Home Transportation','▣'],
+ ['setup','Home Setup','⚒'],
+ ['septic','Septic Installation','▥'],
+ ['skirting','Home Skirting','▦'],
+ ['decks','Decks & Access','▤'],
+ ['hvac','HVAC','✺'],
+ ['other','Other Parcel Expenses','⚙']
+];
+
+const DECKS=[
+ ['frontDeck','Front Deck'],
+ ['backDeck','Rear Deck'],
+ ['steps','Steps & Access']
+];
+
+const FIELDS={
+ clearing:[
+  ['length','Length','ft',1,500],
+  ['width','Width','ft',1,500]
+ ],
+ culvert:[
+  ['width','Driveway width','ft',1,30],
+  ['diameter','Pipe diameter','in',0,0,[10,12,14,18]],
+  ['extra','Extra pipe length','ft',0,30]
+ ],
+ driveway:[
+  ['length','Length','ft',1,1000],
+  ['width','Width','ft',1,30],
+  ['depth','Rock depth','in',1,24]
+ ],
+ pad:[
+  ['length','Length','ft',1,300],
+  ['width','Width','ft',1,300],
+  ['depth','Fill depth','in',1,36]
+ ]
+};
+
+const DEFAULTS={
+ clearing:{length:75,width:75},
+ culvert:{material:'Concrete',width:16,diameter:18,extra:0},
+ driveway:{length:200,width:16,depth:4},
+ pad:{length:80,width:40,depth:6}
+};
+
+const $=id=>document.getElementById(id);
+
+const esc=x=>String(x??'')
+ .replaceAll('&','&amp;')
+ .replaceAll('<','&lt;')
+ .replaceAll('>','&gt;')
+ .replaceAll('"','&quot;')
+ .replaceAll("'",'&#39;');
+
+const money=x=>Number(x||0).toLocaleString('en-US',{
+ style:'currency',currency:'USD',maximumFractionDigits:0
+});
+
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+
+function newJob(p,k,n){
+ return {
+  id:p+'-'+k,parcel:p,key:k,name:n,scope:'',
+  bids:[],approvedBidId:null,completed:false,
+  contractorId:'',inspection:[],inspectionNotes:'',
+  documentReferences:''
+ };
+}
+
+function fresh(){
+ let jobs={};
+
+ for(let p of [1,2]){
+  for(let [k,n] of TRADES.concat(DECKS)){
+   jobs[p+'-'+k]=newJob(p,k,n);
+  }
+ }
+
+ return {
+  version:15,
+  development:{
+   name:'Talco Development',
+   landPrice:0,landPaid:0,
+   acres:[0,0],saleTarget:[0,0],
+   sharedCosts:[]
+  },
+  jobs,contacts:[],activity:[]
+ };
+}
+
+function migrate(old){
+ let d=JSON.parse(JSON.stringify(old));
+
+ if(!d.jobs||!d.development)throw Error('Invalid data');
+
+ for(let p of [1,2]){
+  for(let [k,n] of TRADES.concat(DECKS)){
+   let id=p+'-'+k;
+
+   if(!d.jobs[id])d.jobs[id]=newJob(p,k,n);
+
+   d.jobs[id].name=n;
+   d.jobs[id].bids=Array.isArray(d.jobs[id].bids)
+    ?d.jobs[id].bids:[];
+   d.jobs[id].inspection=Array.isArray(d.jobs[id].inspection)
+    ?d.jobs[id].inspection:[];
+  }
+ }
+
+ d.contacts=Array.isArray(d.contacts)?d.contacts:[];
+ d.development.sharedCosts=Array.isArray(d.development.sharedCosts)
+  ?d.development.sharedCosts:[];
+ d.development.acres=d.development.acres||[0,0];
+ d.development.saleTarget=d.development.saleTarget||[0,0];
+ d.version=15;
+ return d;
+}
+
+let data;
+let notice='';
+
+try{
+ let saved=localStorage.getItem(KEY);
+ let previous=localStorage.getItem('a7-superintendent-v14')
+  ||localStorage.getItem('a7-superintendent-v13');
+
+ data=saved
+  ?migrate(JSON.parse(saved))
+  :previous
+   ?migrate(JSON.parse(previous))
+   :fresh();
+
+ if(!saved&&previous){
+  notice='Your earlier records were copied into V15.';
+ }
+
+ localStorage.setItem(KEY,JSON.stringify(data));
+}catch(e){
+ data=fresh();
+ notice='Saved records could not be loaded. Earlier versions were not changed.';
+}
+
+let parcel=1;
+let view='home';
+let selected='clearing';
+let tab='scope';
+let draft=null;
+let activeField=0;
+let wheelLocked=false;
+
+const job=(k=selected)=>data.jobs[parcel+'-'+k];
+
+function save(){
+ try{
+  localStorage.setItem(KEY,JSON.stringify(data));
+  return true;
+ }catch(e){
+  alert('Safari could not save. Please export a backup.');
+  return false;
+ }
+}
+
+function go(v){
+ view=v;
+ render();
+ window.scrollTo(0,0);
+}
+
+function chooseParcel(p){
+ parcel=p;
+ go('jobs');
+}
+
+function openJob(k){
+ selected=k;
+ tab='scope';
+ go('detail');
+}
+
+function priced(j){
+ return j.bids.find(b=>b.id===j.approvedBidId)
+  ||j.bids[j.bids.length-1];
+}
+
+function completed(k,p){
+ if(k==='land'){
+  let d=data.development;
+  return Number(d.landPrice)>0
+   &&Number(d.landPaid)>=Number(d.landPrice);
+ }
+
+ if(k==='decks'){
+  return DECKS.every(([x])=>!!data.jobs[p+'-'+x]?.completed);
+ }
+
+ return !!data.jobs[p+'-'+k]?.completed;
+}
+
+function progress(p){
+ return TRADES.filter(([k])=>completed(k,p)).length;
+}
+
+function landShare(p){
+ let d=data.development;
+ let a=Number(d.acres[0]||0);
+ let b=Number(d.acres[1]||0);
+
+ return a+b?Number(d.acres[p-1]||0)/(a+b):0;
+}
+
+function allocated(p){
+ return Number(data.development.landPrice||0)*landShare(p);
+}
+
+function cost(p){
+ let total=allocated(p);
+
+ for(let [k] of TRADES.filter(x=>x[0]!=='land'&&x[0]!=='decks').concat(DECKS)){
+  let j=data.jobs[p+'-'+k];
+  total+=Number(priced(j)?.amount||0);
+ }
+
+ for(let c of data.development.sharedCosts){
+  total+=Number(c.amount||0)*landShare(p);
+ }
+
+ return total;
+}
+
+function parcelCards(){
+ return '<div class="parcels">'+[1,2].map(p=>{
+  let n=progress(p);
+  let acres=Number(data.development.acres[p-1]||0);
+  let target=Number(data.development.saleTarget[p-1]||0);
+
+  return '<button class="parcel" onclick="chooseParcel('+p+')">'+
+   '<div class="row"><b>Parcel '+p+'</b><b>›</b></div>'+
+   '<small>'+(acres?acres+' acres':'Acreage not set')+'</small>'+
+   '<div class="track"><div class="fill" style="width:'+
+   (n/16*100)+'%"></div></div>'+
+   '<small>'+n+' of 16 jobs completed</small>'+
+   '<div class="stats">'+
+   '<div><small>Recorded cost*</small><b>'+money(cost(p))+'</b></div>'+
+   '<div><small>Target sale</small><b>'+
+   (target?money(target):'Not set')+'</b></div>'+
+   '</div></button>';
+ }).join('')+'</div>';
+}
+
+function homePage(){
+ let d=data.development;
+
+ return '<button class="hero" onclick="go(\'parcels\')">'+
+  '<small>YOUR DEVELOPMENT · OPEN ›</small>'+
+  '<h1>'+esc(d.name||'My development')+'</h1>'+
+  '<p>Choose a parcel to manage its jobs</p>'+
+  '<div class="hero-stats">'+
+  '<span><b>2</b>Parcels</span>'+
+  '<span><b>32</b>Job boxes</span>'+
+  '<span><b>'+(progress(1)+progress(2))+'/32</b>Completed</span>'+
+  '</div></button>'+
+  '<div class="section"><h2>Select a parcel</h2>'+
+  '<span class="muted">Tap to open ›</span></div>'+
+  parcelCards()+
+  '<p class="muted">*Recorded costs include available bids and allocated land. Unpriced work may be missing.</p>';
+}
+
+function parcelsPage(){
+ return '<button class="back" onclick="go(\'home\')">← Dashboard</button>'+
+  '<h2>'+esc(data.development.name)+'</h2>'+
+  '<p class="muted">Choose a parcel to see its 16 jobs.</p>'+
+  parcelCards();
+}
+
+function jobCards(){
+ return '<div class="grid">'+TRADES.map(([k,n,icon],i)=>{
+  let j=job(k);
+  let status=completed(k,parcel)?'Completed'
+   :k==='land'?'Shared cost'
+   :k==='decks'?'Front · Rear · Steps'
+   :j.approvedBidId?'Bid approved'
+   :j.bids.length?'Bid received':'Quote needed';
+
+  return '<button class="job" onclick="openJob(\''+k+'\')">'+
+   '<span class="number">'+String(i+1).padStart(2,'0')+'</span>'+
+   '<span class="symbol">'+icon+'</span>'+
+   '<b>'+esc(n)+'</b>'+
+   '<small>● '+esc(status)+'</small>'+
+   '<span class="arrow">›</span></button>';
+ }).join('')+'</div>';
+}
+
+function jobsPage(){
+ let n=progress(parcel);
+
+ return '<button class="back" onclick="go(\'parcels\')">← Development · Parcels</button>'+
+  '<h2>Parcel '+parcel+' — Jobs</h2>'+
+  '<p class="muted">'+n+' of 16 jobs completed. Tap a colored box to open it.</p>'+
+  jobCards()+
+  '<section class="panel" style="margin-top:14px">'+
+  '<h3>Parcel progress</h3>'+
+  '<div class="track"><div class="fill" style="width:'+(n/16*100)+'%"></div></div>'+
+  '<p class="muted">'+n+' completed · '+(16-n)+' remaining</p>'+
+  '<div class="row"><span>Recorded cost</span><b>'+money(cost(parcel))+'</b></div>'+
+  '</section>';
+}
+
+function measurements(j){
+ if(!j.measurements)j.measurements={};
+
+ for(let [k,v] of Object.entries(DEFAULTS[j.key]||{})){
+  if(j.measurements[k]===undefined)j.measurements[k]=v;
+ }
+
+ return j.measurements;
+}
+
+function summary(k,m){
+ if(k==='culvert'){
+  let required=Number(m.width)+Number(m.extra);
+  let count=Math.ceil(required/8);
+
+  return '<strong>'+count+' × 8-ft sections</strong>'+
+   m.diameter+'-inch '+esc(m.material)+
+   ' · '+required+' ft required';
+ }
+
+ let area=Number(m.length)*Number(m.width);
+
+ let text='<strong>'+area.toLocaleString()+
+  ' sq ft · '+(area/43560).toFixed(3)+' acres</strong>'+
+  m.length+' ft × '+m.width+' ft';
+
+ if(k==='driveway'||k==='pad'){
+  text+='<br>'+(area*Number(m.depth)/324).toFixed(1)+
+   ' theoretical cubic yards at '+m.depth+' in depth';
+ }
+
+ return text;
+}
+
+function detailPage(){
+ let j=job();
+ let k=selected;
+ let name=TRADES.concat(DECKS).find(x=>x[0]===k)?.[1]||k;
+
+ let out='<button class="back" onclick="go(\'jobs\')">← Parcel '+
+  parcel+' jobs</button><h2>'+esc(name)+'</h2>'+
+  '<p class="muted">Parcel '+parcel+'</p>';
+
+ if(k==='land'){
+  return out+'<section class="panel"><h3>Shared land purchase</h3>'+
+   '<div class="metric"><strong>'+money(data.development.landPrice)+'</strong>'+
+   'Whole-development price</div>'+
+   '<p class="muted">Land is allocated by parcel acreage and counted only once.</p>'+
+   '<button class="btn wide" onclick="go(\'settings\')">Edit land cost</button>'+
+   '</section>';
+ }
+
+ if(k==='decks'){
+  return out+'<section class="panel"><h3>Decks & Access</h3>'+
+   '<p class="muted">One job box with separate bids, contractors and records for each section.</p>'+
+   DECKS.map(([key,n])=>
+    '<button class="btn alt wide" style="margin:5px 0;text-align:left" onclick="openJob(\''+
+    key+'\')">'+n+' →</button>'
+   ).join('')+'</section>';
+ }
+
+ if(DECKS.some(x=>x[0]===k)){
+  out+='<button class="btn alt" onclick="openJob(\'decks\')">← Decks & Access</button>';
+ }
+
+ if(FIELDS[k]){
+  out+='<section class="panel"><h3>Saved measurements</h3>'+
+   '<div class="metric">'+summary(k,measurements(j))+'</div>'+
+   '<button class="btn alt wide" onclick="openPicker()">Edit measurements</button>'+
+   '</section>';
+ }
+
+ out+='<div class="tabs">'+[
+  ['scope','Scope'],['bids','Bids'],
+  ['contractor','Contractor'],['inspection','Inspection']
+ ].map(([t,n])=>
+  '<button class="'+(tab===t?'on':'')+
+  '" onclick="tab=\''+t+'\';render()">'+n+'</button>'
+ ).join('')+'</div>';
+
+ if(tab==='scope'){
+  out+='<section class="panel"><h3>Scope of work</h3>'+
+   '<textarea class="entry" id="scope" rows="7">'+esc(j.scope)+'</textarea>'+
+   '<button class="btn wide" style="margin-top:10px" onclick="saveScope()">Save scope</button>'+
+   '</section>';
+ }
+
+ if(tab==='bids'){
+  out+='<section class="panel"><h3>Contractor bids</h3>'+
+   j.bids.map(b=>
+    '<div class="line"><b>'+esc(b.contractor||'Contractor')+'</b> · '+
+    money(b.amount)+'<small>'+esc(b.notes||'')+'</small>'+
+    (b.id===j.approvedBidId
+     ?'<small>✓ Approved</small>'
+     :'<button class="btn alt" onclick="approveBid(\''+esc(b.id)+
+      '\')">Approve bid</button>')+'</div>'
+   ).join('')+
+   '<form onsubmit="addBid(event)">'+
+   '<label>Contractor<input class="entry" id="bidWho" required></label>'+
+   '<label>Bid amount ($)<input class="entry" id="bidAmount" type="number" min="0" step=".01" required></label>'+
+   '<label>Notes<textarea class="entry" id="bidNotes"></textarea></label>'+
+   '<button class="btn wide">Save bid</button></form></section>';
+ }
+
+ if(tab==='contractor'){
+  out+='<section class="panel"><h3>Assigned contractor</h3>'+
+   '<select class="entry" onchange="assign(this.value)">'+
+   '<option value="">Not assigned</option>'+
+   data.contacts.map(c=>
+    '<option value="'+esc(c.id)+'" '+
+    (c.id===j.contractorId?'selected':'')+'>'+esc(c.name)+'</option>'
+   ).join('')+'</select>'+
+   '<button class="btn alt wide" style="margin-top:10px" onclick="go(\'people\')">Manage contacts</button>'+
+   '<p class="muted">Assignments do not automatically send emails.</p>'+
+   '</section>';
+ }
+
+ if(tab==='inspection'){
+  out+='<section class="panel"><h3>Inspection checklist</h3>'+
+   j.inspection.map(x=>
+    '<label class="line"><input type="checkbox" '+
+    (x.checked?'checked':'')+
+    ' onchange="checkItem(\''+esc(x.id)+'\',this.checked)"> '+
+    esc(x.text)+'</label>'
+   ).join('')+
+   '<form onsubmit="addItem(event)">'+
+   '<input class="entry" id="item" placeholder="New checklist item" required>'+
+   '<button class="btn" style="margin-top:8px">Add item</button></form>'+
+   '<label>Inspection notes<textarea class="entry" id="inspectionNotes">'+
+   esc(j.inspectionNotes||'')+'</textarea></label>'+
+   '<button class="btn wide" onclick="saveInspection()">Save notes</button>'+
+   '<p class="muted">Confirm official inspections separately.</p>'+
+   '</section>';
+ }
+
+ return out;
+}
+
+function saveScope(){
+ job().scope=$('scope').value;
+ save();
+ render();
+}
+
+function addBid(e){
+ e.preventDefault();
+
+ job().bids.push({
+  id:uid(),
+  contractor:$('bidWho').value.trim(),
+  amount:Number($('bidAmount').value),
+  notes:$('bidNotes').value,
+  paid:0
+ });
+
+ save();
+ render();
+}
+
+function approveBid(id){
+ if(!confirm('Approve this bid? No payment or email will be sent.'))return;
+
+ job().approvedBidId=id;
+ save();
+ render();
+}
+
+function assign(id){
+ job().contractorId=id;
+ save();
+ render();
+}
+
+function checkItem(id,checked){
+ let item=job().inspection.find(x=>x.id===id);
+
+ if(item){
+  item.checked=checked;
+  save();
+ }
+}
+
+function addItem(e){
+ e.preventDefault();
+
+ job().inspection.push({
+  id:uid(),
+  text:$('item').value.trim(),
+  checked:false
+ });
+
+ save();
+ render();
+}
+
+function saveInspection(){
+ job().inspectionNotes=$('inspectionNotes').value;
+ save();
+ render();
+}
+
+function peoplePage(){
+ return '<h2>Contractors & contacts</h2>'+
+  '<section class="panel">'+
+  data.contacts.map(c=>
+   '<div class="line"><b>'+esc(c.name)+'</b>'+
+   '<small>'+esc(c.phone||'')+' · '+esc(c.email||'')+'</small></div>'
+  ).join('')+
+  '<h3 style="margin-top:15px">Add contact</h3>'+
+  '<form onsubmit="addPerson(event)">'+
+  '<label>Name / company<input class="entry" id="personName" required></label>'+
+  '<label>Phone<input class="entry" id="personPhone" type="tel"></label>'+
+  '<label>Email<input class="entry" id="personEmail" type="email"></label>'+
+  '<button class="btn wide">Save contact</button></form></section>';
+}
+
+function addPerson(e){
+ e.preventDefault();
+
+ data.contacts.push({
+  id:uid(),
+  name:$('personName').value.trim(),
+  phone:$('personPhone').value.trim(),
+  email:$('personEmail').value.trim(),
+  trades:[],
+  notes:''
+ });
+
+ save();
+ render();
+}
+
+function budgetPage(){
+ let entries=TRADES.filter(x=>x[0]!=='land'&&x[0]!=='decks')
+  .concat(DECKS);
+
+ return '<h2>Parcel '+parcel+' budget</h2>'+
+  '<section class="panel">'+
+  '<p class="muted">Recorded quoted subtotal, including allocated land</p>'+
+  '<h1>'+money(cost(parcel))+'</h1>'+
+  '<p class="muted">Unpriced work, taxes and contingencies may not be included.</p>'+
+  '<div class="line">Allocated land <b style="float:right">'+
+  money(allocated(parcel))+'</b></div>'+
+  entries.map(([k,n])=>
+   '<div class="line">'+esc(n)+
+   '<b style="float:right">'+
+   (priced(job(k))?money(priced(job(k)).amount):'Unpriced')+
+   '</b></div>'
+  ).join('')+
+  data.development.sharedCosts.map(c=>
+   '<div class="line">'+esc(c.name)+
+   ' (shared) <b style="float:right">'+
+   money(Number(c.amount||0)*landShare(parcel))+
+   '</b></div>'
+  ).join('')+
+  '</section>'+
+  '<div class="row">'+
+  '<button class="btn alt" onclick="chooseParcel(1)">Parcel 1</button>'+
+  '<button class="btn alt" onclick="chooseParcel(2)">Parcel 2</button>'+
+  '</div>';
+}
+
+function settingsPage(){
+ let d=data.development;
+
+ return '<h2>Development settings</h2>'+
+  '<section class="panel">'+
+  '<form onsubmit="saveSettings(event)">'+
+  '<label>Development name<input class="entry" id="devName" value="'+esc(d.name)+'"></label>'+
+  '<label>Whole-property land price ($)<input class="entry" id="landPrice" type="number" min="0" step=".01" value="'+Number(d.landPrice||0)+'"></label>'+
+  '<label>Land paid ($)<input class="entry" id="landPaid" type="number" min="0" step=".01" value="'+Number(d.landPaid||0)+'"></label>'+
+  '<label>Parcel 1 acreage<input class="entry" id="acres1" type="number" min="0" step=".001" value="'+Number(d.acres[0]||0)+'"></label>'+
+  '<label>Parcel 2 acreage<input class="entry" id="acres2" type="number" min="0" step=".001" value="'+Number(d.acres[1]||0)+'"></label>'+
+  '<label>Parcel 1 target sale ($)<input class="entry" id="sale1" type="number" min="0" value="'+Number(d.saleTarget[0]||0)+'"></label>'+
+  '<label>Parcel 2 target sale ($)<input class="entry" id="sale2" type="number" min="0" value="'+Number(d.saleTarget[1]||0)+'"></label>'+
+  '<button class="btn wide">Save settings</button></form></section>'+
+  '<section class="panel"><h3>Backup your records</h3>'+
+  '<p class="muted">Records are saved in this browser, not synced across devices. Keep a backup.</p>'+
+  '<button class="btn wide" onclick="backup()">Download V15 backup</button>'+
+  '<label>Restore V15 backup<input class="entry" type="file" accept=".json,application/json" onchange="restore(event)"></label>'+
+  '</section>';
+}
+
+function saveSettings(e){
+ e.preventDefault();
+
+ let d=data.development;
+ d.name=$('devName').value.trim();
+ d.landPrice=Number($('landPrice').value);
+ d.landPaid=Number($('landPaid').value);
+ d.acres=[
+  Number($('acres1').value),
+  Number($('acres2').value)
+ ];
+ d.saleTarget=[
+  Number($('sale1').value),
+  Number($('sale2').value)
+ ];
+
+ save();
+ render();
+}
+
+function backup(){
+ let blob=new Blob([JSON.stringify(data,null,2)],{
+  type:'application/json'
+ });
+
+ let url=URL.createObjectURL(blob);
+ let a=document.createElement('a');
+
+ a.href=url;
+ a.download='a7-superintendent-v15-backup.json';
+ a.click();
+
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+async function restore(e){
+ let file=e.target.files?.[0];
+ if(!file)return;
+
+ try{
+  let restored=JSON.parse(await file.text());
+
+  if(restored.version!==15||!restored.jobs||!restored.development){
+   throw Error('Not a V15 backup');
+  }
+
+  if(!confirm('Replace your current V15 records with this backup?'))return;
+
+  data=migrate(restored);
+  save();
+  go('home');
+ }catch(err){
+  alert('Restore failed: '+err.message);
+ }
+}
+
+function openPicker(){
+ draft={...measurements(job())};
+ activeField=0;
+
+ $('picker').showModal();
+ document.body.style.overflow='hidden';
+ drawPicker();
+}
+
+function closePicker(){
+ draft=null;
+ $('picker').close();
+ document.body.style.overflow='';
+}
+
+function chooseField(i){
+ activeField=i;
+ drawPicker();
+}
+
+function drawPicker(){
+ if(!draft)return;
+
+ let fields=FIELDS[selected];
+
+ $('fieldtabs').innerHTML=fields.map((f,i)=>
+  '<button class="'+(i===activeField?'on':'')+
+  '" onclick="chooseField('+i+')">'+esc(f[1])+'</button>'
+ ).join('');
+
+ $('material').innerHTML=selected==='culvert'
+  ?'<label>Pipe material<select class="entry" onchange="draft.material=this.value;refreshDraft()">'+
+   '<option '+(draft.material==='Concrete'?'selected':'')+'>Concrete</option>'+
+   '<option '+(draft.material==='Plastic'?'selected':'')+'>Plastic</option>'+
+   '</select></label>'
+  :'';
+
+ let f=fields[activeField];
+
+ let values=f[5]||Array.from({
+  length:f[4]-f[3]+1
+ },(_,i)=>f[3]+i);
+
+ let wheel=$('wheel');
+
+ wheel.innerHTML=
+  '<div style="height:88px"></div>'+
+  values.map(v=>
+   '<div class="option">'+v+' '+f[2]+'</div>'
+  ).join('')+
+  '<div style="height:88px"></div>';
+
+ wheel.onscroll=null;
+
+ let index=Math.max(0,values.indexOf(Number(draft[f[0]])));
+
+ wheelLocked=true;
+ wheel.scrollTop=index*44;
+
+ requestAnimationFrame(()=>{
+  wheel.scrollTop=index*44;
+
+  requestAnimationFrame(()=>{
+   wheelLocked=false;
+  });
+ });
+
+ function paint(i){
+  wheel.querySelectorAll('.option').forEach((el,n)=>{
+   el.classList.toggle('on',n===i);
+  });
+ }
+
+ paint(index);
+
+ wheel.onscroll=()=>{
+  if(wheelLocked)return;
+
+  let i=Math.max(0,Math.min(
+   values.length-1,
+   Math.round(wheel.scrollTop/44)
+  ));
+
+  draft[f[0]]=values[i];
+  paint(i);
+  refreshDraft();
+ };
+
+ refreshDraft();
+}
+
+function refreshDraft(){
+ $('draftResult').innerHTML=summary(selected,draft);
+}
+
+function savePicker(){
+ for(let f of FIELDS[selected]){
+  let value=Number(draft[f[0]]);
+
+  if(!Number.isFinite(value)||
+   !(f[5]?f[5].includes(value):value>=f[3]&&value<=f[4])){
+   alert('Please select a valid measurement.');
+   return;
+  }
+ }
+
+ job().measurements={...draft};
+
+ if(!save())return;
+
+ closePicker();
+ render();
+}
+
+function render(){
+ for(let v of ['home','jobs','people','budget','settings']){
+  $('nav'+v).classList.toggle('on',
+   view===v||
+   (view==='parcels'&&v==='home')||
+   (view==='detail'&&v==='jobs')
+  );
+ }
+
+ let pages={
+  home:homePage,
+  parcels:parcelsPage,
+  jobs:jobsPage,
+  detail:detailPage,
+  people:peoplePage,
+  budget:budgetPage,
+  settings:settingsPage
+ };
+
+ $('app').innerHTML=
+  (notice?'<p class="panel muted">'+esc(notice)+'</p>':'')+
+  (pages[view]||homePage)();
+
+ notice='';
+}
+
+render();
+</script>
+</body>
+</html>
