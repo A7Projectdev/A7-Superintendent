@@ -1,0 +1,986 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#103e36">
+<title>A7 Superintendent V14</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#17302a;background:#f3f7f5}
+*{box-sizing:border-box}
+body{margin:0;padding-bottom:82px}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+header{background:#103e36;color:white;padding:18px 15px 20px}
+header .wrap,main{max-width:720px;margin:auto}
+.eyebrow{font-size:11px;letter-spacing:2px;color:#b4d9ce}
+h1{font-size:24px;margin:5px 0 16px}
+h2{font-size:20px;margin:0 0 12px}
+h3{font-size:16px;margin:0 0 9px}
+.parcel{display:flex;gap:8px}
+.parcel button{flex:1;background:#28564d;color:white;border:1px solid #608a7e;border-radius:10px;padding:11px}
+.parcel button.on{background:white;color:#103e36;font-weight:800}
+main{padding:14px}
+.panel{background:white;border:1px solid #dce8e3;border-radius:15px;padding:14px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.job{border:1px solid #dbe7e2;background:white;text-align:left;border-radius:13px;min-height:86px;padding:12px;display:flex;flex-direction:column;justify-content:space-between;gap:9px;color:#183b32}
+.job b{font-size:14px}
+.job small,.muted{font-size:12px;color:#657b73}
+.num{font-size:11px;color:#2d8566;font-weight:800}
+.btn{border:0;border-radius:10px;padding:12px 14px;background:#103e36;color:white;font-weight:750}
+.btn.alt{background:#e7f1ed;color:#103e36}
+.btn.outline{background:white;color:#103e36;border:1px solid #a6c4b9}
+.btn:disabled{opacity:.5}
+.wide{width:100%}
+.row{display:flex;gap:9px;align-items:center;justify-content:space-between}
+.row>*{min-width:0}
+.stack{display:grid;gap:10px}
+.entry{width:100%;padding:11px;border:1px solid #cbded5;border-radius:10px;background:white;color:#17302a;font-size:16px}
+label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}
+.metric{background:#ecf5f0;border-radius:11px;padding:12px;margin:10px 0}
+.metric strong{display:block;font-size:20px}
+.tabs{display:flex;gap:6px;overflow:auto;margin-bottom:12px}
+.tabs button{white-space:nowrap;border:0;border-radius:9px;padding:10px;background:#e8f0ec;color:#234d3e}
+.tabs button.on{background:#103e36;color:white}
+.line{border-bottom:1px solid #edf1ee;padding:11px 0}
+.line:last-child{border:0}
+.line small{display:block;color:#647b72;margin-top:4px}
+.bottom{position:fixed;bottom:0;left:0;right:0;display:flex;background:white;border-top:1px solid #dbe7e2;padding:7px 9px calc(7px + env(safe-area-inset-bottom));gap:5px}
+.bottom button{flex:1;border:0;background:white;padding:8px 0;color:#315c4c;font-size:12px;font-weight:750}
+.bottom button.on{background:#e7f1ec;border-radius:9px}
+.note{font-size:12px;color:#5c756b;line-height:1.5}
+.error{background:#ffede9;padding:12px;border-radius:10px}
+dialog{border:0;border-radius:19px;padding:0;width:min(92vw,390px);max-height:88dvh;box-shadow:0 18px 70px #0005;color:#17302a}
+dialog::backdrop{background:#102b2699}
+.modal{padding:17px}
+.wheelbox{position:relative;width:210px;max-width:100%;margin:8px auto}
+.wheelbox:after{content:"";position:absolute;top:88px;left:0;right:0;height:44px;background:#e8f1ed;border-radius:9px;pointer-events:none}
+.wheel{height:220px;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;scrollbar-width:none;text-align:center}
+.wheel::-webkit-scrollbar{display:none}
+.opt{height:44px;display:grid;place-items:center;scroll-snap-align:center;font-size:21px;color:#84938c}
+.opt.on{font-size:28px;color:#163c30;font-weight:800}
+.fieldtabs{display:flex;flex-wrap:wrap;gap:5px}
+.fieldtabs button{border:1px solid #d1e0d8;background:white;color:#34584c;border-radius:8px;padding:9px;font-size:12px}
+.fieldtabs button.on{background:#103e36;color:white}
+#modalStatus{min-height:16px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">A7 SUPERINTENDENT · V14</div>
+    <h1>Project dashboard</h1>
+    <div class="parcel">
+      <button id="p1" onclick="setParcel(1)">Parcel 1</button>
+      <button id="p2" onclick="setParcel(2)">Parcel 2</button>
+    </div>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<nav class="bottom">
+  <button onclick="go('home')" id="navhome">⌂ Dashboard</button>
+  <button onclick="go('jobs')" id="navjobs">▤ Jobs</button>
+  <button onclick="go('people')" id="navpeople">♟ People</button>
+  <button onclick="go('budget')" id="navbudget">＄ Budget</button>
+  <button onclick="go('settings')" id="navsettings">⚙ Settings</button>
+</nav>
+
+<dialog id="picker" aria-label="Edit measurements">
+  <div class="modal">
+    <div class="row">
+      <h2>Edit measurements</h2>
+      <button class="btn alt" onclick="closePicker()" aria-label="Close">✕</button>
+    </div>
+    <p class="note">Only the number inside this box moves. Your saved measurements stay unchanged until you tap Save.</p>
+    <div id="fieldtabs" class="fieldtabs"></div>
+    <div id="materialRow"></div>
+    <div class="wheelbox">
+      <div id="wheel" class="wheel" role="listbox" tabindex="0" aria-label="Measurement picker"></div>
+    </div>
+    <div class="metric" id="draftResult"></div>
+    <p class="note" id="modalStatus" role="status"></p>
+    <div class="row">
+      <button class="btn outline" onclick="closePicker()">Cancel</button>
+      <button class="btn" onclick="savePicker()">Save measurements</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+'use strict';
+
+const KEY='a7-superintendent-v14';
+const PREV='a7-superintendent-v13';
+
+const TRADE=[
+  ['land','Land Purchase Cost'],
+  ['permits','Permits & Easements'],
+  ['clearing','Land Clearing'],
+  ['culvert','Entrance & Culvert'],
+  ['driveway','Rock Driveway'],
+  ['pad','Home Pad'],
+  ['water','Water Connection'],
+  ['electrical','Electrical Connection'],
+  ['home','Manufactured Home'],
+  ['transport','Home Transportation'],
+  ['setup','Home Setup'],
+  ['septic','Septic Installation'],
+  ['skirting','Home Skirting'],
+  ['decks','Decks & Access'],
+  ['hvac','HVAC'],
+  ['other','Other Parcel Expenses']
+];
+
+const DECK=[
+  ['frontDeck','Front Deck'],
+  ['backDeck','Rear Deck'],
+  ['steps','Steps & Access']
+];
+
+const FIELDS={
+  clearing:[
+    ['length','Length','ft',1,500],
+    ['width','Width','ft',1,500]
+  ],
+  culvert:[
+    ['width','Driveway width','ft',1,30],
+    ['diameter','Pipe diameter','in',0,0,[10,12,14,18]],
+    ['extra','Extra pipe length','ft',0,30]
+  ],
+  driveway:[
+    ['length','Driveway length','ft',1,1000],
+    ['width','Driveway width','ft',1,30],
+    ['depth','Rock depth','in',1,24]
+  ],
+  pad:[
+    ['length','Pad length','ft',1,300],
+    ['width','Pad width','ft',1,300],
+    ['depth','Fill depth','in',1,36]
+  ]
+};
+
+const DEFAULT={
+  clearing:{length:75,width:75},
+  culvert:{material:'Concrete',width:16,diameter:18,extra:0},
+  driveway:{length:200,width:16,depth:4},
+  pad:{length:80,width:40,depth:6}
+};
+
+const $=id=>document.getElementById(id);
+
+const esc=x=>String(x??'')
+  .replaceAll('&','&amp;')
+  .replaceAll('<','&lt;')
+  .replaceAll('>','&gt;')
+  .replaceAll('"','&quot;')
+  .replaceAll("'",'&#39;');
+
+const money=n=>Number(n||0).toLocaleString('en-US',{
+  style:'currency',
+  currency:'USD',
+  maximumFractionDigits:0
+});
+
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+
+function newJob(p,k,name){
+  return {
+    id:p+'-'+k,
+    parcel:p,
+    key:k,
+    name,
+    scope:'',
+    requested:false,
+    bids:[],
+    approvedBidId:null,
+    completed:false,
+    contractorId:'',
+    inspection:[],
+    inspectionNotes:'',
+    documentReferences:'',
+    signedOffAt:''
+  };
+}
+
+function blank(){
+  let jobs={};
+
+  for(const p of [1,2]){
+    for(const [k,n] of TRADE.concat(DECK)){
+      jobs[p+'-'+k]=newJob(p,k,n);
+    }
+  }
+
+  return {
+    version:14,
+    development:{
+      name:'My development',
+      landPrice:0,
+      landPaid:0,
+      acres:[0,0],
+      saleTarget:[0,0],
+      profitLow:[0,0],
+      profitHigh:[0,0],
+      sharedCosts:[]
+    },
+    contacts:[],
+    homeRoles:{1:{},2:{}},
+    jobs,
+    activity:[]
+  };
+}
+
+function migrate(old){
+  const d=JSON.parse(JSON.stringify(old));
+
+  if(!d.development||!d.jobs){
+    throw Error('Invalid previous data');
+  }
+
+  for(const p of [1,2]){
+    for(const [k,n] of TRADE.concat(DECK)){
+      const id=p+'-'+k;
+
+      if(!d.jobs[id]){
+        d.jobs[id]=newJob(p,k,n);
+      }
+
+      d.jobs[id].name=n;
+
+      if(!Array.isArray(d.jobs[id].bids)){
+        d.jobs[id].bids=[];
+      }
+
+      if(!Array.isArray(d.jobs[id].inspection)){
+        d.jobs[id].inspection=[];
+      }
+    }
+  }
+
+  d.contacts=Array.isArray(d.contacts)?d.contacts:[];
+  d.development.sharedCosts=d.development.sharedCosts||[];
+  d.version=14;
+  return d;
+}
+
+let data,loadNote='';
+
+try{
+  const existing=localStorage.getItem(KEY);
+  const old=localStorage.getItem(PREV);
+
+  data=existing
+    ?migrate(JSON.parse(existing))
+    :old
+      ?migrate(JSON.parse(old))
+      :blank();
+
+  if(!existing&&old){
+    loadNote='Your V13 records were copied into V14. V13 remains unchanged.';
+  }
+
+  localStorage.setItem(KEY,JSON.stringify(data));
+}catch(e){
+  data=blank();
+  loadNote='Could not read saved data. Your earlier versions have not been changed. Check your backups.';
+}
+
+let parcel=1;
+let view='home';
+let selected='clearing';
+let tab='overview';
+let draft=null;
+let activeField=0;
+let ignoreWheel=false;
+
+const job=(k=selected)=>data.jobs[parcel+'-'+k];
+
+const tradeName=k=>
+  TRADE.concat(DECK).find(t=>t[0]===k)?.[1]||k;
+
+function save(){
+  try{
+    localStorage.setItem(KEY,JSON.stringify(data));
+    return true;
+  }catch(e){
+    alert('Safari could not save. Export a backup and check storage.');
+    return false;
+  }
+}
+
+function setParcel(p){
+  parcel=p;
+  render();
+}
+
+function go(v){
+  view=v;
+  render();
+  window.scrollTo(0,0);
+}
+
+function openJob(k){
+  selected=k;
+  tab='overview';
+  go('detail');
+}
+
+function measurements(j){
+  if(!j.measurements)j.measurements={};
+
+  for(const [k,v] of Object.entries(DEFAULT[j.key]||{})){
+    if(j.measurements[k]===undefined){
+      j.measurements[k]=v;
+    }
+  }
+
+  return j.measurements;
+}
+
+function summary(k,m){
+  if(k==='culvert'){
+    const required=+m.width + +m.extra;
+    const n=Math.ceil(required/8);
+
+    return '<strong>'+n+' × 8-ft pipe sections</strong>'+
+      m.diameter+'-inch '+esc(m.material)+
+      ' · '+required+' ft needed · '+n*8+' ft purchased';
+  }
+
+  const area=+m.length * +m.width;
+
+  let out='<strong>'+
+    area.toLocaleString('en-US')+
+    ' sq ft · '+(area/43560).toFixed(3)+
+    ' acres</strong>'+
+    m.length+' ft × '+m.width+' ft';
+
+  if(k==='driveway'||k==='pad'){
+    out+='<br>'+
+      (area*+m.depth/324).toFixed(1)+
+      ' theoretical cubic yards at '+
+      m.depth+' in depth';
+  }
+
+  return out;
+}
+
+function status(j){
+  return j.completed
+    ?'Completed'
+    :j.approvedBidId
+      ?'Bid approved'
+      :j.bids.length
+        ?'Bid received'
+        :'Quote needed';
+}
+
+function cards(){
+  return '<div class="grid">'+
+    TRADE.map(([k,n],i)=>{
+      const j=job(k);
+
+      return '<button class="job" onclick="openJob(\''+k+'\')">'+
+        '<span class="num">'+
+        String(i+1).padStart(2,'0')+
+        '</span><b>'+esc(n)+'</b><small>'+
+        (k==='decks'
+          ?'Front · Rear · Steps'
+          :k==='land'
+            ?'Shared development cost'
+            :status(j))+
+        '</small></button>';
+    }).join('')+
+    '</div>';
+}
+
+function render(){
+  for(const p of [1,2]){
+    $('p'+p).classList.toggle('on',parcel===p);
+  }
+
+  for(const v of ['home','jobs','people','budget','settings']){
+    $('nav'+v).classList.toggle(
+      'on',
+      view===v||(view==='detail'&&v==='jobs')
+    );
+  }
+
+  $('app').innerHTML=
+    (loadNote
+      ?'<p class="panel note">'+esc(loadNote)+'</p>'
+      :'')+
+    ({
+      home:homePage,
+      jobs:jobsPage,
+      detail:detailPage,
+      people:peoplePage,
+      budget:budgetPage,
+      settings:settingsPage
+    }[view]||homePage)();
+
+  loadNote='';
+}
+
+function homePage(){
+  return '<h2>Parcel '+parcel+' · Job filing cabinet</h2>'+
+    '<p class="muted">16 organized boxes. Tap any job to open its details.</p>'+
+    cards();
+}
+
+function jobsPage(){
+  return '<h2>Parcel '+parcel+' jobs</h2>'+cards();
+}
+
+function detailPage(){
+  const j=job();
+  const k=selected;
+
+  let html=
+    '<button class="btn alt" onclick="go(\'home\')">← All jobs</button>'+
+    '<h2 style="margin-top:14px">'+esc(tradeName(k))+'</h2>'+
+    '<p class="muted">Parcel '+parcel+'</p>';
+
+  if(k==='land'){
+    return html+
+      '<section class="panel">'+
+      '<h3>Shared land purchase</h3>'+
+      '<div class="metric"><strong>'+
+      money(data.development.landPrice)+
+      '</strong>Whole-development purchase price</div>'+
+      '<p class="note">Land is counted once and allocated across parcels by acreage in the budget. Do not add it again as a parcel bid.</p>'+
+      '<button class="btn alt wide" onclick="go(\'settings\')">Edit land purchase in Settings</button>'+
+      '</section>';
+  }
+
+  if(k==='decks'){
+    return html+
+      '<section class="panel">'+
+      '<h3>One box · three sections</h3>'+
+      '<p class="note">Each section keeps its existing contractor, bids, costs, scope and inspection records.</p>'+
+      DECK.map(([key,name])=>{
+        let x=job(key);
+        let p=x.bids.find(b=>b.id===x.approvedBidId)||
+          x.bids[x.bids.length-1];
+
+        return '<button class="btn alt wide" style="margin:5px 0;text-align:left" onclick="openJob(\''+key+'\')">'+
+          esc(name)+' → <small>'+
+          (p?money(p.amount):'No bid yet')+
+          '</small></button>';
+      }).join('')+
+      '</section>';
+  }
+
+  if(DECK.some(x=>x[0]===k)){
+    html+='<button class="btn alt" onclick="openJob(\'decks\')">← Decks & Access</button>';
+  }
+
+  if(FIELDS[k]){
+    const m=measurements(j);
+
+    html+='<section class="panel">'+
+      '<div class="row"><h3>Measurements</h3><span class="muted">Saved</span></div>'+
+      '<div class="metric">'+summary(k,m)+'</div>'+
+      '<button class="btn alt wide" onclick="openPicker()">Edit measurements</button>'+
+      '</section>';
+  }
+
+  html+='<div class="tabs">'+
+    [
+      ['overview','Scope'],
+      ['bids','Bids'],
+      ['contractor','Contractor'],
+      ['inspection','Inspection']
+    ].map(([v,n])=>
+      '<button class="'+(tab===v?'on':'')+
+      '" onclick="tab=\''+v+'\';render()">'+n+'</button>'
+    ).join('')+
+    '</div>';
+
+  if(tab==='overview'){
+    html+='<section class="panel">'+
+      '<h3>Scope of work</h3>'+
+      '<textarea class="entry" rows="6" id="scope">'+
+      esc(j.scope)+
+      '</textarea>'+
+      '<button class="btn wide" style="margin-top:9px" onclick="saveScope()">Save scope</button>'+
+      (FIELDS[k]
+        ?'<button class="btn alt wide" style="margin-top:8px" onclick="addScope()">Add measurements to scope</button>'
+        :'')+
+      '</section>';
+  }
+
+  if(tab==='bids'){
+    html+='<section class="panel"><h3>Contractor bids</h3>'+
+      j.bids.map(b=>
+        '<div class="line"><b>'+esc(b.contractor)+
+        '</b> · '+money(b.amount)+
+        '<small>'+esc(b.notes||'')+'</small>'+
+        '<small>'+(b.id===j.approvedBidId?'✓ Approved':'Not approved')+'</small>'+
+        (b.id!==j.approvedBidId
+          ?'<button class="btn alt" onclick="approveBid(\''+
+            esc(b.id)+'\')">Approve bid</button>'
+          :'')+
+        '</div>'
+      ).join('')+
+      '<form onsubmit="addBid(event)" class="stack" style="margin-top:12px">'+
+      '<label>Contractor / supplier<input class="entry" id="bidWho" required></label>'+
+      '<label>Bid amount ($)<input class="entry" id="bidAmount" type="number" min="0" step=".01" required></label>'+
+      '<label>Inclusions / exclusions<textarea class="entry" id="bidNotes"></textarea></label>'+
+      '<button class="btn">Save bid</button>'+
+      '</form></section>';
+  }
+
+  if(tab==='contractor'){
+    html+='<section class="panel"><h3>Assigned contractor</h3>'+
+      '<select class="entry" id="who" onchange="assign(this.value)">'+
+      '<option value="">Not assigned</option>'+
+      data.contacts.map(c=>
+        '<option value="'+esc(c.id)+'" '+
+        (c.id===j.contractorId?'selected':'')+'>'+
+        esc(c.name)+'</option>'
+      ).join('')+
+      '</select>'+
+      '<button class="btn alt wide" style="margin-top:10px" onclick="go(\'people\')">Manage contacts</button>'+
+      '<p class="note">Assigning a contractor does not send an email or approve a bid.</p>'+
+      '</section>';
+  }
+
+  if(tab==='inspection'){
+    html+='<section class="panel"><h3>Inspection checklist</h3>'+
+      j.inspection.map(x=>
+        '<label class="line"><input type="checkbox" '+
+        (x.checked?'checked':'')+
+        ' onchange="checkItem(\''+esc(x.id)+'\',this.checked)"> '+
+        esc(x.text)+'</label>'
+      ).join('')+
+      '<form onsubmit="addItem(event)" class="row">'+
+      '<input class="entry" id="item" placeholder="New checklist item" required>'+
+      '<button class="btn">Add</button></form>'+
+      '<label style="margin-top:12px">Inspection notes'+
+      '<textarea class="entry" id="inspectNotes">'+
+      esc(j.inspectionNotes||'')+'</textarea></label>'+
+      '<label>Document references'+
+      '<textarea class="entry" id="docs">'+
+      esc(j.documentReferences||'')+'</textarea></label>'+
+      '<button class="btn wide" onclick="saveInspection()">Save notes</button>'+
+      '<p class="note">Official inspections and approvals must be confirmed separately.</p>'+
+      '</section>';
+  }
+
+  return html;
+}
+
+function saveScope(){
+  job().scope=$('scope').value;
+  save();
+  render();
+}
+
+function addScope(){
+  const j=job();
+  const m=measurements(j);
+
+  const s=j.key==='culvert'
+    ?'Install '+m.diameter+'-inch '+m.material.toLowerCase()+
+      ' culvert for '+m.width+'-ft driveway, '+m.extra+
+      ' ft extra; estimate '+
+      Math.ceil((+m.width + +m.extra)/8)+
+      ' eight-foot sections.'
+    :j.key==='clearing'
+      ?'Clear '+m.length+' ft × '+m.width+
+        ' ft ('+(m.length*m.width/43560).toFixed(3)+' acres).'
+      :'Construct '+m.length+' ft × '+m.width+' ft '+
+        (j.key==='pad'?'home pad':'rock driveway')+
+        ' with selected '+m.depth+'-inch depth.';
+
+  let t=$('scope');
+  t.value=(t.value.trim()+'\n\n'+s).trim();
+  t.scrollIntoView({block:'center',behavior:'smooth'});
+}
+
+function addBid(e){
+  e.preventDefault();
+
+  let j=job();
+  let a=Number($('bidAmount').value);
+
+  if(!Number.isFinite(a)||a<0)return;
+
+  j.bids.push({
+    id:uid(),
+    contractor:$('bidWho').value.trim(),
+    amount:a,
+    notes:$('bidNotes').value,
+    paid:0,
+    receivedDate:new Date().toISOString().slice(0,10)
+  });
+
+  save();
+  render();
+}
+
+function approveBid(id){
+  if(!confirm('Approve this bid in A7? No email or payment will be sent.')){
+    return;
+  }
+
+  job().approvedBidId=id;
+  save();
+  render();
+}
+
+function assign(id){
+  job().contractorId=id;
+  save();
+  render();
+}
+
+function checkItem(id,v){
+  let x=job().inspection.find(a=>a.id===id);
+
+  if(x){
+    x.checked=v;
+    save();
+  }
+}
+
+function addItem(e){
+  e.preventDefault();
+
+  job().inspection.push({
+    id:uid(),
+    text:$('item').value.trim(),
+    checked:false
+  });
+
+  save();
+  render();
+}
+
+function saveInspection(){
+  job().inspectionNotes=$('inspectNotes').value;
+  job().documentReferences=$('docs').value;
+  save();
+  render();
+}
+
+function peoplePage(){
+  return '<h2>Contractors & contacts</h2>'+
+    '<section class="panel">'+
+    data.contacts.map(c=>
+      '<div class="line"><b>'+esc(c.name)+'</b>'+
+      '<small>'+esc(c.phone||'')+' · '+
+      esc(c.email||'')+'</small></div>'
+    ).join('')+
+    '<h3 style="margin-top:12px">Add a contact</h3>'+
+    '<form class="stack" onsubmit="addPerson(event)">'+
+    '<input class="entry" id="name" placeholder="Name / company" required>'+
+    '<input class="entry" id="phone" type="tel" placeholder="Phone">'+
+    '<input class="entry" id="email" type="email" placeholder="Email">'+
+    '<button class="btn">Save contact</button>'+
+    '</form></section>';
+}
+
+function addPerson(e){
+  e.preventDefault();
+
+  data.contacts.push({
+    id:uid(),
+    name:$('name').value.trim(),
+    phone:$('phone').value.trim(),
+    email:$('email').value.trim(),
+    trades:[],
+    notes:''
+  });
+
+  save();
+  render();
+}
+
+function allocated(p){
+  let a=data.development.acres;
+  let total=Number(a[0])+Number(a[1]);
+
+  return total
+    ?Number(data.development.landPrice||0)*Number(a[p-1])/total
+    :0;
+}
+
+function priced(j){
+  return j.bids.find(b=>b.id===j.approvedBidId)||
+    j.bids[j.bids.length-1];
+}
+
+function budgetPage(){
+  const entries=TRADE
+    .filter(x=>x[0]!=='land'&&x[0]!=='decks')
+    .concat(DECK)
+    .map(([k,n])=>({k,n,j:job(k)}));
+
+  let total=allocated(parcel);
+
+  for(const x of entries){
+    total+=Number(priced(x.j)?.amount||0);
+  }
+
+  let share=Number(data.development.acres[parcel-1]||0)/
+    (Number(data.development.acres[0]||0)+
+     Number(data.development.acres[1]||0)||1);
+
+  for(const c of data.development.sharedCosts){
+    total+=Number(c.amount||0)*share;
+  }
+
+  return '<h2>Parcel '+parcel+' budget</h2>'+
+    '<section class="panel">'+
+    '<p class="muted">Recorded quoted subtotal, including allocated land</p>'+
+    '<h2>'+money(total)+'</h2>'+
+    '<p class="note">Unpriced work, taxes and contingencies may not be included. Deck sections are counted individually, not again as a combined box.</p>'+
+    '<div class="line">Allocated land <b>'+
+    money(allocated(parcel))+'</b></div>'+
+    entries.map(x=>
+      '<div class="line">'+esc(x.n)+
+      ' <b style="float:right">'+
+      (priced(x.j)?money(priced(x.j).amount):'Unpriced')+
+      '</b></div>'
+    ).join('')+
+    data.development.sharedCosts.map(c=>
+      '<div class="line">'+esc(c.name)+
+      ' (shared) <b>'+
+      money(Number(c.amount||0)*share)+
+      '</b></div>'
+    ).join('')+
+    '</section>';
+}
+
+function settingsPage(){
+  let d=data.development;
+
+  return '<h2>Development settings</h2>'+
+    '<section class="panel">'+
+    '<p class="note">Land purchase is a shared development cost. Its price is allocated by parcel acreage; it is not added again as a job bid.</p>'+
+    '<form class="stack" onsubmit="saveSettings(event)">'+
+    '<label>Development name'+
+    '<input class="entry" id="devName" value="'+esc(d.name)+'"></label>'+
+    '<label>Whole-property land purchase ($)'+
+    '<input class="entry" id="landPrice" type="number" min="0" step=".01" value="'+
+    Number(d.landPrice||0)+'"></label>'+
+    '<label>Land paid ($)'+
+    '<input class="entry" id="landPaid" type="number" min="0" step=".01" value="'+
+    Number(d.landPaid||0)+'"></label>'+
+    '<label>Parcel '+parcel+' acreage'+
+    '<input class="entry" id="acres" type="number" min="0" step=".001" value="'+
+    Number(d.acres[parcel-1]||0)+'"></label>'+
+    '<button class="btn">Save settings</button>'+
+    '</form></section>'+
+    '<section class="panel">'+
+    '<h3>Backup</h3>'+
+    '<p class="note">Data is stored in this browser, not synced between devices. Export a backup regularly. V13 remains unchanged.</p>'+
+    '<button class="btn wide" onclick="backup()">Download V14 backup</button>'+
+    '<label style="margin-top:12px">Restore V14 backup'+
+    '<input class="entry" type="file" accept=".json,application/json" onchange="restore(event)"></label>'+
+    '</section>';
+}
+
+function saveSettings(e){
+  e.preventDefault();
+
+  let d=data.development;
+
+  d.name=$('devName').value.trim();
+  d.landPrice=Number($('landPrice').value);
+  d.landPaid=Number($('landPaid').value);
+  d.acres[parcel-1]=Number($('acres').value);
+
+  save();
+  render();
+}
+
+function backup(){
+  let a=document.createElement('a');
+  let url=URL.createObjectURL(
+    new Blob([JSON.stringify(data,null,2)],{
+      type:'application/json'
+    })
+  );
+
+  a.href=url;
+  a.download='a7-superintendent-v14-backup.json';
+  a.click();
+
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+async function restore(e){
+  let f=e.target.files?.[0];
+  if(!f)return;
+
+  try{
+    let x=JSON.parse(await f.text());
+
+    if(x.version!==14||!x.jobs||!x.development){
+      throw Error('Not a V14 backup');
+    }
+
+    if(!confirm('Replace V14 data in this browser with this backup?')){
+      return;
+    }
+
+    data=migrate(x);
+    save();
+    go('home');
+  }catch(err){
+    alert('Could not restore: '+err.message);
+  }
+}
+
+function openPicker(){
+  draft={...measurements(job())};
+  activeField=0;
+  $('picker').showModal();
+  document.body.style.overflow='hidden';
+  drawPicker();
+}
+
+function closePicker(){
+  draft=null;
+  $('picker').close();
+  document.body.style.overflow='';
+}
+
+function drawPicker(){
+  if(!draft)return;
+
+  let fields=FIELDS[selected];
+
+  $('fieldtabs').innerHTML=fields.map((f,i)=>
+    '<button class="'+(i===activeField?'on':'')+
+    '" onclick="chooseField('+i+')">'+
+    esc(f[1])+'</button>'
+  ).join('');
+
+  $('materialRow').innerHTML=selected==='culvert'
+    ?'<label style="margin-top:12px">Pipe material'+
+      '<select class="entry" onchange="draft.material=this.value;refreshDraft()">'+
+      '<option '+(draft.material==='Concrete'?'selected':'')+'>Concrete</option>'+
+      '<option '+(draft.material==='Plastic'?'selected':'')+'>Plastic</option>'+
+      '</select></label>'
+    :'';
+
+  let f=fields[activeField];
+
+  let vals=f[5]||
+    Array.from({length:f[4]-f[3]+1},(_,i)=>f[3]+i);
+
+  let w=$('wheel');
+
+  w.setAttribute('aria-label',f[1]);
+
+  w.innerHTML=
+    '<div style="height:88px"></div>'+
+    vals.map(v=>
+      '<div class="opt" role="option">'+v+' '+f[2]+'</div>'
+    ).join('')+
+    '<div style="height:88px"></div>';
+
+  w.onwheel=null;
+  w.onscroll=null;
+  w.onkeydown=null;
+
+  let idx=Math.max(0,vals.indexOf(Number(draft[f[0]])));
+
+  ignoreWheel=true;
+  w.scrollTop=idx*44;
+  paint(idx);
+
+  requestAnimationFrame(()=>{
+    w.scrollTop=idx*44;
+    requestAnimationFrame(()=>{
+      ignoreWheel=false;
+    });
+  });
+
+  w.onscroll=()=>{
+    if(ignoreWheel)return;
+
+    let i=Math.max(
+      0,
+      Math.min(vals.length-1,Math.round(w.scrollTop/44))
+    );
+
+    paint(i);
+    draft[f[0]]=vals[i];
+    refreshDraft();
+  };
+
+  w.onkeydown=e=>{
+    if(e.key!=='ArrowUp'&&e.key!=='ArrowDown')return;
+
+    e.preventDefault();
+
+    let i=Math.max(
+      0,
+      Math.min(
+        vals.length-1,
+        Math.round(w.scrollTop/44)+
+        (e.key==='ArrowDown'?1:-1)
+      )
+    );
+
+    w.scrollTo({top:i*44,behavior:'smooth'});
+  };
+
+  function paint(i){
+    w.querySelectorAll('.opt').forEach((el,n)=>{
+      el.classList.toggle('on',n===i);
+      el.setAttribute('aria-selected',String(n===i));
+    });
+  }
+
+  refreshDraft();
+}
+
+function chooseField(i){
+  activeField=i;
+  drawPicker();
+}
+
+function refreshDraft(){
+  $('draftResult').innerHTML=summary(selected,draft);
+}
+
+function savePicker(){
+  const f=FIELDS[selected];
+
+  for(const [key,, ,min,max,values] of f){
+    const n=Number(draft[key]);
+
+    if(!Number.isFinite(n)||
+       !(values?values.includes(n):n>=min&&n<=max)){
+      alert('Please select a valid measurement.');
+      return;
+    }
+  }
+
+  if(selected==='culvert'&&
+     !['Concrete','Plastic'].includes(draft.material)){
+    return;
+  }
+
+  job().measurements={...draft};
+
+  if(!save())return;
+
+  closePicker();
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
