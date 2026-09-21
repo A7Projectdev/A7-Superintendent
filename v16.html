@@ -1,0 +1,799 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>A7 Superintendent V16</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#082629;color:#edfff5;font:15px -apple-system,BlinkMacSystemFont,Arial;padding-bottom:80px}
+header{position:sticky;top:0;background:#092c2c;padding:15px;border-bottom:1px solid #39715f;z-index:2}
+main{max-width:850px;margin:auto;padding:15px}
+h1{font-size:25px}h2{font-size:21px}
+.muted,small{color:#b4d0c4}
+.panel{background:#123b3b;border:1px solid #376d60;border-radius:15px;padding:15px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tile{min-height:125px;text-align:left;color:white;border:0;border-radius:13px;padding:14px;background:#1b8062}
+.tile:nth-child(8n+2){background:#345f95}
+.tile:nth-child(8n+3){background:#b46d44}
+.tile:nth-child(8n+4){background:#8d5ba6}
+.tile:nth-child(8n+5){background:#aa4e72}
+.tile:nth-child(8n+6){background:#247e94}
+.tile:nth-child(8n+7){background:#9a7c36}
+.tile:nth-child(8n){background:#476f69}
+.tile b{display:block;font-size:16px;margin-bottom:13px}
+.tile small{color:#fff}
+.btn{background:#24996d;border:0;color:#fff;border-radius:10px;padding:11px 13px;font-weight:700;margin:4px 3px 4px 0}
+.btn:disabled{opacity:.4}
+.alt{background:#285d55}
+.danger{background:#91514d}
+.field{display:block;width:100%;font:inherit;background:#082a2c;color:white;border:1px solid #6c9b8b;border-radius:9px;padding:11px;margin:6px 0 12px}
+label{font-weight:650;display:block;margin-top:12px}
+.line{border-bottom:1px solid #36695c;padding:12px 0}
+.line:last-child{border:0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pill{font-size:11px;background:#285e51;padding:5px 8px;border-radius:99px}
+.warn{background:#765328}
+.tabs{display:flex;overflow-x:auto;gap:5px}
+.tabs button{white-space:nowrap}
+.photos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.photos img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
+.photo{min-width:0;overflow-wrap:anywhere;font-size:11px}
+.photo button{font-size:11px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#09282a;border-top:1px solid #39715f;display:flex;padding:8px 3px calc(8px + env(safe-area-inset-bottom))}
+.nav button{flex:1;background:transparent;border:0;color:#d4f7e7;padding:8px 2px;font-size:12px}
+.chips{display:flex;flex-wrap:wrap;gap:9px}
+.chips label{font-weight:400;background:#21564b;padding:8px;border-radius:9px;margin:0}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header>
+<b style="font-size:23px">A<span style="color:#58e7a6">7</span> SUPERINTENDENT</b>
+<div class="muted" style="font-size:11px">PLAN · BID · BUILD · DOCUMENT · APPROVE</div>
+</header>
+<main id="app"></main>
+<nav class="nav">
+<button onclick="go('home')">⌂<br>Dashboard</button>
+<button onclick="go('jobs')">▦<br>Jobs</button>
+<button onclick="go('people')">♟<br>Contractors</button>
+<button onclick="go('settings')">⚙<br>Settings</button>
+</nav>
+<script>
+'use strict';
+
+const KEY='a7-superintendent-v16',
+DB='a7-superintendent-v16-photos',
+TRADES=[
+['land','Land Purchase Cost'],
+['permits','Permits & Easements'],
+['clearing','Land Clearing'],
+['culvert','Entrance & Culvert'],
+['driveway','Rock Driveway'],
+['pad','Home Pad'],
+['water','Water Connection'],
+['electrical','Electrical Connection'],
+['home','Manufactured Home'],
+['transport','Home Transportation'],
+['setup','Home Setup'],
+['septic','Septic Installation'],
+['skirting','Home Skirting'],
+['decks','Decks & Access'],
+['hvac','HVAC'],
+['other','Other Parcel Expenses']
+];
+
+const $=id=>document.getElementById(id),
+id=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,9),
+esc=s=>String(s??'').replace(/[&<>"']/g,c=>({
+'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[c])),
+money=n=>Number(n||0).toLocaleString('en-US',{
+style:'currency',currency:'USD',maximumFractionDigits:0
+});
+
+function newJob(k,name){
+return {
+key:k,name,scope:'',bids:[],state:'planning',
+photos:{before:[],middle:[],after:[]},
+approvedAt:'',exception:null,history:[]
+};
+}
+
+function newParcel(name){
+return {
+id:id(),name,
+jobs:Object.fromEntries(TRADES.map(([k,n])=>[k,newJob(k,n)]))
+};
+}
+
+function newDev(name,n){
+return {
+id:id(),name,
+parcels:Array.from({length:n},(_,i)=>newParcel('Parcel '+(i+1)))
+};
+}
+
+function fresh(){
+return {developments:[newDev('My development',2)],contacts:[]};
+}
+
+function migrate(old){
+let d=newDev(old.development?.name||'My development',2),
+out={developments:[d],contacts:[]};
+
+for(let i=0;i<2;i++){
+for(let [k,n] of TRADES){
+let o=old.jobs?.[(i+1)+'-'+k];
+if(o){
+let j=d.parcels[i].jobs[k];
+j.scope=o.scope||'';
+j.bids=Array.isArray(o.bids)
+?o.bids.map(b=>({...b,id:b.id||id()}))
+:[];
+}
+}
+}
+
+for(let c of old.contacts||old.contractors||[]){
+out.contacts.push({
+id:id(),
+name:c.name||c.company||'Contractor',
+phone:c.phone||'',
+email:c.email||'',
+trades:Array.isArray(c.trades)?c.trades:[],
+notes:c.notes||''
+});
+}
+return out;
+}
+
+let data;
+try{
+data=JSON.parse(localStorage.getItem(KEY)||'null')
+||migrate(JSON.parse(localStorage.getItem('a7-superintendent-v15')||'null')||{});
+}catch(e){data=fresh();}
+
+if(!data?.developments?.length)data=fresh();
+if(!Array.isArray(data.contacts))data.contacts=[];
+
+for(const d of data.developments){
+for(const p of d.parcels){
+p.jobs=p.jobs||{};
+for(const [k,n] of TRADES){
+let j=p.jobs[k]||newJob(k,n);
+j.key=k;
+j.name=n;
+j.photos=j.photos||{};
+for(const s of ['before','middle','after']){
+j.photos[s]=Array.isArray(j.photos[s])?j.photos[s]:[];
+}
+j.bids=Array.isArray(j.bids)?j.bids:[];
+j.history=Array.isArray(j.history)?j.history:[];
+p.jobs[k]=j;
+}
+}
+}
+
+let di=0,pi=0,selected='land',view='home',tab='work',urls=[];
+
+const dev=()=>data.developments[di],
+parcel=()=>dev().parcels[pi],
+job=()=>parcel().jobs[selected],
+prev=()=>parcel().jobs[TRADES[TRADES.findIndex(t=>t[0]===selected)-1]?.[0]],
+allowed=()=>!prev()||prev().state==='approved'||!!job().exception;
+
+function save(){
+try{
+localStorage.setItem(KEY,JSON.stringify(data));
+return true;
+}catch(e){
+alert('Storage full. Export a backup and free space.');
+return false;
+}
+}
+
+function log(j,text){
+j.history.push({date:new Date().toISOString(),text});
+}
+
+function go(v){
+view=v;
+render();
+scrollTo(0,0);
+}
+
+function pickDev(i){
+di=i;
+pi=0;
+go('parcels');
+}
+
+function pickParcel(i){
+pi=i;
+go('jobs');
+}
+
+function pickJob(k){
+selected=k;
+tab='work';
+go('detail');
+}
+
+function state(j){
+return j.state==='approved'?'✓ Approved':
+j.state==='review'?'Awaiting your approval':
+j.state==='working'?'In progress':
+j.state==='finishing'?'Final photos':
+allowed()?'Ready · Bidding open':'Work locked · Bidding open';
+}
+
+function home(){
+return '<div class="panel"><h1>Your developments</h1>'+
+'<p class="muted">Plan upcoming jobs and collect bids while construction stays in sequence.</p>'+
+'<button class="btn" onclick="go(\'newdev\')">+ New development</button></div>'+
+data.developments.map((d,i)=>
+'<button class="tile" style="width:100%;min-height:95px;margin:6px 0" onclick="pickDev('+i+')">'+
+'<b>'+esc(d.name)+'</b><small>'+d.parcels.length+' parcels · Open development →</small></button>'
+).join('');
+}
+
+function newdev(){
+return '<h2>New development</h2>'+
+'<form class="panel" onsubmit="createDev(event)">'+
+'<label>Name<input class="field" id="dn" required placeholder="Talco Development"></label>'+
+'<label>Number of parcels<input class="field" id="pn" type="number" min="1" max="100" value="2" required></label>'+
+'<button class="btn">Create development</button></form>';
+}
+
+function createDev(e){
+e.preventDefault();
+let n=Number($('pn').value),name=$('dn').value.trim();
+if(!name||!Number.isInteger(n)||n<1||n>100){
+return alert('Enter 1–100 parcels.');
+}
+data.developments.push(newDev(name,n));
+if(save())pickDev(data.developments.length-1);
+}
+
+function parcels(){
+return '<button class="btn alt" onclick="go(\'home\')">← Developments</button>'+
+'<h2>'+esc(dev().name)+'</h2>'+
+'<button class="btn" onclick="addParcel()">+ Add parcel</button>'+
+'<div class="grid">'+dev().parcels.map((p,i)=>
+'<button class="tile" onclick="pickParcel('+i+')">'+
+'<b>'+esc(p.name)+'</b><small>'+
+TRADES.filter(([k])=>p.jobs[k].state==='approved').length+
+' / 16 jobs approved</small></button>'
+).join('')+'</div>';
+}
+
+function addParcel(){
+let name=prompt('Parcel name','Parcel '+(dev().parcels.length+1));
+if(!name?.trim())return;
+dev().parcels.push(newParcel(name.trim()));
+if(save())render();
+}
+
+function jobs(){
+return '<button class="btn alt" onclick="go(\'parcels\')">← Parcels</button>'+
+'<h2>'+esc(dev().name)+' · '+esc(parcel().name)+'</h2>'+
+'<p class="muted">Open any job to contact contractors or request bids. Only the next approved step can begin construction.</p>'+
+'<div class="grid">'+TRADES.map(([k,n],i)=>{
+let j=parcel().jobs[k];
+let ready=i===0||parcel().jobs[TRADES[i-1][0]].state==='approved'||j.exception;
+return '<button class="tile" onclick="pickJob(\''+k+'\')">'+
+'<b>'+(i+1)+'. '+esc(n)+'</b><small>'+
+esc(j.state==='approved'?'✓ Approved':
+j.state!=='planning'?state(j):
+ready?'Ready · Bidding open':'Work locked · Bidding open')+
+'</small></button>';
+}).join('')+'</div>';
+}
+
+function detail(){
+let j=job(),p=prev();
+return '<button class="btn alt" onclick="go(\'jobs\')">← Jobs</button>'+
+'<h2>'+esc(j.name)+'</h2>'+
+'<span class="pill '+(!allowed()?'warn':'')+'">'+esc(state(j))+'</span>'+
+'<p class="muted">'+esc(dev().name)+' · '+esc(parcel().name)+'</p>'+
+'<div class="tabs">'+[
+['work','Workflow'],['contacts','Contractors'],['bids','Bids'],
+['scope','Scope'],['history','History']
+].map(([k,n])=>
+'<button class="btn '+(tab===k?'':'alt')+
+'" onclick="tab=\''+k+'\';render()">'+n+'</button>'
+).join('')+'</div>'+
+(tab==='work'?workflow(j,p):
+tab==='contacts'?contacts(j):
+tab==='bids'?bids(j):
+tab==='scope'?scope(j):
+'<div class="panel">'+
+(j.history.length?j.history.slice().reverse().map(h=>
+'<div class="line">'+esc(h.text)+
+'<small> · '+esc(new Date(h.date).toLocaleString())+'</small></div>'
+).join(''):'No activity yet')+'</div>');
+}
+
+function workflow(j,p){
+let out='<div class="panel"><h3>Construction sequence</h3>'+
+'<p class="muted">'+
+(p?'Previous job: '+esc(p.name)+' — '+esc(p.state):
+'First job in this parcel')+'</p>';
+
+if(!allowed()){
+out+='<p>Work is locked. Contractor calls, scopes and bids are still open.</p>'+
+'<label>Owner exception reason<textarea class="field" id="reason" placeholder="Why must this job start out of sequence?"></textarea></label>'+
+'<button class="btn alt" onclick="exception()">Approve sequence exception</button>';
+}
+out+='</div>';
+
+for(const [s,title] of [
+['before','1. Before work'],
+['middle','2. During work'],
+['after','3. After work']
+]){
+let open=(s==='before'&&j.state==='planning')||
+(s==='middle'&&j.state==='working')||
+(s==='after'&&j.state==='finishing');
+
+out+='<div class="panel"><div class="row"><b>'+title+
+'</b><span class="pill">'+j.photos[s].length+
+' / 3 minimum</span></div>'+
+'<p class="muted">'+
+(open?'Upload or take at least three photos.':
+'This stage is not open for uploads.')+'</p>'+
+(open?'<input class="field" type="file" accept="image/*" multiple onchange="upload(event,\''+s+'\')">':'')+
+'<div class="photos">'+j.photos[s].map(m=>
+'<div class="photo" id="ph-'+esc(m.id)+'">'+
+'<div class="muted">Loading photo…</div>'+
+'<small>'+esc(m.name)+'</small>'+
+(open?'<button class="btn danger" onclick="removePhoto(\''+s+'\',\''+m.id+'\')">Remove</button>':'')+
+'</div>'
+).join('')+'</div></div>';
+}
+
+if(j.state==='planning'){
+out+='<div class="panel"><button class="btn" '+
+(!allowed()||j.photos.before.length<3?'disabled':'')+
+' onclick="advance(\'working\')">Start work →</button>'+
+'<p class="muted">Requires three before photos and previous job approval, or a documented exception.</p></div>';
+}
+
+if(j.state==='working'){
+out+='<div class="panel"><button class="btn" '+
+(j.photos.middle.length<3?'disabled':'')+
+' onclick="advance(\'finishing\')">Move to final photos →</button></div>';
+}
+
+if(j.state==='finishing'){
+out+='<div class="panel"><button class="btn" '+
+(j.photos.after.length<3?'disabled':'')+
+' onclick="advance(\'review\')">Submit for owner review →</button></div>';
+}
+
+if(j.state==='review'){
+out+='<div class="panel"><h3>Owner approval</h3>'+
+'<p>Review all nine photos and confirm this job is complete. Only your approval unlocks the next job.</p>'+
+'<button class="btn" onclick="approve()">I reviewed it · Approve completion</button>'+
+'<button class="btn alt" onclick="returnPhotos()">Return for more photos</button></div>';
+}
+
+if(j.state==='approved'){
+out+='<div class="panel">✓ Approved '+
+esc(new Date(j.approvedAt).toLocaleString())+
+'. The next job is unlocked.</div>';
+}
+
+return out+'<p class="muted">Prototype: approval is not password-protected. Photos are stored in this browser, not in the cloud. Export backups regularly.</p>';
+}
+
+function contacts(j){
+let matches=data.contacts.filter(c=>c.trades.includes(j.key));
+
+return '<div class="panel"><h3>'+esc(j.name)+' contractors</h3>'+
+'<p class="muted">Only contacts tagged for this trade appear. Calls and bids are allowed even while work is locked.</p>'+
+(matches.length?matches.map(c=>
+'<div class="line"><b>'+esc(c.name)+'</b>'+
+'<p class="muted">'+esc(c.notes||'')+'</p>'+
+(c.phone?
+'<a class="btn" style="display:inline-block;color:white;text-decoration:none" href="tel:'+encodeURIComponent(c.phone)+'">Call</a>'+
+'<a class="btn alt" style="display:inline-block;color:white;text-decoration:none" href="sms:'+encodeURIComponent(c.phone)+'">Text</a>':'')+
+(c.email?
+'<a class="btn alt" style="display:inline-block;color:white;text-decoration:none" href="mailto:'+
+encodeURIComponent(c.email)+'?subject='+
+encodeURIComponent('Bid request: '+dev().name+' / '+parcel().name+' / '+j.name)+
+'">Request bid</a>':'')+
+'</div>'
+).join(''):'<p>No contractors tagged for this trade yet.</p>')+
+'<button class="btn" onclick="go(\'contactedit\')">+ Add contractor</button></div>';
+}
+
+function bids(j){
+return '<div class="panel"><h3>Bid comparison</h3>'+
+j.bids.map(b=>
+'<div class="line"><b>'+esc(b.name)+' — '+money(b.amount)+'</b>'+
+'<p class="muted">'+esc(b.notes||'')+'</p></div>'
+).join('')+
+'<form onsubmit="addBid(event)">'+
+'<label>Contractor<select class="field" id="bidContact">'+
+'<option value="">Enter name below</option>'+
+data.contacts.filter(c=>c.trades.includes(j.key)).map(c=>
+'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>'
+).join('')+'</select></label>'+
+'<label>Name (if not in contacts)<input class="field" id="bidName"></label>'+
+'<label>Bid amount ($)<input class="field" id="bidAmount" type="number" min="0" step=".01" required></label>'+
+'<label>Bid notes<textarea class="field" id="bidNotes"></textarea></label>'+
+'<button class="btn">Save bid</button></form></div>';
+}
+
+function addBid(e){
+e.preventDefault();
+let c=data.contacts.find(c=>c.id===$('bidContact').value),
+name=c?.name||$('bidName').value.trim(),
+amount=Number($('bidAmount').value);
+
+if(!name||!Number.isFinite(amount)||amount<0){
+return alert('Enter a contractor and valid amount.');
+}
+job().bids.push({
+id:id(),name,amount,notes:$('bidNotes').value
+});
+log(job(),'Bid received from '+name);
+if(save())render();
+}
+
+function scope(j){
+return '<div class="panel"><h3>Scope of work</h3>'+
+'<textarea class="field" id="scope" rows="8">'+esc(j.scope||'')+'</textarea>'+
+'<button class="btn" onclick="job().scope=$(\'scope\').value;log(job(),\'Scope updated\');if(save())render()">Save scope</button></div>';
+}
+
+function people(){
+return '<h2>Shared contractor directory</h2>'+
+'<p class="muted">One contact can belong to multiple trades and appears in every development.</p>'+
+'<button class="btn" onclick="editContact(\'\')">+ Add contractor</button>'+
+data.contacts.map(c=>
+'<div class="panel"><b>'+esc(c.name)+'</b>'+
+'<p class="muted">'+esc(c.trades.map(k=>
+TRADES.find(t=>t[0]===k)?.[1]||k
+).join(' · '))+'</p>'+
+'<button class="btn alt" onclick="editContact(\''+c.id+'\')">Edit</button></div>'
+).join('');
+}
+
+let editing='';
+
+function editContact(k){
+editing=k;
+go('contactedit');
+}
+
+function contactedit(){
+let c=data.contacts.find(c=>c.id===editing)||{
+name:'',phone:'',email:'',notes:'',trades:[]
+};
+
+return '<h2>Contractor</h2>'+
+'<form class="panel" onsubmit="saveContact(event)">'+
+'<label>Name / company<input class="field" id="cn" value="'+esc(c.name)+'" required></label>'+
+'<label>Phone<input class="field" id="cp" type="tel" value="'+esc(c.phone)+'"></label>'+
+'<label>Email<input class="field" id="ce" type="email" value="'+esc(c.email)+'"></label>'+
+'<label>Trades (choose all that apply)</label>'+
+'<div class="chips">'+TRADES.map(([k,n])=>
+'<label><input type="checkbox" name="trade" value="'+k+'" '+
+(c.trades.includes(k)?'checked':'')+'> '+esc(n)+'</label>'
+).join('')+'</div>'+
+'<label>Notes<textarea class="field" id="ct">'+esc(c.notes)+'</textarea></label>'+
+'<button class="btn">Save contractor</button></form>';
+}
+
+function saveContact(e){
+e.preventDefault();
+let c=data.contacts.find(c=>c.id===editing),
+v={
+name:$('cn').value.trim(),
+phone:$('cp').value.trim(),
+email:$('ce').value.trim(),
+notes:$('ct').value,
+trades:[...document.querySelectorAll('input[name=trade]:checked')].map(x=>x.value)
+};
+
+if(!v.name)return;
+if(c)Object.assign(c,v);
+else data.contacts.push({id:id(),...v});
+if(save())go('people');
+}
+
+function exception(){
+let reason=$('reason').value.trim();
+if(reason.length<10){
+return alert('Enter at least 10 characters explaining the exception.');
+}
+if(!confirm('Approve starting this job before the previous job is complete?'))return;
+
+job().exception={reason,date:new Date().toISOString()};
+log(job(),'Owner approved out-of-order work: '+reason);
+if(save())render();
+}
+
+function allNine(j){
+return ['before','middle','after'].every(s=>j.photos[s].length>=3);
+}
+
+async function verify(j){
+for(const s of ['before','middle','after']){
+for(const m of j.photos[s]){
+if(!(await getPhoto(m.id))?.blob){
+throw Error('A photo is missing from browser storage. Restore a backup.');
+}
+}
+}
+}
+
+async function advance(next){
+let j=job();
+
+if(next==='working'&&
+(j.state!=='planning'||!allowed()||j.photos.before.length<3))return;
+
+if(next==='finishing'&&
+(j.state!=='working'||j.photos.middle.length<3))return;
+
+if(next==='review'&&
+(j.state!=='finishing'||!allNine(j)))return;
+
+try{await verify(j);}
+catch(e){return alert(e.message);}
+
+j.state=next;
+log(j,'Moved to '+next);
+if(save())render();
+}
+
+async function approve(){
+let j=job();
+if(j.state!=='review'||!allNine(j))return;
+
+try{await verify(j);}
+catch(e){return alert(e.message);}
+
+if(!confirm('I have reviewed the photos and approve this job as complete. Unlock the next job?'))return;
+
+j.state='approved';
+j.approvedAt=new Date().toISOString();
+log(j,'Owner approved completion');
+if(save())render();
+}
+
+function returnPhotos(){
+if(job().state!=='review')return;
+job().state='finishing';
+log(job(),'Returned for additional photos');
+if(save())render();
+}
+
+function db(){
+return new Promise((resolve,reject)=>{
+let r=indexedDB.open(DB,1);
+r.onupgradeneeded=()=>r.result.createObjectStore('photos',{keyPath:'id'});
+r.onsuccess=()=>resolve(r.result);
+r.onerror=()=>reject(r.error);
+});
+}
+
+async function putPhoto(x){
+let d=await db();
+try{
+await new Promise((ok,no)=>{
+let t=d.transaction('photos','readwrite');
+t.objectStore('photos').put(x);
+t.oncomplete=ok;
+t.onerror=()=>no(t.error);
+});
+}finally{d.close();}
+}
+
+async function getPhoto(k){
+let d=await db();
+try{
+return await new Promise((ok,no)=>{
+let r=d.transaction('photos').objectStore('photos').get(k);
+r.onsuccess=()=>ok(r.result);
+r.onerror=()=>no(r.error);
+});
+}finally{d.close();}
+}
+
+async function delPhoto(k){
+let d=await db();
+try{
+await new Promise((ok,no)=>{
+let t=d.transaction('photos','readwrite');
+t.objectStore('photos').delete(k);
+t.oncomplete=ok;
+t.onerror=()=>no(t.error);
+});
+}finally{d.close();}
+}
+
+async function upload(e,s){
+let j=job();
+
+if(!((s==='before'&&j.state==='planning')||
+(s==='middle'&&j.state==='working')||
+(s==='after'&&j.state==='finishing')))return;
+
+for(const file of e.target.files){
+if(!file.type.startsWith('image/')||file.size>15e6){
+alert('Use images smaller than 15 MB.');
+continue;
+}
+
+let m={id:id(),name:file.name,date:new Date().toISOString()};
+
+try{
+await putPhoto({id:m.id,blob:file});
+j.photos[s].push(m);
+
+if(!save()){
+j.photos[s].pop();
+await delPhoto(m.id);
+break;
+}
+}catch(err){
+alert('Photo storage failed: '+err.message);
+break;
+}
+}
+render();
+}
+
+async function removePhoto(s,k){
+if(!confirm('Remove photo?'))return;
+
+let j=job(),a=j.photos[s],i=a.findIndex(x=>x.id===k);
+if(i<0)return;
+
+let [m]=a.splice(i,1);
+if(!save()){
+a.splice(i,0,m);
+return;
+}
+
+await delPhoto(k);
+render();
+}
+
+async function showPhotos(){
+if(view!=='detail'||tab!=='work')return;
+
+for(const s of ['before','middle','after']){
+for(const m of job().photos[s]){
+let el=$('ph-'+m.id);
+if(!el)continue;
+
+try{
+let x=await getPhoto(m.id);
+if(!x?.blob){
+el.firstElementChild.textContent='Missing photo';
+continue;
+}
+
+let u=URL.createObjectURL(x.blob);
+urls.push(u);
+
+let img=document.createElement('img');
+img.src=u;
+img.alt=m.name;
+el.firstElementChild.replaceWith(img);
+}catch(e){
+el.firstElementChild.textContent='Photo unavailable';
+}
+}
+}
+}
+
+function settings(){
+return '<h2>Settings & backups</h2>'+
+'<div class="panel">'+
+'<p class="muted">Photos stay in this browser. Clearing browser data or losing this phone can erase them. Export a full backup and store it safely. Approval is not protected by a login.</p>'+
+'<button class="btn" onclick="backup()">Export full backup with photos</button>'+
+'<label>Restore a V16 backup<input class="field" type="file" accept=".json,application/json" onchange="restore(event)"></label>'+
+'</div>';
+}
+
+const toBase64=blob=>new Promise((ok,no)=>{
+let r=new FileReader();
+r.onload=()=>ok(r.result);
+r.onerror=()=>no(r.error);
+r.readAsDataURL(blob);
+});
+
+async function backup(){
+try{
+let photos=[];
+
+for(const d of data.developments){
+for(const p of d.parcels){
+for(const [k] of TRADES){
+for(const s of ['before','middle','after']){
+for(const m of p.jobs[k].photos[s]){
+let x=await getPhoto(m.id);
+if(!x?.blob)throw Error('Missing photo '+m.name);
+photos.push({id:m.id,data:await toBase64(x.blob)});
+}
+}
+}
+}
+}
+
+let a=document.createElement('a');
+a.href=URL.createObjectURL(new Blob(
+[JSON.stringify({format:'A7-V16',data,photos})],
+{type:'application/json'}
+));
+a.download='A7-V16-full-backup-'+new Date().toISOString().slice(0,10)+'.json';
+a.click();
+setTimeout(()=>URL.revokeObjectURL(a.href),60000);
+
+}catch(e){
+alert('Backup failed: '+e.message);
+}
+}
+
+async function restore(e){
+let f=e.target.files[0];
+if(!f)return;
+
+try{
+let x=JSON.parse(await f.text());
+
+if(x.format!=='A7-V16'||
+!Array.isArray(x.data?.developments)||
+!Array.isArray(x.data?.contacts)||
+!Array.isArray(x.photos)){
+throw Error('Invalid V16 backup');
+}
+
+if(!confirm('Replace current V16 records with this backup?'))return;
+
+for(const p of x.photos){
+let r=await fetch(p.data),blob=await r.blob();
+await putPhoto({id:p.id,blob});
+}
+
+data=x.data;
+if(!save())return;
+
+di=0;
+pi=0;
+go('home');
+alert('Backup restored.');
+
+}catch(err){
+alert('Restore failed: '+err.message);
+}
+}
+
+function render(){
+urls.forEach(u=>URL.revokeObjectURL(u));
+urls=[];
+
+if(di>=data.developments.length)di=0;
+if(pi>=dev().parcels.length)pi=0;
+
+const pages={
+home,newdev,parcels,jobs,detail,people,contactedit,settings
+};
+
+$('app').innerHTML=(pages[view]||home)();
+showPhotos();
+}
+
+save();
+render();
+</script>
+</body>
+</html>
