@@ -1,0 +1,173 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#092e29">
+<title>A7 Superintendent · V13</title>
+<style>
+body{font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f3f7f6;color:#182a29;margin:0;padding:24px;line-height:1.5}
+main{max-width:550px;margin:auto;background:white;border-radius:16px;padding:22px}
+button{padding:12px;border:0;border-radius:10px;background:#092e29;color:white;font:inherit}
+</style>
+</head>
+<body>
+<main id="loading" role="status"><h1>A7 Superintendent · V13</h1><p>Loading your project and measurement wheels…</p></main>
+<script>
+'use strict';
+/* V13 builds on v12.html, which builds on v11.html. Keep both files in this folder.
+   Data is copied to a new localStorage key; earlier versions are left unchanged. */
+(async function(){
+ try{
+  const response=await fetch(new URL('v12.html',location.href),{cache:'no-store'});
+  if(!response.ok)throw Error('Could not load v12.html (HTTP '+response.status+').');
+  let wrapper=await response.text();
+  const marker='    document.open();\n    document.write(source);';
+  if(!wrapper.includes(marker))throw Error('The V12 file has changed. V13 needs an update.');
+  const upgrade=String.raw`
+    /* V13 additions, applied to the V12 app after V12 finishes its patches. */
+    source=patch(source,
+      "const KEY='a7-superintendent-v12',OLD='a7-superintendent-v11';",
+      "const KEY='a7-superintendent-v13',OLD='a7-superintendent-v12';",
+      'V13 storage');
+    source=patch(source,'  version:12,','  version:13,','V13 fresh data');
+    source=patch(source,' x.version=12;',' x.version=13;','V13 migration');
+    source=patch(source,'if(x.version!==12||!valid(x))','if(x.version!==13||!valid(x))','V13 backup validation');
+    source=source.replaceAll('a7-superintendent-v12-backup.json','a7-superintendent-v13-backup.json');
+    source=source.replaceAll('<span class="tiny">V12</span>','<span class="tiny">V13</span>');
+    source=source.replaceAll('<title>A7 Superintendent · V12</title>','<title>A7 Superintendent · V13</title>');
+    source=source.replaceAll('Your V11 records were copied into V12. V11 remains unchanged.',
+      'Your V12 records were copied into V13. V12 remains unchanged.');
+    source=source.replaceAll('Your V11 data was not deleted','Your V12 data was not deleted');
+    source=source.replaceAll('Actions you record in V12','Actions you record in V13');
+    source=source.replaceAll('V12 saves only in this browser','V13 saves only in this browser');
+    source=source.replaceAll('V11 is left unchanged','V12 is left unchanged');
+    source=source.replaceAll('Download V12 backup','Download V13 backup');
+    source=source.replaceAll('Restore a V12 backup','Restore a V13 backup');
+    source=source.replaceAll('Not a V12 backup','Not a V13 backup');
+    source=source.replaceAll('Replace V12 data on this browser','Replace V13 data on this browser');
+    source=source.replaceAll('V12 backup restored','V13 backup restored');
+    source=source.replaceAll('Choose a valid V12 backup','Choose a valid V13 backup');
+    source=patch(source,'</style>',String.raw\`
+.a7-wheelbox{position:relative;max-width:270px;margin:0 auto 13px}
+.a7-wheelbox:before{content:"";position:absolute;top:80px;left:0;right:0;height:48px;background:#e7efed;border-radius:11px;pointer-events:none;z-index:1}
+.a7-wheel{height:208px;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;text-align:center}
+.a7-wheel::-webkit-scrollbar{display:none}
+.a7-opt{height:48px;display:flex;align-items:center;justify-content:center;scroll-snap-align:center;font-size:22px;color:#82918d}
+.a7-opt.on{font-size:29px;font-weight:750;color:#143d34}
+.a7-metric{padding:12px;background:#eaf4f0;border-radius:11px;margin-top:10px;line-height:1.6}
+.a7-metric strong{display:block;font-size:22px;color:#134c39}
+.a7-small{font-size:11px;color:#667977;line-height:1.5}
+\`+'</style>','V13 wheel styles');
+    const helpers=String.raw\`
+/* Measurements belong to each parcel's own job. */
+const A7_MEASURE={
+ clearing:[['length','Clearing length','ft',1,500],['width','Clearing width','ft',1,500]],
+ culvert:[['width','Driveway width','ft',1,30],['diameter','Pipe diameter','in',0,0,[10,12,14,18]],['extra','Extra pipe length beyond driveway width','ft',0,30]],
+ driveway:[['length','Driveway length','ft',1,1000],['width','Driveway width','ft',1,30],['depth','Rock depth','in',1,24]],
+ pad:[['length','Home pad length','ft',1,300],['width','Home pad width','ft',1,300],['depth','Fill depth','in',1,36]]
+};
+const A7_DEFAULT={clearing:{length:75,width:75},culvert:{material:'Concrete',width:16,diameter:18,extra:0},driveway:{length:200,width:16,depth:4},pad:{length:80,width:40,depth:6}};
+function a7Measurements(j){
+ if(!j.measurements||typeof j.measurements!=='object')j.measurements={};
+ let defaults=A7_DEFAULT[j.key]||{};
+ for(let k in defaults)if(j.measurements[k]===undefined)j.measurements[k]=defaults[k];
+ return j.measurements;
+}
+function a7Result(j){
+ const m=a7Measurements(j),f=n=>Number(n).toLocaleString('en-US');
+ if(j.key==='culvert'){
+  let required=Number(m.width)+Number(m.extra),count=Math.ceil(required/8);
+  return '<strong>'+count+' × 8-foot sections</strong>'+f(count*8)+' feet of '+m.diameter+'-inch '+esc(m.material.toLowerCase())+' culvert. '+m.width+' ft driveway + '+m.extra+' ft extra = '+required+' ft before rounding.';
+ }
+ let area=Number(m.length)*Number(m.width),acre=area/43560;
+ let out='<strong>'+f(area)+' sq ft · '+acre.toFixed(3)+' acres</strong>'+m.length+' ft × '+m.width+' ft ÷ 43,560';
+ if(j.key==='driveway'||j.key==='pad')out+='<br><b>'+(area*Number(m.depth)/12/27).toFixed(1)+' cubic yards</b> theoretical '+(j.key==='driveway'?'rock':'fill')+' volume at '+m.depth+' inches deep.';
+ return out;
+}
+function a7Scope(j){
+ const m=a7Measurements(j),p=j.parcel;
+ if(j.key==='clearing')return 'Parcel '+p+': Clear an approximately '+m.length+' ft × '+m.width+' ft area ('+(m.length*m.width).toLocaleString('en-US')+' sq ft; '+(m.length*m.width/43560).toFixed(3)+' acres). Confirm boundaries and vegetation to retain.';
+ if(j.key==='driveway')return 'Parcel '+p+': Construct an approximately '+m.length+' ft × '+m.width+' ft rock driveway at '+m.depth+' inches selected rock depth. Confirm grading, drainage, base and compacted material quantities.';
+ if(j.key==='pad')return 'Parcel '+p+': Prepare an approximately '+m.length+' ft × '+m.width+' ft home pad with '+m.depth+' inches selected fill depth. Confirm elevations, drainage, compaction and installer requirements.';
+ let count=Math.ceil((Number(m.width)+Number(m.extra))/8);
+ return 'Parcel '+p+': Install '+m.diameter+'-inch '+m.material.toLowerCase()+' entrance culvert for a '+m.width+' ft driveway with '+m.extra+' ft additional pipe length; preliminary quantity '+count+' × 8-ft sections. Confirm approved diameter, pipe class, cover, drainage and road-access requirements.';
+}
+function a7MeasurePanel(j){
+ const fields=A7_MEASURE[j.key];if(!fields)return '';
+ const m=a7Measurements(j);
+ let html='<section class="panel" id="a7-measures"><h2>AI measurement assistant</h2><p class="sub">Swipe the Apple-style wheels to select measurements. Saved separately for each parcel in this browser.</p>';
+ if(j.key==='culvert')html+='<label class="field" for="a7-material">1. Culvert material</label><select class="entry" id="a7-material" onchange="a7SetMaterial(this.value)"><option value="Concrete" '+(m.material==='Concrete'?'selected':'')+'>Concrete</option><option value="Plastic" '+(m.material==='Plastic'?'selected':'')+'>Plastic</option></select>';
+ for(let field of fields){
+  let [key,label,unit,min,max,values]=field;
+  let opts=values||Array.from({length:max-min+1},(_,i)=>min+i);
+  html+='<label class="field" id="a7-label-'+key+'">'+esc(label)+'</label><div class="a7-wheelbox"><div class="a7-wheel" role="listbox" aria-labelledby="a7-label-'+key+'" tabindex="0" data-key="'+key+'" data-values="'+opts.join(',')+'"><div style="height:80px"></div>'+
+    opts.map(v=>'<div class="a7-opt" role="option" data-n="'+v+'">'+v+' '+unit+'</div>').join('')+'<div style="height:80px"></div></div></div>';
+ }
+ html+='<div class="a7-metric" id="a7-result">'+a7Result(j)+'</div><p class="a7-small">Estimates assume rectangular areas and uniform depth. Volumes exclude compaction, waste and uneven grading. Culvert size and installation must be confirmed with the applicable authority or qualified installer.</p>'+
+ '<h3>Suggested contractor scope</h3><p class="sub" id="a7-scope-preview">'+esc(a7Scope(j))+'</p><button class="btn secondary full" onclick="a7ApplyScope()">Add measurements to scope of work ↓</button><p class="a7-small" id="a7-scope-status" role="status"></p></section>';
+ return html;
+}
+function a7RefreshMeasures(){
+ const j=job();if($('a7-result'))$('a7-result').innerHTML=a7Result(j);
+ if($('a7-scope-preview'))$('a7-scope-preview').textContent=a7Scope(j);
+}
+function a7SetMaterial(value){
+ if(value!=='Concrete'&&value!=='Plastic')return;
+ a7Measurements(job()).material=value;save();a7RefreshMeasures();
+}
+function a7ApplyScope(){
+ const field=$('scope');if(!field)return;
+ const begin='[A7 MEASUREMENTS]',end='[/A7 MEASUREMENTS]';
+ let text=field.value,first=text.indexOf(begin),last=text.indexOf(end);
+ if(first>=0&&last>first)text=(text.slice(0,first)+text.slice(last+end.length)).trim();
+ field.value=(text.trim()+'\n\n'+begin+'\n'+a7Scope(job())+'\n'+end).trim();
+ field.scrollIntoView({behavior:'smooth',block:'center'});
+ if($('a7-scope-status'))$('a7-scope-status').textContent='Measurements added below. Tap Save scope to keep the change.';
+}
+function a7InitWheels(){
+ document.querySelectorAll('.a7-wheel').forEach(w=>{
+  const key=w.dataset.key,values=w.dataset.values.split(',').map(Number),m=a7Measurements(job());
+  let index=Math.max(0,values.indexOf(Number(m[key]))),previous=values[index],timer;
+  const paint=()=>{
+   index=Math.max(0,Math.min(values.length-1,Math.round(w.scrollTop/48)));
+   w.querySelectorAll('.a7-opt').forEach((node,i)=>{
+    let active=i===index;node.classList.toggle('on',active);node.setAttribute('aria-selected',String(active));
+   });
+   let next=values[index];if(next===previous)return;
+   previous=next;m[key]=next;a7RefreshMeasures();
+   clearTimeout(timer);timer=setTimeout(()=>save(),180);
+  };
+  w.scrollTop=index*48;
+  requestAnimationFrame(()=>{w.scrollTop=index*48;paint();});
+  w.addEventListener('scroll',paint,{passive:true});
+  w.addEventListener('keydown',e=>{
+   if(e.key!=='ArrowDown'&&e.key!=='ArrowUp')return;
+   e.preventDefault();index=Math.max(0,Math.min(values.length-1,index+(e.key==='ArrowDown'?1:-1)));
+   w.scrollTo({top:index*48,behavior:'smooth'});
+  });
+ });
+}
+\`;
+    source=patch(source,'function detailOverview(j,b,a,count){',helpers+'\nfunction detailOverview(j,b,a,count){','V13 measurements helper');
+    source=patch(source,
+      "function detailOverview(j,b,a,count){\n return '<section class=\"panel\"><h2>Scope of work</h2>'+",
+      "function detailOverview(j,b,a,count){\n return a7MeasurePanel(j)+'<section class=\"panel\"><h2>Scope of work</h2>'+",
+      'V13 measurements in overview');
+    source=patch(source,
+      "    budget:budgetPage,settings:settingsPage}[view]||home)();\n}",
+      "    budget:budgetPage,settings:settingsPage}[view]||home)();\n if(view==='detail'&&tab==='overview')a7InitWheels();\n}",
+      'V13 wheel initialization');
+`;
+  wrapper=wrapper.replace(marker,upgrade.replaceAll('\\`','`')+'\n'+marker);
+  // This wrapper still fetches V11 and applies the original V12 patches before the V13 additions.
+  document.open();document.write(wrapper);document.close();
+ }catch(error){
+  document.getElementById('loading').innerHTML='<h1>V13 could not load</h1><p id="error"></p><p>Keep v11.html and v12.html alongside v13.html, then refresh while online.</p><button onclick="location.reload()">Try again</button>';
+  document.getElementById('error').textContent=error.message;
+ }
+})();
+</script>
+</body>
+</html>
