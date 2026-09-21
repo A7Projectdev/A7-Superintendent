@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#092e29">
+<title>A7 Superintendent · V12</title>
+<style>
+body {
+  font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:#f3f7f6;
+  color:#182a29;
+  margin:0;
+  padding:28px;
+  line-height:1.5;
+}
+main {
+  max-width:550px;
+  margin:auto;
+  background:white;
+  border-radius:16px;
+  padding:22px;
+}
+button {
+  padding:12px;
+  border:0;
+  border-radius:10px;
+  background:#092e29;
+  color:white;
+  font:inherit;
+}
+</style>
+</head>
+<body>
+
+<main id="loading" role="status">
+  <h1>A7 Superintendent · V12</h1>
+  <p>Loading your updated job order…</p>
+</main>
+
+<script>
+'use strict';
+
+/*
+  V12 builds on v11.html in the same GitHub Pages folder.
+  It copies V11 browser data into a separate V12 storage key.
+  V11 is not modified.
+*/
+
+(async function () {
+  const trades = [
+    ['clearing','Land clearing','♠','#147a38',false],
+    ['culvert','Entrance & culvert','▥','#46595c',false],
+    ['driveway','Rock driveway','◆','#cc303b',false],
+    ['pad','Home pad','▰','#82542e',false],
+    ['water','Water connection','◉','#e64b59',false],
+    ['electrical','Electrical connection','ϟ','#ffd34f',true],
+    ['home','Manufactured home','⌂','#104a3c',false],
+    ['transport','Transportation','▰','#1766bd',false],
+    ['setup','Home setup','⚒','#5d48bb',false],
+    ['septic','Septic installation','▣','#ee6019',false],
+    ['frontDeck','Front deck · 8′ × 10′','▤','#f448a3',false],
+    ['backDeck','Back deck · 8′ × 10′','▤','#00999d',false],
+    ['steps','Steps & access','▟','#5043a7',false],
+    ['hvac','HVAC','✣','#8b72df',false],
+    ['skirting','Home skirting','▦','#007c8e',false],
+    ['other','Other parcel costs','•••','#5c9a79',false]
+  ];
+
+  function patch(source, oldText, newText, label) {
+    if (!source.includes(oldText)) {
+      throw Error('V11 source changed: ' + label);
+    }
+    return source.replace(oldText, newText);
+  }
+
+  try {
+    const response = await fetch(
+      new URL('v11.html', location.href),
+      { cache: 'no-store' }
+    );
+
+    if (!response.ok) {
+      throw Error(
+        'Could not load V11 (HTTP ' + response.status + ').'
+      );
+    }
+
+    let source = await response.text();
+
+    if (!source.includes(
+      "const KEY='a7-superintendent-v11',OLD='a7-superintendent-v10';"
+    )) {
+      throw Error('Unexpected V11 source.');
+    }
+
+    const tradeBlock = /const TRADES=\[[\s\S]*?\n\];/;
+
+    if (!tradeBlock.test(source)) {
+      throw Error('Could not find V11 trade list.');
+    }
+
+    source = source.replace(
+      tradeBlock,
+      'const TRADES=' + JSON.stringify(trades) + ';'
+    );
+
+    source = patch(
+      source,
+      "const KEY='a7-superintendent-v11',OLD='a7-superintendent-v10';",
+      "const KEY='a7-superintendent-v12',OLD='a7-superintendent-v11';",
+      'storage'
+    );
+
+    source = patch(
+      source,
+      '  version:11,',
+      '  version:12,',
+      'new data version'
+    );
+
+    source = patch(
+      source,
+      ' x.version=11;',
+      ' x.version=12;',
+      'migration version'
+    );
+
+    source = patch(
+      source,
+      'if(x.version!==11||!valid(x))',
+      'if(x.version!==12||!valid(x))',
+      'backup version'
+    );
+
+    source = patch(
+      source,
+      "a.download='a7-superintendent-v11-backup.json'",
+      "a.download='a7-superintendent-v12-backup.json'",
+      'backup name'
+    );
+
+    source = patch(
+      source,
+      '<span class="tiny">V11</span>',
+      '<span class="tiny">V12</span>',
+      'header'
+    );
+
+    source = patch(
+      source,
+      '<title>A7 Superintendent · V11</title>',
+      '<title>A7 Superintendent · V12</title>',
+      'title'
+    );
+
+    source = source.replaceAll(
+      'Your V10 records were copied into V11. V10 remains unchanged.',
+      'Your V11 records were copied into V12. V11 remains unchanged.'
+    );
+
+    source = source.replaceAll(
+      'Your V10 data was not deleted',
+      'Your V11 data was not deleted'
+    );
+
+    source = source.replaceAll(
+      'Actions you record in V11',
+      'Actions you record in V12'
+    );
+
+    source = source.replaceAll(
+      'V11 saves only in this browser',
+      'V12 saves only in this browser'
+    );
+
+    source = source.replaceAll(
+      'V10 is left unchanged',
+      'V11 is left unchanged'
+    );
+
+    source = source.replaceAll(
+      'Download V11 backup',
+      'Download V12 backup'
+    );
+
+    source = source.replaceAll(
+      'Restore a V11 backup',
+      'Restore a V12 backup'
+    );
+
+    source = source.replaceAll(
+      'Not a V11 backup',
+      'Not a V12 backup'
+    );
+
+    source = source.replaceAll(
+      'Replace V11 data on this browser',
+      'Replace V12 data on this browser'
+    );
+
+    source = source.replaceAll(
+      'V11 backup restored',
+      'V12 backup restored'
+    );
+
+    source = source.replaceAll(
+      'Choose a valid V11 backup',
+      'Choose a valid V12 backup'
+    );
+
+    /*
+      Preserve an existing V11 tax quote in the budget
+      without showing a Home Sales Tax job card.
+    */
+
+    source = patch(
+      source,
+      ' let total=num(d.acres[0])+num(d.acres[1]);',
+      ` let legacy=data.jobs[parcel+'-tax'];
+ if(legacy){
+  let old=priced(legacy);
+  if(old){
+   lo+=num(old.amount);
+   hi+=num(old.amount);
+  }
+ }
+ let total=num(d.acres[0])+num(d.acres[1]);`,
+      'legacy cost calculation'
+    );
+
+    source = patch(
+      source,
+      '  d.sharedCosts.map(c=>\n',
+      `  (data.jobs[parcel+'-tax']&&priced(data.jobs[parcel+'-tax'])
+   ?'<div class="budgetrow"><i class="swatch" style="background:#89938e"></i><span>Archived V11 cost<small style="display:block;color:var(--muted)">Previously recorded amount; no separate job card</small></span><b>'+fmt(num(priced(data.jobs[parcel+'-tax']).amount))+'</b></div>'
+   :'')+
+  d.sharedCosts.map(c=>
+`,
+      'legacy cost breakdown'
+    );
+
+    source = source.replace(
+      " tax:['Confirm actual tax amount in writing','Keep final invoice or tax documentation'],\n",
+      ''
+    );
+
+    document.open();
+    document.write(source);
+    document.close();
+
+  } catch (error) {
+    document.getElementById('loading').innerHTML =
+      '<h1>V12 could not load</h1>' +
+      '<p id="error"></p>' +
+      '<p>V11 has not been changed. Try refreshing while online.</p>' +
+      '<button onclick="location.reload()">Try again</button>';
+
+    document.getElementById('error').textContent = error.message;
+  }
+})();
+</script>
+</body>
+</html>
