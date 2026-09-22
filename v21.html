@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>A7 Superintendent | V21</title>
+  <style>
+    :root {
+      --navy: #142b49;
+      --blue: #1764b0;
+      --blue-dark: #104b86;
+      --blue-pale: #edf5ff;
+      --background: #f4f7fb;
+      --surface: #ffffff;
+      --border: #dce4ee;
+      --text: #233449;
+      --muted: #68798e;
+      --success: #18734b;
+      --danger: #b63b3b;
+      --radius: 13px;
+      --shadow: 0 2px 12px rgba(22, 48, 77, .045);
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .48; }
+    a { color: var(--blue); }
+    .app { max-width: 1150px; margin: auto; min-height: 100vh; }
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .brand { font-size: 18px; font-weight: 800; letter-spacing: -.5px; color: var(--navy); }
+    .brand small { display: block; font-size: 10px; letter-spacing: 1.4px; color: var(--blue); }
+    .version { color: var(--muted); font-size: 12px; font-weight: 600; }
+    .nav {
+      display: flex;
+      gap: 5px;
+      padding: 9px 12px;
+      overflow-x: auto;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      scrollbar-width: none;
+    }
+    .nav button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 10px 13px;
+      border-radius: 9px;
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .nav button.active { color: var(--blue); background: var(--blue-pale); }
+    main { padding: 22px 16px 100px; }
+    .page-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    h1 { font-size: 25px; letter-spacing: -.7px; color: var(--navy); margin: 0 0 5px; }
+    h2 { font-size: 18px; letter-spacing: -.3px; color: var(--navy); margin: 0 0 13px; }
+    h3 { font-size: 15px; color: var(--navy); margin: 0 0 10px; }
+    p { margin: 0 0 12px; }
+    .sub { color: var(--muted); font-size: 13px; }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; }
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card, .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+    .stat .label { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 9px; }
+    .stat .value { font-size: 25px; font-weight: 800; color: var(--navy); overflow-wrap: anywhere; }
+    .section { margin-top: 24px; }
+    .section-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .section-title h2 { margin: 0; }
+    .btn {
+      border: 1px solid transparent;
+      background: var(--blue);
+      color: #fff;
+      border-radius: 9px;
+      padding: 11px 15px;
+      font-weight: 700;
+      font-size: 13px;
+      min-height: 42px;
+    }
+    .btn:hover { background: var(--blue-dark); }
+    .btn.secondary { background: #fff; color: var(--blue); border-color: #c7d9ee; }
+    .btn.secondary:hover { background: var(--blue-pale); }
+    .btn.danger { background: #fff; color: var(--danger); border-color: #ecc5c5; }
+    .btn.small { min-height: 34px; padding: 7px 11px; font-size: 12px; }
+    .btn.full { width: 100%; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .item { border-top: 1px solid var(--border); padding: 15px 0; }
+    .item:first-child { border-top: 0; padding-top: 0; }
+    .item:last-child { padding-bottom: 0; }
+    .item-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .item-title { color: var(--navy); font-weight: 800; font-size: 15px; }
+    .meta { color: var(--muted); font-size: 12px; margin-top: 4px; }
+    .badge { display: inline-block; background: #edf2f8; color: #48617c; border-radius: 99px; padding: 4px 9px; font-size: 11px; font-weight: 800; }
+    .badge.blue { background: var(--blue-pale); color: var(--blue); }
+    .badge.green { background: #e9f7ef; color: var(--success); }
+    .badge.red { background: #fff0f0; color: var(--danger); }
+    label { display: block; color: var(--navy); font-size: 12px; font-weight: 800; margin-bottom: 6px; }
+    input, select, textarea {
+      display: block;
+      width: 100%;
+      border: 1px solid #cbd7e5;
+      border-radius: 9px;
+      background: #fff;
+      color: var(--text);
+      padding: 11px 12px;
+      min-height: 43px;
+      outline-color: var(--blue);
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    .field { margin-bottom: 15px; min-width: 0; }
+    .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 14px; }
+    .help { font-size: 12px; color: var(--muted); margin-top: 5px; }
+    .notice { padding: 12px 14px; border: 1px solid #c7d9ee; background: var(--blue-pale); border-radius: 10px; font-size: 13px; margin: 13px 0; }
+    .notice.warning { background: #fff8e9; border-color: #eedab0; }
+    .divider { border: 0; border-top: 1px solid var(--border); margin: 20px 0; }
+    .money { font-weight: 800; color: var(--navy); font-variant-numeric: tabular-nums; }
+    .rows { display: grid; gap: 10px; }
+    .rowline { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 9px 0; border-bottom: 1px solid #edf1f5; }
+    .rowline:last-child { border-bottom: 0; }
+    .rowline > :last-child { text-align: right; }
+    .empty { text-align: center; padding: 35px 15px; color: var(--muted); }
+    .empty strong { display: block; color: var(--navy); margin-bottom: 5px; }
+    .progress { height: 7px; border-radius: 10px; background: #e7edf4; overflow: hidden; margin-top: 10px; }
+    .progress span { display: block; height: 100%; background: var(--blue); }
+    .tabs { display: flex; gap: 7px; overflow-x: auto; margin: 18px 0; padding-bottom: 4px; }
+    .tabs button { border: 1px solid var(--border); background: #fff; border-radius: 8px; color: var(--muted); padding: 9px 12px; white-space: nowrap; font-weight: 700; font-size: 12px; }
+    .tabs button.active { border-color: var(--blue); background: var(--blue-pale); color: var(--blue); }
+    .job { border: 1px solid var(--border); background: #fff; border-radius: 11px; padding: 14px; margin-bottom: 10px; }
+    .job.locked { opacity: .65; }
+    .job-title { font-weight: 800; color: var(--navy); }
+    .job-detail { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 14px; }
+    .pill { font-size: 11px; font-weight: 700; color: var(--muted); }
+    .ai-box { border-left: 3px solid var(--blue); background: #f7faff; padding: 15px; border-radius: 0 9px 9px 0; }
+    .chat { display: grid; gap: 10px; max-height: 350px; overflow-y: auto; margin: 12px 0; }
+    .bubble { padding: 11px 13px; border-radius: 11px; background: #f0f4f9; font-size: 13px; white-space: pre-wrap; }
+    .bubble.me { background: var(--blue-pale); margin-left: 18px; }
+    .file-list { display: grid; gap: 8px; margin-top: 10px; }
+    .file-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 12px; }
+    .file-item a { overflow-wrap: anywhere; }
+    .muted { color: var(--muted); }
+    .hidden { display: none !important; }
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid.two { grid-template-columns: 1fr; }
+      .fields { grid-template-columns: 1fr; }
+      .stat { padding: 14px; }
+      .stat .value { font-size: 20px; }
+      .card { padding: 15px; }
+      h1 { font-size: 22px; }
+      .topbar { padding: 13px 16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">A7 SUPERINTENDENT<small>DEVELOPMENT MANAGEMENT</small></div>
+    <span class="version">V21</span>
+  </header>
+  <nav class="nav" id="nav"></nav>
+  <main id="app"></main>
+</div>
+
+<script>
+"use strict";
+
+/*
+  A7 Superintendent V21
+  Standalone, local-first demo.
+  No live AI, contractor email sending, authentication, or cloud sync.
+  Files are stored in IndexedDB in this browser.
+*/
+
+const KEY = "a7-superintendent-v21";
+const DB_NAME = "a7-superintendent-v21-files";
+const TRADES = [
+  "Land Clearing",
+  "Entrance & Culvert",
+  "Driveway",
+  "Home Pad",
+  "Water",
+  "Electrical",
+  "Manufactured Home",
+  "Home Transport",
+  "Home Setup",
+  "Septic",
+  "Skirting",
+  "Decks & Steps",
+  "HVAC",
+  "Other"
+];
+const CLEAR_TYPES = [
+  "Entire Parcel",
+  "Home Pad Area (includes septic area)",
+  "Driveway Path",
+  "Other / Custom Area"
+];
+const DEFAULT = {
+  developments: [],
+  contractors: [],
+  bids: [],
+  messages: [],
+  activeDevelopment: null,
+  activeParcel: null,
+  activeJob: null
+};
+
+let state = load();
+let page = "dashboard";
+let tab = "overview";
+let jobTab = "details";
+let fileDB = null;
+
+function load() {
+  try {
+    const data = JSON.parse(localStorage.getItem(KEY));
+    return data && typeof data === "object"
+      ? { ...structuredClone(DEFAULT), ...data }
+      : structuredClone(DEFAULT);
+  } catch {
+    return structuredClone(DEFAULT);
+  }
+}
+function save() {
+  localStorage.setItem(KEY, JSON.stringify(state));
+}
+function uid() {
+  return crypto.randomUUID
+    ? crypto.randomUUID()
+    : Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  })[c]);
+}
+function money(value) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency", currency: "USD", maximumFractionDigits: 2
+  }).format(Number(value) || 0);
+}
+function num(value) { return Number(value) || 0; }
+function today() { return new Date().toISOString().slice(0, 10); }
+function getDev() {
+  return state.developments.find(d => d.id === state.activeDevelopment);
+}
+function getParcel() {
+  return getDev()?.parcels.find(p => p.id === state.activeParcel);
+}
+function getJob() {
+  return getParcel()?.jobs.find(j => j.id === state.activeJob);
+}
+function getContractor(id) {
+  return state.contractors.find(c => c.id === id);
+}
+function devBids(dev) {
+  return state.bids.filter(b => b.developmentId === dev.id);
+}
+function jobBids(job) {
+  return state.bids.filter(b => b.jobId === job.id);
+}
+function allocatedLandCost(dev) {
+  return dev.parcels.length ? num(dev.purchasePrice) / dev.parcels.length : 0;
+}
+function allJobs(dev) {
+  return dev.parcels.flatMap(p => p.jobs);
+}
+function completedJobs(dev) {
+  return allJobs(dev).filter(j => j.status === "approved").length;
+}
+function allFiles() {
+  return state.developments.flatMap(d => [
+    ...(d.files || []),
+    ...d.parcels.flatMap(p => p.jobs.flatMap(j => j.files || []))
+  ]);
+}
+function navTo(next) {
+  page = next;
+  window.scrollTo(0, 0);
+  render();
+}
+function selectDev(id) {
+  state.activeDevelopment = id;
+  state.activeParcel = null;
+  state.activeJob = null;
+  save();
+  navTo("development");
+}
+function selectParcel(id) {
+  state.activeParcel = id;
+  state.activeJob = null;
+  tab = "overview";
+  save();
+  navTo("parcel");
+}
+function selectJob(id) {
+  state.activeJob = id;
+  jobTab = "details";
+  save();
+  navTo("job");
+}
+function renderNav() {
+  const links = [
+    ["dashboard", "Dashboard"],
+    ["developments", "Developments"],
+    ["contractors", "Contractors"],
+    ["bids", "Bids Received"],
+    ["assistant", "AI Superintendent"],
+    ["settings", "Settings"]
+  ];
+  document.getElementById("nav").innerHTML = links.map(([id, label]) =>
+    `<button class="${page === id ? "active" : ""}"
+      onclick="navTo('${id}')">${label}</button>`
+  ).join("");
+}
+function render() {
+  renderNav();
+  const views = {
+    dashboard, developments, newDevelopment, development,
+    parcel, job, contractors, contractorForm, bids,
+    assistant, settings
+  };
+  document.getElementById("app").innerHTML =
+    (views[page] || dashboard)();
+}
+function header(title, description = "", action = "") {
+  return `<div class="page-head">
+    <div><h1>${esc(title)}</h1><div class="sub">${esc(description)}</div></div>
+    ${action}
+  </div>`;
+}
+function empty(title, description, action = "") {
+  return `<div class="empty"><strong>${esc(title)}</strong>
+    <div>${esc(description)}</div><div style="margin-top:14px">${action}</div></div>`;
+}
+function stat(label, value, note = "") {
+  return `<div class="stat"><div class="label">${esc(label)}</div>
+    <div class="value">${esc(value)}</div>
+    ${note ? `<div class="meta">${esc(note)}</div>` : ""}</div>`;
+}
+function input(name, label, type = "text", value = "", extra = "") {
+  return `<div class="field"><label for="${name}">${esc(label)}</label>
+    <input id="${name}" name="${name}" type="${type}"
+      value="${esc(value)}" ${extra}></div>`;
+}
+function select(name, label, options, value = "", extra = "") {
+  return `<div class="field"><label for="${name}">${esc(label)}</label>
+    <select id="${name}" name="${name}" ${extra}>${options.map(o => {
+      const v = Array.isArray(o) ? o[0] : o;
+      const t = Array.isArray(o) ? o[1] : o;
+      return `<option value="${esc(v)}" ${String(v) === String(value) ? "selected" : ""}>${esc(t)}</option>`;
+    }).join("")}</select></div>`;
+}
+function textarea(name, label, value = "") {
+  return `<div class="field"><label for="${name}">${esc(label)}</label>
+    <textarea id="${name}" name="${name}">${esc(value)}</textarea></div>`;
+}
+function field(form, name) {
+  return form.elements.namedItem(name)?.value?.trim() || "";
+}
+function updateJob(prop, value) {
+  const j = getJob();
+  if (!j) return;
+  j[prop] = value;
+  save();
+}
+function updateDev(prop, value) {
+  const d = getDev();
+  if (!d) return;
+  d[prop] = value;
+  save();
+}
+function statusBadge(job) {
+  if (job.status === "approved") return `<span class="badge green">Approved</span>`;
+  if (job.status === "submitted") return `<span class="badge blue">Awaiting approval</span>`;
+  if (job.status === "in_progress") return `<span class="badge blue">In progress</span>`;
+  if (job.status === "ready") return `<span class="badge blue">Ready</span>`;
+  return `<span class="badge">Locked</span>`;
+}
+function makeJobs() {
+  return TRADES.map((trade, index) => ({
+    id: uid(),
+    trade,
+    status: index === 0 ? "ready" : "locked",
+    contractorId: "",
+    contractorName: "",
+    scope: "",
+    notes: "",
+    clearingAreas: [],
+    files: [],
+    approvedAt: "",
+    createdAt: today()
+  }));
+}
+function makeParcel(index) {
+  return {
+    id: uid(),
+    name: `Parcel ${index + 1}`,
+    acreage: "",
+    notes: "",
+    jobs: makeJobs()
+  };
+}
+
+function dashboard() {
+  const totalPurchase = state.developments.reduce((s, d) => s + num(d.purchasePrice), 0);
+  const parcelCount = state.developments.reduce((s, d) => s + d.parcels.length, 0);
+  const totalBids = state.bids.reduce((s, b) => s + num(b.amount), 0);
+  return `
+    ${header("Dashboard", "Development portfolio and current project activity",
+      `<button class="btn" onclick="navTo('newDevelopment')">+ New Development</button>`)}
+    <div class="grid">
+      ${stat("Developments", state.developments.length)}
+      ${stat("Planned Parcels", parcelCount)}
+      ${stat("Total Property Purchase Cost", money(totalPurchase))}
+      ${stat("Bids Received", state.bids.length, `${money(totalBids)} in submitted amounts`)}
+    </div>
+    <div class="section">
+      <div class="section-title"><h2>Developments</h2>
+        <button class="btn secondary small" onclick="navTo('developments')">View all</button></div>
+      <div class="card">
+        ${state.developments.length
+          ? state.developments.map(d => {
+            const jobs = allJobs(d);
+            const done = completedJobs(d);
+            return `<div class="item">
+              <div class="item-head">
+                <div>
+                  <div class="item-title">${esc(d.name)}</div>
+                  <div class="meta">${esc(d.location || "Location not entered")} ·
+                    ${d.parcels.length} parcels · ${esc(d.acres || "—")} acres</div>
+                </div>
+                <button class="btn secondary small" onclick="selectDev('${d.id}')">Open</button>
+              </div>
+              <div class="rowline"><span class="sub">Property purchase price</span>
+                <span class="money">${money(d.purchasePrice)}</span></div>
+              <div class="rowline"><span class="sub">Allocated land cost per parcel</span>
+                <span class="money">${money(allocatedLandCost(d))}</span></div>
+              <div class="meta">${done} of ${jobs.length} trade stages approved</div>
+              <div class="progress"><span style="width:${jobs.length ? done / jobs.length * 100 : 0}%"></span></div>
+            </div>`;
+          }).join("")
+          : empty("No developments yet", "Create your first development to begin.",
+              `<button class="btn" onclick="navTo('newDevelopment')">Create Development</button>`)}
+      </div>
+    </div>
+    <div class="section grid two">
+      <div class="card">
+        <h2>Contractor Directory</h2>
+        <p class="sub">${state.contractors.length} saved contractor contacts.</p>
+        <button class="btn secondary" onclick="navTo('contractors')">Open Contractors</button>
+      </div>
+      <div class="card">
+        <h2>AI Superintendent</h2>
+        <p class="sub">Get help drafting scopes and organizing your development records.</p>
+        <button class="btn secondary" onclick="navTo('assistant')">Open Assistant</button>
+      </div>
+    </div>`;
+}
+
+function developments() {
+  return `${header("Developments", "Manage properties and planned parcels",
+    `<button class="btn" onclick="navTo('newDevelopment')">+ New Development</button>`)}
+    <div class="card">${state.developments.length
+      ? state.developments.map(d => `<div class="item">
+          <div class="item-head">
+            <div><div class="item-title">${esc(d.name)}</div>
+              <div class="meta">${esc(d.location)} · ${d.parcels.length} parcels</div></div>
+            <button class="btn secondary small" onclick="selectDev('${d.id}')">Open Development</button>
+          </div>
+          <div class="rowline"><span>Full property purchase price</span>
+            <strong>${money(d.purchasePrice)}</strong></div>
+          <div class="rowline"><span>Allocated cost per parcel</span>
+            <strong>${money(allocatedLandCost(d))}</strong></div>
+        </div>`).join("")
+      : empty("No developments", "Start by entering the property purchase details.")}</div>`;
+}
+
+function newDevelopment() {
+  return `${header("Start a Development", "Enter the full property purchase details once.")}
+    <div class="card">
+      <form onsubmit="createDevelopment(event)">
+        <div class="fields">
+          ${input("name", "Development Name", "text", "", "required placeholder='Example: Oak Ridge Estates'")}
+          ${input("location", "Property Location / Address", "text", "", "placeholder='City, county, or address'")}
+          ${input("purchasePrice", "Full Purchase Price of Entire Property ($)", "number", "", "required min='0' step='0.01' oninput='previewAllocation()'")}
+          ${input("acres", "Total Property Acreage", "number", "", "required min='0.01' step='any'")}
+          ${input("parcelCount", "How Many Parcels Do You Want?", "number", "", "required min='1' max='100' step='1' oninput='previewAllocation()'")}
+          ${select("easements", "Does the Property Have Any Easements?", ["No", "Yes", "Unknown"])}
+          ${select("permits", "Does the Property Need Any Permits?", ["No", "Yes", "Unknown"])}
+        </div>
+        <div class="notice">
+          <strong>Estimated allocated land cost per parcel:</strong>
+          <span id="allocationPreview">$0.00</span><br>
+          <span class="sub">The full property purchase price is counted once in the development budget.</span>
+        </div>
+        ${textarea("notes", "Development Notes (Optional)")}
+        <div class="actions">
+          <button class="btn" type="submit">Create Development & Parcels</button>
+          <button class="btn secondary" type="button" onclick="navTo('developments')">Cancel</button>
+        </div>
+      </form>
+    </div>`;
+}
+function previewAllocation() {
+  const price = num(document.getElementById("purchasePrice")?.value);
+  const count = num(document.getElementById("parcelCount")?.value);
+  const el = document.getElementById("allocationPreview");
+  if (el) el.textContent = count > 0 ? money(price / count) : "$0.00";
+}
+function createDevelopment(event) {
+  event.preventDefault();
+  const f = event.target;
+  const count = Math.floor(num(field(f, "parcelCount")));
+  const acres = num(field(f, "acres"));
+  const price = num(field(f, "purchasePrice"));
+  if (!field(f, "name") || count < 1 || count > 100 || acres <= 0 || price < 0) {
+    alert("Please enter a name, valid acreage, purchase price, and 1–100 parcels.");
+    return;
+  }
+  const d = {
+    id: uid(),
+    name: field(f, "name"),
+    location: field(f, "location"),
+    purchasePrice: price,
+    acres,
+    easements: field(f, "easements"),
+    permits: field(f, "permits"),
+    notes: field(f, "notes"),
+    files: [],
+    parcels: Array.from({ length: count }, (_, i) => makeParcel(i)),
+    createdAt: today()
+  };
+  state.developments.push(d);
+  state.activeDevelopment = d.id;
+  state.activeParcel = null;
+  state.activeJob = null;
+  save();
+  navTo("development");
+}
+
+function development() {
+  const d = getDev();
+  if (!d) return `${header("Development Not Found")}
+    <button class="btn" onclick="navTo('developments')">View Developments</button>`;
+  const bids = devBids(d);
+  const jobs = allJobs(d);
+  return `${header(d.name, d.location || "Development overview",
+    `<button class="btn secondary" onclick="navTo('developments')">All Developments</button>`)}
+    <div class="grid">
+      ${stat("Full Property Purchase Price", money(d.purchasePrice))}
+      ${stat("Planned Parcels", d.parcels.length)}
+      ${stat("Land Cost Per Parcel", money(allocatedLandCost(d)), "Equal allocation")}
+      ${stat("Trade Stages Approved", `${completedJobs(d)} / ${jobs.length}`)}
+    </div>
+    <div class="tabs">
+      ${["overview", "parcels", "budget", "documents", "edit"].map(t =>
+        `<button class="${tab === t ? "active" : ""}" onclick="tab='${t}';render()">
+          ${t === "edit" ? "Property Details" : t[0].toUpperCase() + t.slice(1)}</button>`
+      ).join("")}
+    </div>
+    ${tab === "overview" ? `
+      <div class="grid two">
+        <div class="card">
+          <h2>Property Information</h2>
+          ${infoRow("Total acreage", `${d.acres} acres`)}
+          ${infoRow("Easements", d.easements)}
+          ${infoRow("Permits needed", d.permits)}
+          ${infoRow("Date created", d.createdAt)}
+          ${d.notes ? `<p class="sub" style="margin-top:12px">${esc(d.notes)}</p>` : ""}
+        </div>
+        <div class="card">
+          <h2>Financial Overview</h2>
+          ${infoRow("Full property purchase price", money(d.purchasePrice))}
+          ${infoRow("Allocated land cost per parcel", money(allocatedLandCost(d)))}
+          ${infoRow("Bids Received", bids.length)}
+          ${infoRow("Total of all bids received", money(bids.reduce((s, b) => s + num(b.amount), 0)))}
+          <div class="notice">Bids received are proposals, not committed costs. Competing bids are not added to the property purchase price.</div>
+        </div>
+      </div>
+      <div class="section card">
+        <div class="section-title"><h2>Parcels</h2>
+          <button class="btn secondary small" onclick="tab='parcels';render()">View All</button></div>
+        ${parcelRows(d)}
+      </div>` : ""}
+    ${tab === "parcels" ? `<div class="card">
+      <h2>Planned Parcels</h2>
+      <p class="sub">Each parcel displays an equal share of the original property purchase price.</p>
+      ${parcelRows(d)}
+    </div>` : ""}
+    ${tab === "budget" ? `
+      <div class="grid two">
+        <div class="card">
+          <h2>Property Purchase</h2>
+          ${infoRow("Full property purchase price", money(d.purchasePrice))}
+          ${infoRow("Number of parcels", d.parcels.length)}
+          ${infoRow("Allocated land cost per parcel", money(allocatedLandCost(d)))}
+          <div class="notice">The original purchase price is counted once. Parcel allocations are for internal planning, not additional expenses or appraisals.</div>
+        </div>
+        <div class="card">
+          <h2>Bids Received</h2>
+          ${infoRow("Number received", bids.length)}
+          ${infoRow("Sum of submitted bid amounts", money(bids.reduce((s, b) => s + num(b.amount), 0)))}
+          <p class="sub">The sum may include multiple bids for the same job and should not be treated as a project total.</p>
+          <button class="btn secondary small" onclick="navTo('bids')">View Bids Received</button>
+        </div>
+      </div>` : ""}
+    ${tab === "documents" ? `<div class="card">
+      <h2>Development Documents</h2>
+      <p class="sub">Optional permits, easements, surveys, and other property documents. Photos are not required.</p>
+      ${fileUploader("development", d.id, "document")}
+      ${renderFiles(d.files || [])}
+    </div>` : ""}
+    ${tab === "edit" ? `<div class="card">
+      <h2>Property Details</h2>
+      <form onsubmit="editDevelopment(event)">
+        <div class="fields">
+          ${input("name", "Development Name", "text", d.name, "required")}
+          ${input("location", "Property Location", "text", d.location)}
+          ${input("purchasePrice", "Full Property Purchase Price ($)", "number", d.purchasePrice, "required min='0' step='0.01'")}
+          ${input("acres", "Total Acreage", "number", d.acres, "required min='0.01' step='any'")}
+          ${select("easements", "Easements", ["No", "Yes", "Unknown"], d.easements)}
+          ${select("permits", "Permits Needed", ["No", "Yes", "Unknown"], d.permits)}
+        </div>
+        ${textarea("notes", "Notes", d.notes)}
+        <div class="notice">Changing the purchase price updates the equal allocation on every parcel. To protect existing job records, the parcel count cannot be changed here.</div>
+        <button class="btn" type="submit">Save Property Details</button>
+      </form>
+    </div>` : ""}`;
+}
+function infoRow(label, value) {
+  return `<div class="rowline"><span class="sub">${esc(label)}</span>
+    <strong>${esc(value)}</strong></div>`;
+}
+function parcelRows(d) {
+  return d.parcels.map(p => {
+    const done = p.jobs.filter(j => j.status === "approved").length;
+    return `<div class="item">
+      <div class="item-head">
+        <div><div class="item-title">${esc(p.name)}</div>
+          <div class="meta">${done} of ${p.jobs.length} stages approved
+            ${p.acreage ? ` · ${esc(p.acreage)} acres` : ""}</div></div>
+        <button class="btn secondary small" onclick="selectParcel('${p.id}')">Open Parcel</button>
+      </div>
+      <div class="rowline"><span class="sub">Allocated land cost</span>
+        <strong>${money(allocatedLandCost(d))}</strong></div>
+      <div class="progress"><span style="width:${done / p.jobs.length * 100}%"></span></div>
+    </div>`;
+  }).join("");
+}
+function editDevelopment(event) {
+  event.preventDefault();
+  const f = event.target;
+  const d = getDev();
+  const acres = num(field(f, "acres"));
+  const price = num(field(f, "purchasePrice"));
+  if (!d || !field(f, "name") || acres <= 0 || price < 0) {
+    alert("Please enter valid property details.");
+    return;
+  }
+  d.name = field(f, "name");
+  d.location = field(f, "location");
+  d.purchasePrice = price;
+  d.acres = acres;
+  d.easements = field(f, "easements");
+  d.permits = field(f, "permits");
+  d.notes = field(f, "notes");
+  save();
+  tab = "overview";
+  render();
+}
+
+function parcel() {
+  const d = getDev(), p = getParcel();
+  if (!d || !p) return `${header("Parcel Not Found")}`;
+  const done = p.jobs.filter(j => j.status === "approved").length;
+  return `${header(p.name, d.name,
+    `<button class="btn secondary" onclick="navTo('development')">Back to Development</button>`)}
+    <div class="grid">
+      ${stat("Allocated Land Cost", money(allocatedLandCost(d)))}
+      ${stat("Parcel Acreage", p.acreage ? `${p.acreage} acres` : "Not entered")}
+      ${stat("Approved Stages", `${done} / ${p.jobs.length}`)}
+      ${stat("Bids Received", state.bids.filter(b => b.parcelId === p.id).length)}
+    </div>
+    <div class="tabs">
+      <button class="${tab === "overview" ? "active" : ""}" onclick="tab='overview';render()">Trade Workflow</button>
+      <button class="${tab === "details" ? "active" : ""}" onclick="tab='details';render()">Parcel Details</button>
+    </div>
+    ${tab === "details" ? `<div class="card">
+      <h2>Parcel Details</h2>
+      <form onsubmit="editParcel(event)">
+        ${input("name", "Parcel Name", "text", p.name, "required")}
+        ${input("acreage", "Parcel Acreage (Optional)", "number", p.acreage, "min='0' step='any'")}
+        ${textarea("notes", "Notes", p.notes)}
+        <div class="notice">Allocated land cost: <strong>${money(allocatedLandCost(d))}</strong>. This is an equal share of the full property purchase price.</div>
+        <button class="btn" type="submit">Save Parcel Details</button>
+      </form>
+    </div>` : `<div class="card">
+      <h2>Construction Workflow</h2>
+      <p class="sub">Owner approval of each stage unlocks the next stage. This is a local demo workflow, not authenticated sign-off.</p>
+      ${p.jobs.map((j, i) => `<div class="job ${j.status === "locked" ? "locked" : ""}">
+        <div class="item-head">
+          <div><div class="pill">STAGE ${i + 1} OF ${p.jobs.length}</div>
+            <div class="job-title">${esc(j.trade)}</div>
+            <div class="meta">${esc(j.contractorName || getContractor(j.contractorId)?.name || "No contractor assigned")}</div></div>
+          ${statusBadge(j)}
+        </div>
+        <div class="actions" style="margin-top:12px">
+          <button class="btn secondary small" onclick="selectJob('${j.id}')">Open Stage</button>
+        </div>
+      </div>`).join("")}
+    </div>`}`;
+}
+function editParcel(event) {
+  event.preventDefault();
+  const p = getParcel(), f = event.target;
+  if (!p || !field(f, "name")) return;
+  p.name = field(f, "name");
+  p.acreage = field(f, "acreage");
+  p.notes = field(f, "notes");
+  save();
+  render();
+}
+
+function job() {
+  const d = getDev(), p = getParcel(), j = getJob();
+  if (!d || !p || !j) return `${header("Stage Not Found")}`;
+  const index = p.jobs.findIndex(x => x.id === j.id);
+  return `${header(j.trade, `${d.name} / ${p.name}`,
+    `<button class="btn secondary" onclick="navTo('parcel')">Back to Parcel</button>`)}
+    <div class="card">
+      <div class="item-head">
+        <div><div class="pill">STAGE ${index + 1} OF ${p.jobs.length}</div>
+          <h2 style="margin:5px 0">${esc(j.trade)}</h2>
+          <div class="sub">${esc(p.name)} · ${esc(d.name)}</div></div>
+        ${statusBadge(j)}
+      </div>
+      ${j.status === "locked" ? `<div class="notice warning">
+        This stage is locked until the previous stage receives owner approval.
+        You can still prepare its scope, assign a contractor, and record bids received.
+      </div>` : ""}
+    </div>
+    <div class="tabs">
+      ${[["details", "Scope & Assignment"], ["bids", "Bids Received"], ["photos", "Photos & Files"], ["approval", "Approval"]].map(([id, label]) =>
+        `<button class="${jobTab === id ? "active" : ""}" onclick="jobTab='${id}';render()">${label}</button>`
+      ).join("")}
+    </div>
+    ${jobTab === "details" ? `
+      ${j.trade === "Land Clearing" ? clearingSection(j) : ""}
+      <div class="card section">
+        <h2>Scope of Work & Contractor</h2>
+        <form onsubmit="saveJobDetails(event)">
+          ${select("contractorId", "Assigned Contractor",
+            [["", "Not assigned"], ...state.contractors.map(c => [c.id, `${c.name} — ${c.trades.join(", ") || "General"}`])],
+            j.contractorId)}
+          ${textarea("scope", "Editable Scope of Work", j.scope || (j.trade === "Land Clearing" ? clearingScope(j) : ""))}
+          ${textarea("notes", "Stage Notes", j.notes)}
+          <button class="btn" type="submit">Save Stage Details</button>
+        </form>
+        <div class="notice">Assignments are saved in this browser. This demo does not send contractor emails.</div>
+      </div>` : ""}
+    ${jobTab === "bids" ? bidSection(j, d, p) : ""}
+    ${jobTab === "photos" ? `<div class="card">
+      <h2>Photos & Files</h2>
+      <p class="sub">Upload before, during, and after photos, plus optional documents. Files stay in this browser.</p>
+      ${fileUploader("job", j.id, "before")}
+      ${fileUploader("job", j.id, "during")}
+      ${fileUploader("job", j.id, "after")}
+      ${fileUploader("job", j.id, "document")}
+      ${renderFiles(j.files || [])}
+    </div>` : ""}
+    ${jobTab === "approval" ? approvalSection(j, p, index) : ""}`;
+}
+function saveJobDetails(event) {
+  event.preventDefault();
+  const f = event.target, j = getJob();
+  if (!j) return;
+  j.contractorId = field(f, "contractorId");
+  j.contractorName = getContractor(j.contractorId)?.name || j.contractorName || "";
+  if (!j.contractorId) j.contractorName = "";
+  j.scope = field(f, "scope");
+  j.notes = field(f, "notes");
+  save();
+  render();
+}
+
+function clearingSection(j) {
+  return `<div class="card">
+    <h2>Land Clearing Areas</h2>
+    <p class="sub">Define what is being cleared. Home pad clearing includes the septic area; no separate septic clearing area is required.</p>
+    <form onsubmit="addClearingArea(event)">
+      ${select("type", "What Are We Clearing?", CLEAR_TYPES)}
+      <div class="fields">
+        ${select("width", "Width (Feet)", ["", "20", "30", "40", "50", "60", "75", "100", "125", "150", "200", "250", "300", "400", "500", "Custom"], "", "onchange='toggleCustom(this,\"customWidth\")'")}
+        ${select("depth", "Depth / Length (Feet)", ["", "20", "30", "40", "50", "60", "75", "100", "125", "150", "200", "250", "300", "400", "500", "1000", "Custom"], "", "onchange='toggleCustom(this,\"customDepth\")'")}
+        <div id="customWidth" class="hidden">${input("widthCustom", "Custom Width (Feet)", "number", "", "min='0.01' step='any'")}</div>
+        <div id="customDepth" class="hidden">${input("depthCustom", "Custom Depth / Length (Feet)", "number", "", "min='0.01' step='any'")}</div>
+        ${input("acres", "Area in Acres (Optional Alternative)", "number", "", "min='0.01' step='any'")}
+      </div>
+      ${textarea("notes", "Clearing Notes (Optional)")}
+      <button class="btn" type="submit">Add Clearing Area</button>
+    </form>
+    <hr class="divider">
+    <h3>Areas Added</h3>
+    ${j.clearingAreas.length ? j.clearingAreas.map(a => `
+      <div class="item">
+        <div class="item-head">
+          <div><strong>${esc(a.type)}</strong>
+            <div class="meta">${a.width && a.depth ? `${a.width} ft × ${a.depth} ft` : ""}
+              ${a.acres ? ` · ${Number(a.acres).toFixed(3)} acres` : ""}
+              ${a.notes ? ` · ${esc(a.notes)}` : ""}</div></div>
+          <button class="btn danger small" onclick="removeClearingArea('${a.id}')">Remove</button>
+        </div>
+      </div>`).join("") : `<p class="sub">No clearing areas added yet.</p>`}
+    ${j.clearingAreas.length ? `
+      <div class="notice"><strong>Estimated total clearing area:</strong>
+        ${j.clearingAreas.reduce((s, a) => s + num(a.acres), 0).toFixed(3)} acres.
+        Overlapping areas are not automatically deducted.</div>
+      <button class="btn secondary" onclick="generateClearingScope()">Generate Scope from Areas</button>` : ""}
+  </div>`;
+}
+function toggleCustom(selectEl, id) {
+  document.getElementById(id)?.classList.toggle("hidden", selectEl.value !== "Custom");
+}
+function addClearingArea(event) {
+  event.preventDefault();
+  const j = getJob(), f = event.target;
+  if (!j) return;
+  const wRaw = field(f, "width"), dRaw = field(f, "depth");
+  const width = wRaw === "Custom" ? num(field(f, "widthCustom")) : num(wRaw);
+  const depth = dRaw === "Custom" ? num(field(f, "depthCustom")) : num(dRaw);
+  const manualAcres = num(field(f, "acres"));
+  if ((!width || !depth) && !manualAcres) {
+    alert("Enter a width and depth, or provide the area in acres.");
+    return;
+  }
+  if ((width && !depth) || (!width && depth)) {
+    alert("Please enter both width and depth, or use acreage only.");
+    return;
+  }
+  j.clearingAreas.push({
+    id: uid(),
+    type: field(f, "type"),
+    width,
+    depth,
+    acres: width && depth ? width * depth / 43560 : manualAcres,
+    notes: field(f, "notes")
+  });
+  save();
+  render();
+}
+function removeClearingArea(id) {
+  const j = getJob();
+  if (!j || !confirm("Remove this clearing area?")) return;
+  j.clearingAreas = j.clearingAreas.filter(a => a.id !== id);
+  save();
+  render();
+}
+function clearingScope(j) {
+  if (!j.clearingAreas.length) return "";
+  const lines = [
+    "LAND CLEARING — SCOPE OF WORK",
+    `Development: ${getDev()?.name || ""}`,
+    `Parcel: ${getParcel()?.name || ""}`,
+    "",
+    "Clear the following designated areas:"
+  ];
+  j.clearingAreas.forEach((a, i) => {
+    lines.push(`${i + 1}. ${a.type}`);
+    if (a.width && a.depth) lines.push(`   Dimensions: ${a.width} ft × ${a.depth} ft`);
+    lines.push(`   Estimated area: ${num(a.acres).toFixed(3)} acres`);
+    if (a.notes) lines.push(`   Notes: ${a.notes}`);
+  });
+  lines.push("", "Home pad clearing includes the septic area where applicable.",
+    "Confirm property boundaries, utilities, access, tree disposition, debris handling, and any applicable permits before work.",
+    "Contractor to verify measurements and site conditions before pricing.");
+  return lines.join("\n");
+}
+function generateClearingScope() {
+  const j = getJob();
+  if (!j) return;
+  if (j.scope && !confirm("Replace the current scope with a new scope based on clearing areas?")) return;
+  j.scope = clearingScope(j);
+  save();
+  render();
+}
+
+function bidSection(j, d, p) {
+  const entries = jobBids(j);
+  return `<div class="card">
+    <h2>Bids Received</h2>
+    <p class="sub">Record each contractor's submitted price separately. Multiple bids for the same stage are alternatives, not cumulative project costs.</p>
+    <form onsubmit="addBid(event)">
+      ${select("contractorId", "Contractor",
+        [["", "Select Contractor"], ...state.contractors.map(c => [c.id, c.name])])}
+      <div class="fields">
+        ${input("amount", "Bid Amount ($)", "number", "", "required min='0' step='0.01'")}
+        ${input("date", "Date Received", "date", today(), "required")}
+      </div>
+      ${textarea("notes", "Bid Notes / Inclusions / Exclusions")}
+      <button class="btn" type="submit">Save Bid Received</button>
+    </form>
+    <hr class="divider">
+    <h3>Recorded Bids Received (${entries.length})</h3>
+    ${entries.length ? entries.map(b => `<div class="item">
+      <div class="item-head">
+        <div><strong>${esc(b.contractorName)}</strong>
+          <div class="meta">${esc(b.date)}${b.notes ? ` · ${esc(b.notes)}` : ""}</div></div>
+        <strong class="money">${money(b.amount)}</strong>
+      </div>
+      <div class="actions" style="margin-top:9px">
+        <button class="btn danger small" onclick="deleteBid('${b.id}')">Delete Bid</button>
+      </div>
+    </div>`).join("") : `<p class="sub">No bids received for this stage yet.</p>`}
+  </div>`;
+}
+function addBid(event) {
+  event.preventDefault();
+  const f = event.target, j = getJob(), d = getDev(), p = getParcel();
+  const c = getContractor(field(f, "contractorId"));
+  if (!j || !d || !p || !c) {
+    alert("Select a contractor. Add them to the Contractor Directory first if needed.");
+    return;
+  }
+  state.bids.push({
+    id: uid(),
+    developmentId: d.id,
+    developmentName: d.name,
+    parcelId: p.id,
+    parcelName: p.name,
+    jobId: j.id,
+    trade: j.trade,
+    contractorId: c.id,
+    contractorName: c.name,
+    amount: num(field(f, "amount")),
+    date: field(f, "date"),
+    notes: field(f, "notes")
+  });
+  save();
+  render();
+}
+function deleteBid(id) {
+  if (!confirm("Delete this recorded bid?")) return;
+  state.bids = state.bids.filter(b => b.id !== id);
+  save();
+  render();
+}
+function approvalSection(j, p, index) {
+  const before = (j.files || []).filter(f => f.category === "before").length;
+  const during = (j.files || []).filter(f => f.category === "during").length;
+  const after = (j.files || []).filter(f => f.category === "after").length;
+  const photosReady = before >= 3 && during >= 3 && after >= 3;
+  return `<div class="card">
+    <h2>Owner Approval</h2>
+    <p class="sub">Review the completed work and supporting photos before approving this stage.</p>
+    ${infoRow("Before photos", `${before} / 3`)}
+    ${infoRow("During photos", `${during} / 3`)}
+    ${infoRow("After photos", `${after} / 3`)}
+    ${infoRow("Assigned contractor", j.contractorName || getContractor(j.contractorId)?.name || "Not assigned")}
+    ${infoRow("Scope saved", j.scope ? "Yes" : "No")}
+    ${j.status === "approved" ? `<div class="notice">
+      This stage was approved on ${esc(j.approvedAt || "an earlier date")}.
+    </div>` : `
+      <div class="notice ${photosReady ? "" : "warning"}">
+        ${photosReady
+          ? "Photo requirements have been met."
+          : "Three before, three during, and three after photos are required for approval."}
+      </div>
+      <div class="actions">
+        <button class="btn secondary" ${j.status === "locked" ? "disabled" : ""}
+          onclick="changeJobStatus('in_progress')">Mark In Progress</button>
+        <button class="btn secondary" ${j.status === "locked" ? "disabled" : ""}
+          onclick="changeJobStatus('submitted')">Submit for Approval</button>
+        <button class="btn" ${j.status === "locked" || !photosReady ? "disabled" : ""}
+          onclick="approveJob()">Approve & Unlock Next Stage</button>
+      </div>`}
+    <p class="help" style="margin-top:13px">Approval is a local browser record, not a verified electronic signature.</p>
+  </div>`;
+}
+function changeJobStatus(status) {
+  const j = getJob();
+  if (!j || j.status === "locked" || j.status === "approved") return;
+  j.status = status;
+  save();
+  render();
+}
+function approveJob() {
+  const p = getParcel(), j = getJob();
+  if (!p || !j || j.status === "locked" || j.status === "approved") return;
+  const counts = ["before", "during", "after"].map(cat =>
+    (j.files || []).filter(f => f.category === cat).length);
+  if (counts.some(n => n < 3)) {
+    alert("Upload at least 3 before, 3 during, and 3 after photos first.");
+    return;
+  }
+  if (!confirm(`Approve ${j.trade} for ${p.name} and unlock the next stage?`)) return;
+  j.status = "approved";
+  j.approvedAt = today();
+  const index = p.jobs.findIndex(x => x.id === j.id);
+  const next = p.jobs[index + 1];
+  if (next && next.status === "locked") next.status = "ready";
+  save();
+  render();
+}
+
+function contractors() {
+  return `${header("Contractor Directory", "Manage contacts and trade capabilities",
+    `<button class="btn" onclick="navTo('contractorForm')">+ Add Contractor</button>`)}
+    <div class="card">
+      ${state.contractors.length ? state.contractors.map(c => {
+        const assigned = state.developments.flatMap(d =>
+          d.parcels.flatMap(p => p.jobs.filter(j => j.contractorId === c.id))).length;
+        return `<div class="item">
+          <div class="item-head">
+            <div><div class="item-title">${esc(c.name)}</div>
+              <div class="meta">${esc(c.company || "Independent Contractor")}
+                ${c.phone ? ` · ${esc(c.phone)}` : ""}</div>
+              <div class="meta">${esc(c.trades.join(" · ") || "No trades selected")}</div>
+              <div class="meta">${assigned} assigned stages</div>
+            </div>
+            <div class="actions">
+              <button class="btn secondary small" onclick="editContractor('${c.id}')">Edit</button>
+              <button class="btn danger small" onclick="deleteContractor('${c.id}')">Delete</button>
+            </div>
+          </div>
+          ${c.email ? `<div class="meta">Email: <a href="mailto:${encodeURIComponent(c.email)}">${esc(c.email)}</a></div>` : ""}
+          ${c.notes ? `<div class="meta">${esc(c.notes)}</div>` : ""}
+        </div>`;
+      }).join("") : empty("No contractors saved",
+        "Add a contractor to start assigning trade work.",
+        `<button class="btn" onclick="navTo('contractorForm')">Add Contractor</button>`)}
+    </div>`;
+}
+let editingContractorId = null;
+function editContractor(id) {
+  editingContractorId = id;
+  navTo("contractorForm");
+}
+function contractorForm() {
+  const c = state.contractors.find(x => x.id === editingContractorId);
+  return `${header(c ? "Edit Contractor" : "Add Contractor", "Contact details and trade capabilities")}
+    <div class="card">
+      <form onsubmit="saveContractor(event)">
+        <div class="fields">
+          ${input("name", "Contractor Name", "text", c?.name || "", "required")}
+          ${input("company", "Company", "text", c?.company || "")}
+          ${input("phone", "Phone", "tel", c?.phone || "")}
+          ${input("email", "Email", "email", c?.email || "")}
+        </div>
+        <label>Trades Performed</label>
+        <div class="grid two" style="margin:8px 0 18px">
+          ${TRADES.map(t => `<label style="display:flex;align-items:center;gap:9px;font-weight:500">
+            <input type="checkbox" name="trade" value="${esc(t)}"
+              style="width:17px;min-height:17px"
+              ${c?.trades.includes(t) ? "checked" : ""}>
+            ${esc(t)}</label>`).join("")}
+        </div>
+        ${textarea("notes", "Notes", c?.notes || "")}
+        <div class="actions">
+          <button class="btn" type="submit">Save Contractor</button>
+          <button class="btn secondary" type="button"
+            onclick="editingContractorId=null;navTo('contractors')">Cancel</button>
+        </div>
+      </form>
+    </div>`;
+}
+function saveContractor(event) {
+  event.preventDefault();
+  const f = event.target;
+  const name = field(f, "name");
+  if (!name) return;
+  const trades = [...f.querySelectorAll('input[name="trade"]:checked')].map(el => el.value);
+  const existing = state.contractors.find(c => c.id === editingContractorId);
+  const record = {
+    id: existing?.id || uid(),
+    name,
+    company: field(f, "company"),
+    phone: field(f, "phone"),
+    email: field(f, "email"),
+    trades,
+    notes: field(f, "notes")
+  };
+  if (existing) {
+    Object.assign(existing, record);
+    state.developments.forEach(d => d.parcels.forEach(p => p.jobs.forEach(j => {
+      if (j.contractorId === existing.id) j.contractorName = name;
+    })));
+  } else {
+    state.contractors.push(record);
+  }
+  editingContractorId = null;
+  save();
+  navTo("contractors");
+}
+function deleteContractor(id) {
+  const c = getContractor(id);
+  if (!c) return;
+  const assigned = state.developments.flatMap(d =>
+    d.parcels.flatMap(p => p.jobs.filter(j => j.contractorId === id))).length;
+  const bidsCount = state.bids.filter(b => b.contractorId === id).length;
+  const message = `Delete contractor "${c.name}"?\n\n` +
+    `${assigned} stage assignment(s) will be unassigned.\n` +
+    `${bidsCount} recorded bid(s) will be kept under the contractor's name.\n\n` +
+    "This cannot be undone.";
+  if (!confirm(message)) return;
+  state.developments.forEach(d => d.parcels.forEach(p => p.jobs.forEach(j => {
+    if (j.contractorId === id) {
+      j.contractorId = "";
+      j.contractorName = "";
+    }
+  })));
+  state.contractors = state.contractors.filter(x => x.id !== id);
+  save();
+  render();
+}
+
+function bids() {
+  return `${header("Bids Received", "All recorded contractor proposals")}
+    <div class="grid">
+      ${stat("Bids Received", state.bids.length)}
+      ${stat("Sum of Bid Amounts", money(state.bids.reduce((s, b) => s + num(b.amount), 0)),
+        "Includes competing proposals")}
+      ${stat("Contractors with Bids", new Set(state.bids.map(b => b.contractorName)).size)}
+      ${stat("Developments with Bids", new Set(state.bids.map(b => b.developmentId)).size)}
+    </div>
+    <div class="notice">The total of all bids received is not a committed construction budget. Bids for the same stage may be competing offers.</div>
+    <div class="section card">
+      ${state.bids.length ? [...state.bids].reverse().map(b => `
+        <div class="item">
+          <div class="item-head">
+            <div><div class="item-title">${esc(b.trade)}</div>
+              <div class="meta">${esc(b.developmentName)} / ${esc(b.parcelName)}</div>
+              <div class="meta">${esc(b.contractorName)} · ${esc(b.date)}</div>
+              ${b.notes ? `<div class="meta">${esc(b.notes)}</div>` : ""}
+            </div>
+            <strong class="money">${money(b.amount)}</strong>
+          </div>
+          <div class="actions" style="margin-top:10px">
+            <button class="btn secondary small"
+              onclick="openBidJob('${b.developmentId}','${b.parcelId}','${b.jobId}')">Open Stage</button>
+            <button class="btn danger small" onclick="deleteBid('${b.id}')">Delete Bid</button>
+          </div>
+        </div>`).join("")
+      : empty("No bids received", "Open a parcel's trade stage to record a contractor bid.")}
+    </div>`;
+}
+function openBidJob(devId, parcelId, jobId) {
+  state.activeDevelopment = devId;
+  state.activeParcel = parcelId;
+  state.activeJob = jobId;
+  jobTab = "bids";
+  save();
+  navTo("job");
+}
+
+function assistant() {
+  return `${header("AI Superintendent", "Project guidance and scope drafting")}
+    <div class="card">
+      <div class="ai-box">
+        <strong>Project Assistant</strong>
+        <p class="sub" style="margin:6px 0 0">
+          This version uses built-in guidance and your saved project records.
+          It does not connect to a live AI model or automatically send messages.
+        </p>
+      </div>
+      <div class="chat" id="chat">
+        ${state.messages.length ? state.messages.slice(-20).map(m =>
+          `<div class="bubble ${m.role === "user" ? "me" : ""}">${esc(m.text)}</div>`
+        ).join("") : `<div class="bubble">Ask about a development, parcel, contractor, bids received, or land clearing scope.</div>`}
+      </div>
+      <form onsubmit="askAssistant(event)">
+        ${textarea("question", "Ask a Question")}
+        <button class="btn" type="submit">Ask Superintendent</button>
+      </form>
+      <div class="notice">For supplier searches, live pricing, permit requirements, and other changing information, verify details with the supplier or local authority. This offline demo cannot check live availability or prices.</div>
+    </div>`;
+}
+function askAssistant(event) {
+  event.preventDefault();
+  const f = event.target;
+  const q = field(f, "question");
+  if (!q) return;
+  const lower = q.toLowerCase();
+  let answer = "";
+  if (lower.includes("contractor")) {
+    answer = state.contractors.length
+      ? `You have ${state.contractors.length} contractor contacts:\n` +
+        state.contractors.map(c => `• ${c.name}: ${c.trades.join(", ") || "Trades not entered"}`).join("\n")
+      : "You have no saved contractors yet. Add contacts in the Contractor Directory.";
+  } else if (lower.includes("bid")) {
+    answer = `You have ${state.bids.length} bids received. Their submitted amounts total ` +
+      `${money(state.bids.reduce((s, b) => s + num(b.amount), 0))}. ` +
+      "This includes competing proposals and is not a committed project cost.";
+  } else if (lower.includes("land") || lower.includes("parcel") || lower.includes("property")) {
+    answer = state.developments.length
+      ? state.developments.map(d =>
+          `${d.name}: ${d.parcels.length} parcels, full purchase price ${money(d.purchasePrice)}, ` +
+          `equal allocated land cost ${money(allocatedLandCost(d))} per parcel.`
+        ).join("\n")
+      : "Create a development first. Enter the full property purchase price and desired parcel count; the app will allocate the cost equally.";
+  } else if (lower.includes("clear") || lower.includes("scope")) {
+    answer = "For Land Clearing, open a parcel's first stage. Select what is being cleared, enter width and depth or acreage, add each area, then generate an editable scope. Home pad clearing includes the septic area.";
+  } else if (lower.includes("permit") || lower.includes("easement")) {
+    answer = "The development setup records Yes, No, or Unknown for permits and easements. You can attach optional documents under Development Documents. Confirm actual requirements with the relevant authority and property records.";
+  } else {
+    answer = "I can summarize your saved developments, contractor directory, bids received, and land clearing workflow. For a live AI response or supplier lookup, this standalone demo would need a connected service.";
+  }
+  state.messages.push({ role: "user", text: q }, { role: "assistant", text: answer });
+  save();
+  render();
+  document.getElementById("chat")?.scrollTo(0, 99999);
+}
+
+function settings() {
+  return `${header("Settings & Backup", "Manage local project data")}
+    <div class="grid two">
+      <div class="card">
+        <h2>Export Backup</h2>
+        <p class="sub">Download your V21 developments, contractors, bids received, and uploaded files in one JSON backup.</p>
+        <button class="btn" onclick="exportBackup()">Export Full Backup</button>
+      </div>
+      <div class="card">
+        <h2>Import V21 Backup</h2>
+        <p class="sub">Importing replaces the current V21 records in this browser. Export a backup first.</p>
+        <input type="file" accept=".json,application/json" onchange="importBackup(event)">
+      </div>
+    </div>
+    <div class="section card">
+      <h2>About This Version</h2>
+      ${infoRow("Version", "V21")}
+      ${infoRow("Theme", "White & Blue")}
+      ${infoRow("Storage", "Local browser storage + IndexedDB files")}
+      ${infoRow("Live AI", "Not connected")}
+      ${infoRow("Contractor email sending", "Not connected")}
+      <div class="notice warning">
+        Keep regular backups. Clearing Safari website data, using private browsing,
+        or changing devices may make locally stored records unavailable.
+        V21 does not automatically import V20 records.
+      </div>
+    </div>`;
+}
+
+/* File storage */
+function openFileDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = () => {
+      if (!req.result.objectStoreNames.contains("files")) {
+        req.result.createObjectStore("files");
+      }
+    };
+    req.onsuccess = () => {
+      fileDB = req.result;
+      resolve(fileDB);
+    };
+    req.onerror = () => reject(req.error);
+  });
+}
+function putFile(id, blob) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const db = fileDB || await openFileDB();
+      const tx = db.transaction("files", "readwrite");
+      tx.objectStore("files").put(blob, id);
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    } catch (e) { reject(e); }
+  });
+}
+function getFile(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const db = fileDB || await openFileDB();
+      const tx = db.transaction("files", "readonly");
+      const req = tx.objectStore("files").get(id);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    } catch (e) { reject(e); }
+  });
+}
+function removeFileData(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const db = fileDB || await openFileDB();
+      const tx = db.transaction("files", "readwrite");
+      tx.objectStore("files").delete(id);
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    } catch (e) { reject(e); }
+  });
+}
+function fileUploader(ownerType, ownerId, category) {
+  const label = category === "document" ? "Document / PDF" :
+    `${category[0].toUpperCase() + category.slice(1)} Photos`;
+  const accept = category === "document"
+    ? ".pdf,image/*,.doc,.docx"
+    : "image/*";
+  return `<div class="field">
+    <label>${label}</label>
+    <input type="file" accept="${accept}" ${category === "document" ? "" : "multiple"}
+      onchange="uploadFiles(event,'${ownerType}','${ownerId}','${category}')">
+  </div>`;
+}
+async function uploadFiles(event, ownerType, ownerId, category) {
+  const inputEl = event.target;
+  const files = [...inputEl.files];
+  if (!files.length) return;
+  const owner = ownerType === "development"
+    ? state.developments.find(d => d.id === ownerId)
+    : state.developments.flatMap(d => d.parcels.flatMap(p => p.jobs))
+        .find(j => j.id === ownerId);
+  if (!owner) return;
+  owner.files ||= [];
+  try {
+    for (const file of files) {
+      const id = uid();
+      await putFile(id, file);
+      owner.files.push({
+        id,
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        category,
+        date: today()
+      });
+    }
+    save();
+    render();
+  } catch (e) {
+    alert("File upload failed. Check available browser storage. " + e.message);
+  }
+}
+function renderFiles(files) {
+  if (!files.length) return `<p class="sub">No files uploaded yet.</p>`;
+  return `<div class="file-list">${files.map(f => `
+    <div class="file-item">
+      <div><strong>${esc(f.name)}</strong>
+        <div class="meta">${esc(f.category)} · ${esc(f.date)}</div></div>
+      <div class="actions">
+        <button class="btn secondary small" onclick="openStoredFile('${f.id}')">View</button>
+        <button class="btn danger small" onclick="deleteStoredFile('${f.id}')">Delete</button>
+      </div>
+    </div>`).join("")}</div>`;
+}
+async function openStoredFile(id) {
+  try {
+    const blob = await getFile(id);
+    if (!blob) return alert("File data was not found in this browser.");
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  } catch (e) { alert("Unable to open file: " + e.message); }
+}
+async function deleteStoredFile(id) {
+  if (!confirm("Delete this uploaded file?")) return;
+  try {
+    await removeFileData(id);
+    state.developments.forEach(d => {
+      d.files = (d.files || []).filter(f => f.id !== id);
+      d.parcels.forEach(p => p.jobs.forEach(j => {
+        j.files = (j.files || []).filter(f => f.id !== id);
+      }));
+    });
+    save();
+    render();
+  } catch (e) { alert("Unable to delete file: " + e.message); }
+}
+function blobToDataURL(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
+}
+function dataURLToBlob(dataURL) {
+  const [head, body] = dataURL.split(",");
+  const mime = head.match(/data:([^;]+)/)?.[1] || "application/octet-stream";
+  const bytes = atob(body);
+  const array = new Uint8Array(bytes.length);
+  for (let i = 0; i < bytes.length; i++) array[i] = bytes.charCodeAt(i);
+  return new Blob([array], { type: mime });
+}
+async function exportBackup() {
+  try {
+    const files = {};
+    for (const meta of allFiles()) {
+      const blob = await getFile(meta.id);
+      if (blob) files[meta.id] = await blobToDataURL(blob);
+    }
+    const backup = { format: "a7-v21", exportedAt: new Date().toISOString(), state, files };
+    const blob = new Blob([JSON.stringify(backup)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `A7-Superintendent-V21-Backup-${today()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  } catch (e) { alert("Backup failed: " + e.message); }
+}
+async function importBackup(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  let backup;
+  try {
+    backup = JSON.parse(await file.text());
+    if (backup.format !== "a7-v21" ||
+        !Array.isArray(backup.state?.developments) ||
+        !Array.isArray(backup.state?.contractors) ||
+        !Array.isArray(backup.state?.bids)) {
+      throw new Error("This is not a valid A7 V21 backup.");
+    }
+  } catch (e) {
+    alert("Cannot read backup: " + e.message);
+    return;
+  }
+  if (!confirm("Replace ALL current V21 data in this browser with this backup?")) return;
+  try {
+    const db = fileDB || await openFileDB();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction("files", "readwrite");
+      tx.objectStore("files").clear();
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+    for (const [id, data] of Object.entries(backup.files || {})) {
+      await putFile(id, dataURLToBlob(data));
+    }
+    state = { ...structuredClone(DEFAULT), ...backup.state };
+    save();
+    navTo("dashboard");
+    alert("V21 backup imported successfully.");
+  } catch (e) {
+    alert("Import failed: " + e.message);
+  }
+}
+
+render();
+openFileDB().catch(() => {
+  console.warn("IndexedDB unavailable. Uploaded files may not work.");
+});
+</script>
+</body>
+</html>
