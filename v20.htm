@@ -1,0 +1,1670 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>A7 Superintendent V20</title>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;padding-bottom:90px;background:radial-gradient(ellipse at 85% -10%,#1c604d,transparent 48%),#071d1e;color:#effbf4;font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{position:sticky;top:0;z-index:3;background:#092725ee;backdrop-filter:blur(12px);border-bottom:1px solid #356756;padding:16px}
+main{max-width:880px;margin:auto;padding:17px}
+h1{font-size:clamp(28px,7vw,42px);line-height:1.12;letter-spacing:-1px}
+h2{font-size:22px}
+h3{margin:0 0 10px}
+p{line-height:1.5}
+small,.muted{color:#b2d0c1}
+.panel,.hero{background:linear-gradient(140deg,#133e39,#0c302f);border:1px solid #376b58;border-radius:18px;padding:18px;margin:13px 0}
+.hero{padding:27px 21px}
+.hero em{color:#86e7b0;font-style:normal}
+.eyebrow{color:#8ae6b5;font-size:11px;letter-spacing:2px;font-weight:800}
+.btn{display:inline-block;background:#249765;border:1px solid #50bd85;color:white;border-radius:11px;padding:11px 13px;font:inherit;font-weight:700;text-decoration:none;margin:4px 3px 4px 0;cursor:pointer}
+.btn.alt{background:#235149;border-color:#477968}
+.btn.danger{background:#8a4848;border-color:#ac6868}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.field{display:block;width:100%;background:#092929;border:1px solid #538373;border-radius:10px;padding:12px;color:white;font:inherit;margin:7px 0 13px}
+label{display:block;font-weight:650;margin-top:12px}
+textarea{min-height:90px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tile{background:#185445;border:1px solid #43836a;color:white;text-align:left;border-radius:14px;padding:16px;min-height:125px;cursor:pointer}
+.tile b,.tile small{display:block;margin:9px 0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.line{padding:13px 0;border-bottom:1px solid #315c4e}
+.line:last-child{border:0}
+.pill{display:inline-block;background:#285a4b;border-radius:30px;padding:5px 9px;font-size:12px}
+.warn{background:#75572c}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.stats>div{background:#103631;border:1px solid #315c4e;border-radius:13px;padding:12px}
+.stats strong{display:block;font-size:25px;color:#93eab9}
+.project,.step{display:flex;width:100%;align-items:center;gap:13px;background:#103631;border:1px solid #315c4e;color:white;text-align:left;border-radius:13px;padding:15px;margin:8px 0;cursor:pointer}
+.project span:nth-child(2),.step span:nth-child(2){flex:1}
+.project small,.step small{display:block;margin-top:5px}
+.num{display:grid;place-items:center;width:34px;height:34px;flex:none;background:#3c6254;border-radius:50%}
+.done{background:#268757}
+.tabs{display:flex;gap:5px;overflow-x:auto}
+.tabs button{white-space:nowrap}
+.photos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.photos img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
+.photo{min-width:0;overflow-wrap:anywhere;font-size:11px}
+.photo button{font-size:11px;padding:7px}
+.checks{display:flex;gap:10px;flex-wrap:wrap}
+.checks label{background:#215246;border-radius:8px;padding:8px;font-weight:400;margin:0}
+.nav{position:fixed;z-index:4;bottom:0;left:0;right:0;display:flex;background:#082725f5;border-top:1px solid #356756;padding:8px 2px calc(8px + env(safe-area-inset-bottom))}
+.nav button{flex:1;background:none;border:0;color:#d7f8e5;padding:8px 2px;font-size:12px;cursor:pointer}
+.bubble{background:#194b40;border:1px solid #437966;border-radius:15px;padding:16px;margin:12px 0;line-height:1.55}
+.measure{background:#0b302d;border:1px solid #4a8269;border-radius:13px;padding:14px;margin:12px 0}
+.measure strong{display:block;color:#a5f2c7;font-size:23px;margin:6px 0}
+.note{background:#284b3b;border-left:3px solid #81dca9;padding:12px;border-radius:7px}
+a{color:#a6f1c8}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<header>
+<b style="font-size:23px">A<span style="color:#66e8a6">7</span> SUPERINTENDENT</b>
+<div class="muted" style="font-size:11px">LAND DEVELOPMENT · MANUFACTURED HOMES · V20</div>
+</header>
+
+<main id="app"></main>
+
+<nav class="nav">
+<button onclick="go('home')">⌂<br>Home</button>
+<button onclick="go('assistant')">✦<br>AI Guide</button>
+<button onclick="go('parcels')">▦<br>Parcels</button>
+<button onclick="go('people')">♟<br>Trades</button>
+<button onclick="go('settings')">⚙<br>More</button>
+</nav>
+
+<script>
+'use strict';
+
+/*
+ V20 continues using V16/V18/V19 browser storage so existing
+ development records, contacts, bids, and photos remain available
+ when opened on the same GitHub Pages origin and browser.
+*/
+const KEY='a7-superintendent-v16';
+const DB='a7-superintendent-v16-photos';
+
+const TRADES=[
+['clearing','Land Clearing'],
+['culvert','Entrance & Culvert'],
+['driveway','Rock Driveway'],
+['pad','Home Pad'],
+['water','Water Connection'],
+['electrical','Electrical Connection'],
+['home','Manufactured Home'],
+['transport','Home Transportation'],
+['setup','Home Setup'],
+['septic','Septic Installation'],
+['skirting','Home Skirting'],
+['decks','Decks & Access'],
+['hvac','HVAC'],
+['other','Other Parcel Expenses']
+];
+
+const CLEARING_TYPES=[
+['parcel','Entire Parcel'],
+['pad','Home Pad Area (including septic area)'],
+['driveway','Driveway Path'],
+['custom','Other / Custom Area']
+];
+
+const SIZES=[25,50,75,100,125,150,200,250,300,400,500,750,1000];
+
+const $=id=>document.getElementById(id);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,9);
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({
+'&':'&amp','<':'&lt','>':'&gt','"':'&quot',"'":'&#39'
+}[c]+';'));
+const money=x=>Number(x||0).toLocaleString('en-US',{
+style:'currency',currency:'USD',maximumFractionDigits:0
+});
+
+function newJob(key,name){
+return {
+key,name,scope:'',bids:[],state:'planning',
+photos:{before:[],middle:[],after:[]},
+approvedAt:'',exception:null,history:[],
+clearing:{areas:[]}
+};
+}
+
+function newParcel(name){
+return {
+id:uid(),name,
+jobs:Object.fromEntries(TRADES.map(([k,n])=>[k,newJob(k,n)]))
+};
+}
+
+function newDev(name,count,price=0,acres=0,easements='',permits=''){
+return {
+id:uid(),name,
+land:{purchasePrice:Number(price),acres:Number(acres)},
+requirements:{easements,permits,documents:[]},
+parcels:Array.from({length:count},(_,i)=>newParcel('Parcel '+(i+1)))
+};
+}
+
+function fresh(){return {developments:[],contacts:[]};}
+
+let data;
+try{
+data=JSON.parse(localStorage.getItem(KEY)||'null')||fresh();
+}catch(e){
+data=fresh();
+}
+
+function normalize(){
+if(!Array.isArray(data.developments))data.developments=[];
+if(!Array.isArray(data.contacts))data.contacts=[];
+
+for(const d of data.developments){
+d.land=d.land||{purchasePrice:null,acres:null};
+d.requirements=d.requirements||{
+easements:'',permits:'',documents:[]
+};
+if(!Array.isArray(d.requirements.documents))
+d.requirements.documents=[];
+
+for(const p of d.parcels||[]){
+p.jobs=p.jobs||{};
+
+for(const [k,n] of TRADES){
+const j=p.jobs[k]||newJob(k,n);
+j.key=k;
+j.name=n;
+j.scope=j.scope||'';
+j.photos=j.photos||{};
+
+for(const s of ['before','middle','after']){
+if(!Array.isArray(j.photos[s]))j.photos[s]=[];
+}
+
+if(!Array.isArray(j.bids))j.bids=[];
+if(!Array.isArray(j.history))j.history=[];
+
+if(k==='clearing'){
+j.clearing=j.clearing||{areas:[]};
+if(!Array.isArray(j.clearing.areas))j.clearing.areas=[];
+}
+
+p.jobs[k]=j;
+}
+}
+}
+}
+
+normalize();
+
+let di=0;
+let pi=0;
+let selected='clearing';
+let view='home';
+let tab='work';
+let editing='';
+let urls=[];
+let draft=null;
+
+const dev=()=>data.developments[di];
+const parcel=()=>dev()?.parcels[pi];
+const job=()=>parcel()?.jobs[selected];
+
+function prev(){
+const i=TRADES.findIndex(t=>t[0]===selected);
+return i>0?parcel().jobs[TRADES[i-1][0]]:null;
+}
+
+function allowed(){
+return !prev()||prev().state==='approved'||!!job().exception;
+}
+
+function save(){
+try{
+localStorage.setItem(KEY,JSON.stringify(data));
+return true;
+}catch(e){
+alert('Browser storage is full. Export a backup and free space.');
+return false;
+}
+}
+
+function log(j,text){
+j.history.push({date:new Date().toISOString(),text});
+}
+
+function go(v){
+view=v;
+render();
+scrollTo(0,0);
+}
+
+function pickDev(i){
+di=i;
+pi=0;
+go('parcels');
+}
+
+function pickParcel(i){
+pi=i;
+go('jobs');
+}
+
+function pickJob(k){
+selected=k;
+tab='work';
+go('detail');
+}
+
+function state(j){
+if(j.state==='approved')return '✓ Approved';
+if(j.state==='review')return 'Awaiting owner approval';
+if(j.state==='working')return 'In progress';
+if(j.state==='finishing')return 'Final photos';
+return allowed()?'Ready · Bidding open':'Work locked · Bidding open';
+}
+
+function field(label,id,value='',type='text',required=''){
+return '<label>'+label+
+'<input class="field" id="'+id+'" type="'+type+
+'" value="'+esc(value??'')+'" '+required+'></label>';
+}
+
+/* HOME */
+
+function home(){
+let count=0,reviews=0;
+
+for(const d of data.developments){
+count+=d.parcels.length;
+for(const p of d.parcels){
+for(const [k] of TRADES){
+if(p.jobs[k].state==='review')reviews++;
+}
+}
+}
+
+return '<section class="hero">'+
+'<span class="eyebrow">YOUR LAND DEVELOPMENT DESK</span>'+
+'<h1>From raw land to<br><em>move-in ready.</em></h1>'+
+'<p>Plan your development, build each parcel, and give contractors a clear scope of work.</p>'+
+'<button class="btn" onclick="go(\'assistant\')">✦ Ask A7 Superintendent</button>'+
+'<button class="btn alt" onclick="go(\'newdev\')">＋ New development</button>'+
+'</section>'+
+'<div class="stats">'+
+'<div><strong>'+data.developments.length+'</strong><small>Developments</small></div>'+
+'<div><strong>'+count+'</strong><small>Parcels</small></div>'+
+'<div><strong>'+reviews+'</strong><small>Need approval</small></div>'+
+'</div>'+
+'<h2>Development filing cabinet</h2>'+
+(data.developments.length?
+data.developments.map((d,i)=>
+'<button class="project" onclick="pickDev('+i+')">'+
+'<span class="num">▧</span>'+
+'<span><b>'+esc(d.name)+'</b>'+
+'<small>'+d.parcels.length+' parcels · '+
+(d.land.acres==null?'Acreage not entered':esc(d.land.acres)+' acres')+
+'</small></span><b>›</b></button>'
+).join(''):
+'<div class="panel"><h3>Start your first development</h3>'+
+'<p class="muted">Enter the land purchase price, acreage, parcel count, and simple permit/easement answers.</p>'+
+'<button class="btn" onclick="go(\'newdev\')">Create development →</button></div>');
+}
+
+/* DEVELOPMENT SETUP */
+
+function newdev(){
+return '<h2>New development</h2>'+
+'<p class="muted">Answer these questions once for the whole property. No photos needed.</p>'+
+'<form class="panel" onsubmit="createDev(event)">'+
+field('Development name','dn','','text','required')+
+field('How much was the land purchased for? ($)','price','','number','required min="0" step=".01"')+
+field('How many acres is it?','acres','','number','required min="0.01" step="any"')+
+field('How many parcels do you want to break it into?','pn','','number','required min="1" max="100" step="1"')+
+'<h3>Permits & Easements</h3>'+
+'<label>Does this property have any easements?</label>'+
+'<select class="field" id="easements" required>'+
+'<option value="">Select Yes or No</option>'+
+'<option>Yes</option><option>No</option></select>'+
+'<label>Does this property need any permits?</label>'+
+'<select class="field" id="permits" required>'+
+'<option value="">Select Yes or No</option>'+
+'<option>Yes</option><option>No</option></select>'+
+'<p class="muted">These are your planning answers, not a legal determination. You can edit them later and optionally attach a PDF.</p>'+
+'<button class="btn" type="submit">Create development →</button>'+
+'</form>';
+}
+
+function createDev(e){
+e.preventDefault();
+
+const name=$('dn').value.trim();
+const price=Number($('price').value);
+const acres=Number($('acres').value);
+const count=Number($('pn').value);
+
+if(!name||!Number.isFinite(price)||price<0||
+!Number.isFinite(acres)||acres<=0||
+!Number.isInteger(count)||count<1||count>100||
+!$('easements').value||!$('permits').value){
+return alert('Complete all fields with valid values.');
+}
+
+data.developments.push(newDev(
+name,count,price,acres,$('easements').value,$('permits').value
+));
+
+if(save())pickDev(data.developments.length-1);
+}
+
+function parcels(){
+if(!dev()){
+return '<h2>No development selected</h2>'+
+'<button class="btn" onclick="go(\'newdev\')">Create development</button>';
+}
+
+const d=dev();
+const price=d.land.purchasePrice;
+const acres=d.land.acres;
+
+return '<button class="btn alt" onclick="go(\'home\')">← Developments</button>'+
+'<h2>'+esc(d.name)+'</h2>'+
+'<div class="panel">'+
+'<div class="row"><h3>Property details</h3>'+
+'<button class="btn alt" onclick="go(\'development\')">Edit</button></div>'+
+'<div class="line">Land purchase: <b>'+
+(price==null?'Not entered':money(price))+'</b></div>'+
+'<div class="line">Acreage: <b>'+
+(acres==null?'Not entered':esc(acres)+' acres')+'</b></div>'+
+'<div class="line">Proposed parcels: <b>'+d.parcels.length+'</b></div>'+
+'<div class="line">Easements: <b>'+
+esc(d.requirements.easements||'Not answered')+'</b></div>'+
+'<div class="line">Permits needed: <b>'+
+esc(d.requirements.permits||'Not answered')+'</b></div>'+
+'<button class="btn alt" onclick="go(\'development\')">View optional PDFs →</button>'+
+'</div>'+
+'<div class="row"><h2>Parcels</h2>'+
+'<button class="btn" onclick="addParcel()">＋ Parcel</button></div>'+
+'<div class="grid">'+d.parcels.map((p,i)=>{
+const done=TRADES.filter(([k])=>p.jobs[k].state==='approved').length;
+return '<button class="tile" onclick="pickParcel('+i+')">'+
+'<span style="font-size:27px">⌂</span>'+
+'<b>'+esc(p.name)+'</b>'+
+'<small>'+done+' of '+TRADES.length+' jobs approved</small>'+
+'</button>';
+}).join('')+'</div>'+
+'<button class="btn alt" onclick="go(\'budget\')">View budget →</button>';
+}
+
+function addParcel(){
+const name=prompt('Parcel name','Parcel '+(dev().parcels.length+1));
+if(!name?.trim())return;
+dev().parcels.push(newParcel(name.trim()));
+if(save())render();
+}
+
+function options(value){
+return '<option value="">Not answered</option>'+
+['Yes','No'].map(v=>
+'<option value="'+v+'" '+(value===v?'selected':'')+'>'+v+'</option>'
+).join('');
+}
+
+function development(){
+const d=dev();
+if(!d)return home();
+
+return '<button class="btn alt" onclick="go(\'parcels\')">← Development</button>'+
+'<h2>Development details</h2>'+
+'<p class="muted">These answers apply to the entire property. No photo requirements.</p>'+
+'<form class="panel" onsubmit="saveDevelopment(event)">'+
+field('Development name','edname',d.name,'text','required')+
+field('Land purchase price ($)','edprice',d.land.purchasePrice,'number','min="0" step=".01"')+
+field('Total acreage','edacres',d.land.acres,'number','min="0.01" step="any"')+
+'<label>Does this property have any easements?</label>'+
+'<select class="field" id="edeasements">'+
+options(d.requirements.easements)+'</select>'+
+'<label>Does this property need any permits?</label>'+
+'<select class="field" id="edpermits">'+
+options(d.requirements.permits)+'</select>'+
+'<button class="btn">Save development details</button>'+
+'</form>'+
+'<div class="panel"><h3>Optional permit & easement PDFs</h3>'+
+'<p class="muted">Attach a PDF if you have one. It is not required to continue.</p>'+
+'<input class="field" type="file" accept=".pdf,application/pdf" onchange="uploadPDF(event)">'+
+d.requirements.documents.map(m=>
+'<div class="line"><b>'+esc(m.name)+'</b><br>'+
+'<button class="btn alt" onclick="openPDF(\''+m.id+'\')">Open PDF</button>'+
+'<button class="btn danger" onclick="removePDF(\''+m.id+'\')">Remove</button>'+
+'</div>'
+).join('')+
+'<small>PDFs are stored in this browser. Export a full backup to protect them.</small>'+
+'</div>';
+}
+
+function saveDevelopment(e){
+e.preventDefault();
+
+const name=$('edname').value.trim();
+const pt=$('edprice').value.trim();
+const at=$('edacres').value.trim();
+const price=pt===''?null:Number(pt);
+const acres=at===''?null:Number(at);
+
+if(!name||
+(price!==null&&(!Number.isFinite(price)||price<0))||
+(acres!==null&&(!Number.isFinite(acres)||acres<=0))){
+return alert('Enter valid development details.');
+}
+
+const d=dev();
+d.name=name;
+d.land={purchasePrice:price,acres};
+d.requirements.easements=$('edeasements').value;
+d.requirements.permits=$('edpermits').value;
+
+if(save())go('parcels');
+}
+
+/* PARCEL JOBS */
+
+function jobs(){
+return '<button class="btn alt" onclick="go(\'parcels\')">← Parcels</button>'+
+'<h2>'+esc(parcel().name)+'</h2>'+
+'<p class="muted">Land purchase and permit/easement questions are handled at development setup. Construction starts with Land Clearing.</p>'+
+TRADES.map(([k,n],i)=>{
+const j=parcel().jobs[k];
+const previous=i?parcel().jobs[TRADES[i-1][0]]:null;
+const ready=!previous||previous.state==='approved'||j.exception;
+
+return '<button class="step" onclick="pickJob(\''+k+'\')">'+
+'<span class="num '+(j.state==='approved'?'done':'')+'">'+
+(j.state==='approved'?'✓':i+1)+'</span>'+
+'<span><b>'+esc(n)+'</b>'+
+'<small>'+esc(
+j.state==='approved'?'Approved':
+j.state!=='planning'?state(j):
+ready?'Ready · bids open':'Work locked · bids open'
+)+'</small></span><b>›</b></button>';
+}).join('');
+}
+
+function detail(){
+const j=job();
+
+return '<button class="btn alt" onclick="go(\'jobs\')">← Jobs</button>'+
+'<h2>'+esc(j.name)+'</h2>'+
+'<span class="pill '+(!allowed()?'warn':'')+'">'+esc(state(j))+'</span>'+
+'<p class="muted">'+esc(dev().name)+' · '+esc(parcel().name)+'</p>'+
+'<div class="tabs">'+[
+['work','Workflow'],
+['contacts','Contractors'],
+['bids','Bids'],
+['scope','Scope'],
+['history','History']
+].map(([k,n])=>
+'<button class="btn '+(tab===k?'':'alt')+
+'" onclick="tab=\''+k+'\';render()">'+n+'</button>'
+).join('')+'</div>'+
+(tab==='work'?workflow(j):
+tab==='contacts'?contacts(j):
+tab==='bids'?bids(j):
+tab==='scope'?scope(j):
+'<div class="panel">'+
+(j.history.length?
+j.history.slice().reverse().map(h=>
+'<div class="line">'+esc(h.text)+
+'<small> · '+esc(new Date(h.date).toLocaleString())+'</small></div>'
+).join(''):
+'No activity yet')+
+'</div>');
+}
+
+/* V20 LAND CLEARING PLANNER */
+
+function clearingTypeName(k){
+return CLEARING_TYPES.find(x=>x[0]===k)?.[1]||'Custom Area';
+}
+
+function clearingPlanner(j){
+const areas=j.clearing.areas;
+
+return '<div class="panel">'+
+'<span class="eyebrow">V20 · CLEARING PLANNER</span>'+
+'<h3 style="margin-top:9px">What are we clearing?</h3>'+
+'<p class="muted">Add one area or several. The home pad choice includes the septic area.</p>'+
+'<label>Area type</label>'+
+'<select class="field" id="clearType" onchange="updateClearingForm()">'+
+'<option value="">Select what we are clearing</option>'+
+CLEARING_TYPES.map(([k,n])=>
+'<option value="'+k+'">'+esc(n)+'</option>'
+).join('')+
+'</select>'+
+'<div id="clearForm" style="display:none">'+
+'<label>Area name (optional)</label>'+
+'<input class="field" id="clearName" placeholder="e.g., North home pad">'+
+'<label>How would you like to measure it?</label>'+
+'<select class="field" id="clearUnit" onchange="updateClearingForm()">'+
+'<option value="feet">Width × depth / length in feet</option>'+
+'<option value="acres">Total area in acres</option>'+
+'</select>'+
+'<div id="feetFields">'+
+'<div class="grid">'+
+'<div><label>Width (feet)</label>'+
+'<select class="field" id="clearWidth" onchange="updateClearingForm()">'+
+sizeOptions()+'</select>'+
+'<input class="field" id="clearWidthCustom" type="number" min=".01" step="any" placeholder="Enter custom width" style="display:none" oninput="updateClearingPreview()">'+
+'</div>'+
+'<div><label>Depth / length (feet)</label>'+
+'<select class="field" id="clearDepth" onchange="updateClearingForm()">'+
+sizeOptions()+'</select>'+
+'<input class="field" id="clearDepthCustom" type="number" min=".01" step="any" placeholder="Enter custom depth / length" style="display:none" oninput="updateClearingPreview()">'+
+'</div>'+
+'</div>'+
+'</div>'+
+'<div id="acreFields" style="display:none">'+
+'<label>Area to clear (acres)</label>'+
+'<input class="field" id="clearAcres" type="number" min=".01" step="any" placeholder="e.g., 2.5" oninput="updateClearingPreview()">'+
+'</div>'+
+'<label>Anything the contractor should know?</label>'+
+'<textarea class="field" id="clearNotes" placeholder="e.g., Keep the large oak trees; remove brush and stumps."></textarea>'+
+'<div class="measure" id="clearPreview">Choose measurements to see the estimated area.</div>'+
+'<button class="btn" onclick="addClearingArea()">＋ Add clearing area</button>'+
+'</div>'+
+'</div>'+
+'<div class="panel"><h3>Saved clearing areas</h3>'+
+(areas.length?areas.map((a,i)=>{
+const acres=a.unit==='acres'?Number(a.acres):
+Number(a.width)*Number(a.depth)/43560;
+
+return '<div class="line">'+
+'<div class="row"><b>'+esc(a.name||clearingTypeName(a.type))+'</b>'+
+'<button class="btn danger" onclick="removeClearingArea('+i+')">Remove</button></div>'+
+'<small>'+esc(clearingTypeName(a.type))+'</small>'+
+'<p>'+(a.unit==='acres'?
+esc(a.acres)+' acres':
+esc(a.width)+' ft wide × '+esc(a.depth)+' ft deep / long')+
+'<br><b>Estimated area: '+acres.toFixed(2)+' acres</b></p>'+
+(a.notes?'<p class="muted">'+esc(a.notes)+'</p>':'')+
+'</div>';
+}).join(''):
+'<p class="muted">No clearing areas added yet.</p>')+
+'<button class="btn alt" onclick="tab=\'scope\';render()">View contractor scope →</button>'+
+'<p class="muted">Measurements are planning estimates, not surveyed boundaries. Overlapping areas are not deducted from totals.</p>'+
+'</div>';
+}
+
+function sizeOptions(){
+return '<option value="">Select size</option>'+
+SIZES.map(n=>
+'<option value="'+n+'">'+n+' ft</option>'
+).join('')+
+'<option value="custom">Enter custom size…</option>';
+}
+
+function updateClearingForm(){
+const type=$('clearType');
+if(!type)return;
+
+$('clearForm').style.display=type.value?'block':'none';
+if(!type.value)return;
+
+const acres=$('clearUnit').value==='acres';
+$('feetFields').style.display=acres?'none':'block';
+$('acreFields').style.display=acres?'block':'none';
+
+$('clearWidthCustom').style.display=
+$('clearWidth').value==='custom'?'block':'none';
+
+$('clearDepthCustom').style.display=
+$('clearDepth').value==='custom'?'block':'none';
+
+updateClearingPreview();
+}
+
+function chosenSize(selectId,customId){
+const v=$(selectId).value;
+return v==='custom'?Number($(customId).value):Number(v);
+}
+
+function clearingDraft(){
+const type=$('clearType').value;
+const unit=$('clearUnit').value;
+const name=$('clearName').value.trim();
+const notes=$('clearNotes').value.trim();
+
+if(unit==='acres'){
+return {
+type,unit,name,notes,
+acres:Number($('clearAcres').value)
+};
+}
+
+return {
+type,unit,name,notes,
+width:chosenSize('clearWidth','clearWidthCustom'),
+depth:chosenSize('clearDepth','clearDepthCustom')
+};
+}
+
+function updateClearingPreview(){
+const el=$('clearPreview');
+if(!el)return;
+
+const a=clearingDraft();
+
+if(a.unit==='acres'){
+if(!(a.acres>0)){
+el.textContent='Enter the acreage to see the estimated area.';
+return;
+}
+
+el.innerHTML='<small>ESTIMATED CLEARING AREA</small>'+
+'<strong>'+esc(a.acres.toLocaleString())+' acres</strong>'+
+'<small>'+Math.round(a.acres*43560).toLocaleString()+
+' square feet</small>';
+return;
+}
+
+if(!(a.width>0&&a.depth>0)){
+el.textContent='Choose a width and depth / length to see the estimated area.';
+return;
+}
+
+const sqft=a.width*a.depth;
+
+el.innerHTML='<small>ESTIMATED CLEARING AREA</small>'+
+'<strong>'+sqft.toLocaleString()+' sq ft</strong>'+
+'<small>'+(sqft/43560).toFixed(2)+
+' acres · Assumes a rectangular area</small>';
+}
+
+function addClearingArea(){
+const a=clearingDraft();
+
+if(!a.type)return alert('Select what you are clearing.');
+
+if(a.unit==='acres'){
+if(!Number.isFinite(a.acres)||a.acres<=0)
+return alert('Enter a valid acreage.');
+}else{
+if(!Number.isFinite(a.width)||a.width<=0||
+!Number.isFinite(a.depth)||a.depth<=0)
+return alert('Choose a valid width and depth / length.');
+}
+
+const j=job();
+
+if(j.state==='approved')
+return alert('This job is already approved. Its clearing plan is locked.');
+
+j.clearing.areas.push({id:uid(),...a});
+log(j,'Added clearing area: '+(a.name||clearingTypeName(a.type)));
+
+if(save())render();
+}
+
+function removeClearingArea(i){
+const j=job();
+
+if(j.state==='approved')
+return alert('Approved jobs are locked.');
+
+if(!confirm('Remove this clearing area?'))return;
+
+j.clearing.areas.splice(i,1);
+log(j,'Removed a clearing area');
+
+if(save())render();
+}
+
+function generatedClearingScope(j){
+const areas=j.clearing.areas;
+if(!areas.length)return '';
+
+let lines=[
+'LAND CLEARING — '+dev().name+' / '+parcel().name,
+'',
+'CLEARING AREAS:'
+];
+
+areas.forEach((a,i)=>{
+const title=a.name||clearingTypeName(a.type);
+
+lines.push((i+1)+'. '+title);
+
+if(a.unit==='acres'){
+lines.push('   Area: '+a.acres+' acres');
+}else{
+const sqft=Number(a.width)*Number(a.depth);
+lines.push(
+'   Width: '+a.width+' ft; depth/length: '+a.depth+' ft'
+);
+lines.push(
+'   Estimated area: '+sqft.toLocaleString()+
+' sq ft ('+(sqft/43560).toFixed(2)+' acres)'
+);
+}
+
+if(a.type==='pad'){
+lines.push('   Includes the septic area.');
+}
+
+if(a.notes)lines.push('   Instructions: '+a.notes);
+});
+
+lines.push('');
+lines.push(
+'Confirm clearing boundaries, access, vegetation, debris handling, stump removal, grading, utilities, and site conditions before pricing or starting work.'
+);
+lines.push(
+'Measurements are owner-entered planning estimates, not surveyed boundaries. Areas may overlap.'
+);
+
+return lines.join('\n');
+}
+
+/* WORKFLOW AND PHOTOS */
+
+function workflow(j){
+let out='';
+
+if(selected==='clearing'){
+out+=clearingPlanner(j);
+}
+
+out+='<div class="panel"><h3>Construction sequence</h3>'+
+'<p class="muted">'+(prev()?
+'Previous job: '+esc(prev().name)+' — '+esc(prev().state):
+'First construction job in this parcel')+'</p>';
+
+if(!allowed()){
+out+='<p>Starting work is locked. You can still prepare scopes and collect bids.</p>'+
+'<label>Owner exception reason</label>'+
+'<textarea class="field" id="reason" placeholder="Why must this work start out of sequence?"></textarea>'+
+'<button class="btn alt" onclick="exception()">Approve sequence exception</button>';
+}
+
+out+='</div>';
+
+for(const [s,title] of [
+['before','1. Before work'],
+['middle','2. During work'],
+['after','3. After work']
+]){
+const open=
+(s==='before'&&j.state==='planning')||
+(s==='middle'&&j.state==='working')||
+(s==='after'&&j.state==='finishing');
+
+out+='<div class="panel">'+
+'<div class="row"><b>'+title+'</b>'+
+'<span class="pill">'+j.photos[s].length+' / 3 minimum</span></div>'+
+'<p class="muted">'+
+(open?'Take or upload at least three photos.':
+'This photo stage is not open yet.')+
+'</p>'+
+(open?
+'<input class="field" type="file" accept="image/*" multiple onchange="upload(event,\''+s+'\')">':
+'')+
+'<div class="photos">'+j.photos[s].map(m=>
+'<div class="photo" id="ph-'+esc(m.id)+'">'+
+'<div class="muted">Loading photo…</div>'+
+'<small>'+esc(m.name)+'</small>'+
+(open?
+'<button class="btn danger" onclick="removePhoto(\''+
+s+'\',\''+m.id+'\')">Remove</button>':
+'')+
+'</div>'
+).join('')+'</div></div>';
+}
+
+if(j.state==='planning'){
+out+='<div class="panel">'+
+'<button class="btn" '+
+(!allowed()||j.photos.before.length<3?'disabled':'')+
+' onclick="advance(\'working\')">Start work →</button>'+
+'</div>';
+}
+
+if(j.state==='working'){
+out+='<div class="panel">'+
+'<button class="btn" '+
+(j.photos.middle.length<3?'disabled':'')+
+' onclick="advance(\'finishing\')">Move to final photos →</button>'+
+'</div>';
+}
+
+if(j.state==='finishing'){
+out+='<div class="panel">'+
+'<button class="btn" '+
+(j.photos.after.length<3?'disabled':'')+
+' onclick="advance(\'review\')">Submit for owner review →</button>'+
+'</div>';
+}
+
+if(j.state==='review'){
+out+='<div class="panel"><h3>Owner approval</h3>'+
+'<p>Review all nine photos before approving completion.</p>'+
+'<button class="btn" onclick="approve()">Approve completion</button>'+
+'<button class="btn alt" onclick="returnPhotos()">Return for more photos</button>'+
+'</div>';
+}
+
+if(j.state==='approved'){
+out+='<div class="panel">✓ Approved '+
+esc(new Date(j.approvedAt).toLocaleString())+
+'. The next construction job is unlocked.</div>';
+}
+
+return out+
+'<p class="muted">Prototype: approvals are not password-protected. Photos are stored locally in this browser.</p>';
+}
+
+function exception(){
+const reason=$('reason').value.trim();
+
+if(reason.length<10){
+return alert('Explain the exception in at least 10 characters.');
+}
+
+if(!confirm('Approve starting this job before the previous job is complete?'))
+return;
+
+job().exception={reason,date:new Date().toISOString()};
+log(job(),'Owner approved out-of-order work: '+reason);
+
+if(save())render();
+}
+
+function allNine(j){
+return ['before','middle','after'].every(s=>j.photos[s].length>=3);
+}
+
+async function verify(j){
+for(const s of ['before','middle','after']){
+for(const m of j.photos[s]){
+if(!(await getFile(m.id))?.blob){
+throw Error('A photo is missing from browser storage. Restore a backup.');
+}
+}
+}
+}
+
+async function advance(next){
+const j=job();
+
+if(next==='working'&&
+(j.state!=='planning'||!allowed()||j.photos.before.length<3))return;
+
+if(next==='finishing'&&
+(j.state!=='working'||j.photos.middle.length<3))return;
+
+if(next==='review'&&
+(j.state!=='finishing'||!allNine(j)))return;
+
+try{
+await verify(j);
+}catch(e){
+return alert(e.message);
+}
+
+j.state=next;
+log(j,'Moved to '+next);
+
+if(save())render();
+}
+
+async function approve(){
+const j=job();
+
+if(j.state!=='review'||!allNine(j))return;
+
+try{
+await verify(j);
+}catch(e){
+return alert(e.message);
+}
+
+if(!confirm('I reviewed the photos and approve this job as complete. Unlock the next job?'))
+return;
+
+j.state='approved';
+j.approvedAt=new Date().toISOString();
+log(j,'Owner approved completion');
+
+if(save())render();
+}
+
+function returnPhotos(){
+if(job().state!=='review')return;
+
+job().state='finishing';
+log(job(),'Returned for additional photos');
+
+if(save())render();
+}
+
+/* CONTRACTORS */
+
+function contacts(j){
+const matches=data.contacts.filter(c=>c.trades.includes(j.key));
+
+return '<div class="panel"><h3>'+esc(j.name)+' contractors</h3>'+
+'<p class="muted">Only contacts tagged for this trade appear. Bidding is always open.</p>'+
+(matches.length?
+matches.map(c=>
+'<div class="line"><b>'+esc(c.name)+'</b>'+
+'<p class="muted">'+esc(c.notes||'')+'</p>'+
+(c.phone?
+'<a class="btn" href="tel:'+encodeURIComponent(c.phone)+'">Call</a>'+
+'<a class="btn alt" href="sms:'+encodeURIComponent(c.phone)+'">Text</a>':
+'')+
+(c.email?
+'<a class="btn alt" href="mailto:'+encodeURIComponent(c.email)+
+'?subject='+encodeURIComponent(
+'Bid request: '+dev().name+' / '+parcel().name+' / '+j.name
+)+'">Request bid</a>':
+'')+
+'</div>'
+).join(''):
+'<p>No contractors tagged for this trade yet.</p>')+
+'<button class="btn" onclick="editContact(\'\')">＋ Add contractor</button>'+
+'</div>';
+}
+
+function bids(j){
+return '<div class="panel"><h3>Bid comparison</h3>'+
+j.bids.map(b=>
+'<div class="line"><b>'+esc(b.name)+' — '+money(b.amount)+'</b>'+
+'<p class="muted">'+esc(b.notes||'')+'</p></div>'
+).join('')+
+'<form onsubmit="addBid(event)">'+
+'<label>Contractor</label>'+
+'<select class="field" id="bidContact">'+
+'<option value="">Enter name below</option>'+
+data.contacts.filter(c=>c.trades.includes(j.key)).map(c=>
+'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>'
+).join('')+
+'</select>'+
+field('Name (if not in contacts)','bidName')+
+field('Bid amount ($)','bidAmount','','number','required min="0" step=".01"')+
+'<label>Notes</label>'+
+'<textarea class="field" id="bidNotes"></textarea>'+
+'<button class="btn">Save bid</button>'+
+'</form></div>';
+}
+
+function addBid(e){
+e.preventDefault();
+
+const c=data.contacts.find(c=>c.id===$('bidContact').value);
+const name=c?.name||$('bidName').value.trim();
+const amount=Number($('bidAmount').value);
+
+if(!name||!Number.isFinite(amount)||amount<0){
+return alert('Enter a contractor and valid amount.');
+}
+
+job().bids.push({
+id:uid(),name,amount,notes:$('bidNotes').value
+});
+
+log(job(),'Bid received from '+name);
+
+if(save())render();
+}
+
+/* SCOPE */
+
+function scope(j){
+const generated=selected==='clearing'?generatedClearingScope(j):'';
+
+return '<div class="panel"><h3>Scope of work</h3>'+
+(selected==='clearing'?
+'<p class="muted">A7 builds a draft from the clearing areas you entered. You can edit it before sharing with a contractor.</p>'+
+'<button class="btn alt" onclick="fillClearingScope()">✦ Build scope from clearing answers</button>':
+'')+
+'<textarea class="field" id="scope" rows="12">'+
+esc(j.scope||generated)+'</textarea>'+
+'<button class="btn" onclick="saveScope()">Save scope</button>'+
+'<button class="btn alt" onclick="copyScope()">Copy scope</button>'+
+'</div>';
+}
+
+function fillClearingScope(){
+const generated=generatedClearingScope(job());
+
+if(!generated){
+return alert('Add at least one clearing area in the Workflow tab first.');
+}
+
+if($('scope').value.trim()&&
+!confirm('Replace the text in the scope editor with the current clearing answers?'))
+return;
+
+$('scope').value=generated;
+}
+
+function saveScope(){
+job().scope=$('scope').value;
+log(job(),'Scope updated');
+
+if(save())render();
+}
+
+async function copyScope(){
+const text=$('scope').value;
+
+try{
+await navigator.clipboard.writeText(text);
+alert('Scope copied. You can paste it into a text or email.');
+}catch(e){
+$('scope').focus();
+$('scope').select();
+alert('Select Copy from your iPhone text menu.');
+}
+}
+
+/* CONTACT DIRECTORY */
+
+function people(){
+return '<h2>Shared contractor directory</h2>'+
+'<p class="muted">One contact can work in multiple trades across all developments.</p>'+
+'<button class="btn" onclick="editContact(\'\')">＋ Add contractor</button>'+
+data.contacts.map(c=>
+'<div class="panel"><b>'+esc(c.name)+'</b>'+
+'<p class="muted">'+esc(c.trades.map(k=>
+TRADES.find(t=>t[0]===k)?.[1]||k
+).join(' · '))+'</p>'+
+'<button class="btn alt" onclick="editContact(\''+c.id+'\')">Edit</button>'+
+'</div>'
+).join('');
+}
+
+function editContact(k){
+editing=k;
+go('contactedit');
+}
+
+function contactedit(){
+const c=data.contacts.find(c=>c.id===editing)||{
+name:'',phone:'',email:'',notes:'',trades:[]
+};
+
+return '<h2>Contractor</h2>'+
+'<form class="panel" onsubmit="saveContact(event)">'+
+field('Name / company','cn',c.name,'text','required')+
+field('Phone','cp',c.phone,'tel')+
+field('Email','ce',c.email,'email')+
+'<label>Trades (choose all that apply)</label>'+
+'<div class="checks">'+
+TRADES.map(([k,n])=>
+'<label><input type="checkbox" name="trade" value="'+k+'" '+
+(c.trades.includes(k)?'checked':'')+'> '+esc(n)+'</label>'
+).join('')+
+'</div>'+
+'<label>Notes</label>'+
+'<textarea class="field" id="ct">'+esc(c.notes)+'</textarea>'+
+'<button class="btn">Save contractor</button>'+
+'</form>';
+}
+
+function saveContact(e){
+e.preventDefault();
+
+const c=data.contacts.find(c=>c.id===editing);
+
+const v={
+name:$('cn').value.trim(),
+phone:$('cp').value.trim(),
+email:$('ce').value.trim(),
+notes:$('ct').value,
+trades:[...document.querySelectorAll('input[name=trade]:checked')]
+.map(x=>x.value)
+};
+
+if(!v.name)return;
+
+if(c)Object.assign(c,v);
+else data.contacts.push({id:uid(),...v});
+
+if(save())go('people');
+}
+
+/* FILE STORAGE */
+
+function db(){
+return new Promise((resolve,reject)=>{
+const r=indexedDB.open(DB,1);
+
+r.onupgradeneeded=()=>{
+if(!r.result.objectStoreNames.contains('photos')){
+r.result.createObjectStore('photos',{keyPath:'id'});
+}
+};
+
+r.onsuccess=()=>resolve(r.result);
+r.onerror=()=>reject(r.error);
+});
+}
+
+async function putFile(x){
+const d=await db();
+
+try{
+await new Promise((ok,no)=>{
+const t=d.transaction('photos','readwrite');
+t.objectStore('photos').put(x);
+t.oncomplete=ok;
+t.onerror=()=>no(t.error);
+});
+}finally{
+d.close();
+}
+}
+
+async function getFile(k){
+const d=await db();
+
+try{
+return await new Promise((ok,no)=>{
+const r=d.transaction('photos').objectStore('photos').get(k);
+r.onsuccess=()=>ok(r.result);
+r.onerror=()=>no(r.error);
+});
+}finally{
+d.close();
+}
+}
+
+async function delFile(k){
+const d=await db();
+
+try{
+await new Promise((ok,no)=>{
+const t=d.transaction('photos','readwrite');
+t.objectStore('photos').delete(k);
+t.oncomplete=ok;
+t.onerror=()=>no(t.error);
+});
+}finally{
+d.close();
+}
+}
+
+async function upload(e,s){
+const j=job();
+
+if(!(
+(s==='before'&&j.state==='planning')||
+(s==='middle'&&j.state==='working')||
+(s==='after'&&j.state==='finishing')
+))return;
+
+for(const file of e.target.files){
+if(!file.type.startsWith('image/')||file.size>15e6){
+alert('Use images smaller than 15 MB.');
+continue;
+}
+
+const m={
+id:uid(),name:file.name,date:new Date().toISOString()
+};
+
+try{
+await putFile({id:m.id,blob:file});
+j.photos[s].push(m);
+
+if(!save()){
+j.photos[s].pop();
+await delFile(m.id);
+break;
+}
+}catch(err){
+alert('Photo storage failed: '+err.message);
+break;
+}
+}
+
+render();
+}
+
+async function removePhoto(s,k){
+if(!confirm('Remove photo?'))return;
+
+const a=job().photos[s];
+const i=a.findIndex(x=>x.id===k);
+if(i<0)return;
+
+const [m]=a.splice(i,1);
+
+if(!save()){
+a.splice(i,0,m);
+return;
+}
+
+await delFile(k);
+render();
+}
+
+async function showPhotos(){
+if(view!=='detail'||tab!=='work')return;
+
+for(const s of ['before','middle','after']){
+for(const m of job().photos[s]){
+const el=$('ph-'+m.id);
+if(!el)continue;
+
+try{
+const x=await getFile(m.id);
+
+if(!x?.blob){
+el.firstElementChild.textContent='Missing photo';
+continue;
+}
+
+const u=URL.createObjectURL(x.blob);
+urls.push(u);
+
+const img=document.createElement('img');
+img.src=u;
+img.alt=m.name;
+el.firstElementChild.replaceWith(img);
+}catch(e){
+el.firstElementChild.textContent='Photo unavailable';
+}
+}
+}
+}
+
+/* OPTIONAL DEVELOPMENT PDFs */
+
+async function uploadPDF(e){
+const file=e.target.files[0];
+if(!file)return;
+
+if(file.type!=='application/pdf'&&
+!file.name.toLowerCase().endsWith('.pdf')){
+return alert('Please choose a PDF.');
+}
+
+if(file.size>20e6){
+return alert('Please choose a PDF smaller than 20 MB.');
+}
+
+const m={
+id:uid(),name:file.name,date:new Date().toISOString()
+};
+
+try{
+await putFile({id:m.id,blob:file});
+dev().requirements.documents.push(m);
+
+if(!save()){
+dev().requirements.documents.pop();
+await delFile(m.id);
+return;
+}
+
+render();
+}catch(err){
+alert('PDF upload failed: '+err.message);
+}
+}
+
+async function openPDF(k){
+try{
+const x=await getFile(k);
+
+if(!x?.blob){
+return alert('PDF missing from browser storage.');
+}
+
+const u=URL.createObjectURL(x.blob);
+urls.push(u);
+
+const a=document.createElement('a');
+a.href=u;
+a.target='_blank';
+a.rel='noopener';
+a.click();
+}catch(e){
+alert('Could not open PDF: '+e.message);
+}
+}
+
+async function removePDF(k){
+if(!confirm('Remove this PDF?'))return;
+
+const a=dev().requirements.documents;
+const i=a.findIndex(m=>m.id===k);
+if(i<0)return;
+
+const [m]=a.splice(i,1);
+
+if(!save()){
+a.splice(i,0,m);
+return;
+}
+
+await delFile(k);
+render();
+}
+
+/* BUDGET */
+
+function budget(){
+const d=dev();
+const rows=[];
+
+for(const p of d.parcels){
+for(const [k,n] of TRADES){
+for(const b of p.jobs[k].bids){
+rows.push({parcel:p.name,trade:n,b});
+}
+}
+}
+
+const bidTotal=rows.reduce((n,x)=>n+Number(x.b.amount||0),0);
+
+return '<button class="btn alt" onclick="go(\'parcels\')">← Parcels</button>'+
+'<h2>Development budget</h2>'+
+'<div class="panel"><h3>Land purchase</h3>'+
+'<h2>'+(d.land.purchasePrice==null?
+'Not entered':money(d.land.purchasePrice))+'</h2>'+
+'<p class="muted">Counted once for the entire development—not once per parcel.</p>'+
+(d.land.purchasePrice!=null&&d.parcels.length?
+'<p>Equal planning allocation: '+
+money(d.land.purchasePrice/d.parcels.length)+' per parcel.</p>':
+'')+
+'</div>'+
+'<div class="panel"><h3>Recorded bids</h3>'+
+'<h2>'+money(bidTotal)+'</h2>'+
+'<p class="muted">Sum of all entered bids, including competing quotes. This is not a committed project cost.</p>'+
+'</div>'+
+rows.map(x=>
+'<div class="panel"><b>'+esc(x.parcel)+' · '+esc(x.trade)+'</b>'+
+'<p>'+esc(x.b.name)+' — '+money(x.b.amount)+'</p></div>'
+).join('');
+}
+
+/* GUIDED ASSISTANT */
+
+function assistant(){
+return '<span class="eyebrow">✦ A7 SUPERINTENDENT · GUIDED MODE</span>'+
+'<h1>What are we working on?</h1>'+
+'<p class="muted">This version uses a guided assistant. It is not connected to a live AI model or live supplier search.</p>'+
+'<div class="panel">'+
+'<div class="bubble">Tell me about your land, ask for a trade contact, or find jobs awaiting approval.</div>'+
+'<textarea class="field" id="ask" placeholder="I bought 20 acres and want 8 parcels"></textarea>'+
+'<button class="btn" onclick="askA7()">✦ Prepare next step</button>'+
+'<div id="answer" aria-live="polite"></div>'+
+'</div>';
+}
+
+function askA7(){
+const q=$('ask').value.trim();
+const a=$('answer');
+draft=null;
+
+if(!q)return;
+
+const lots=q.match(/(\d+)\s*(?:parcels|lots)/i);
+const acres=q.match(/(\d+(?:\.\d+)?)\s*acres?/i);
+const price=q.match(/\$\s*([\d,]+(?:\.\d+)?)/);
+
+if(lots){
+const n=Number(lots[1]);
+
+if(n<1||n>100){
+a.textContent='Choose between 1 and 100 parcels.';
+return;
+}
+
+draft={
+n,
+acres:acres?.[1]||'',
+price:price?.[1]?.replaceAll(',','')||''
+};
+
+a.innerHTML='<div class="bubble"><b>New development draft</b>'+
+'<p>'+n+' proposed parcels'+
+(acres?' on '+esc(acres[1])+' acres':'')+
+'. Confirm the purchase details and answer the permit/easement questions before creating records.</p>'+
+'<button class="btn" onclick="useDraft()">Continue to development setup →</button>'+
+'</div>';
+return;
+}
+
+if(/clear|clearing/i.test(q)&&dev()?.parcels?.length){
+a.innerHTML='<div class="bubble"><b>Land Clearing planner</b>'+
+'<p>Open a parcel and choose Land Clearing. A7 will ask what you are clearing, its width and depth/length, and any contractor instructions.</p>'+
+'<button class="btn" onclick="go(\'parcels\')">Open parcels →</button>'+
+'</div>';
+return;
+}
+
+const trade=TRADES.find(([k,n])=>
+q.toLowerCase().includes(k)||
+q.toLowerCase().includes(n.toLowerCase())
+);
+
+if(trade&&/(contractor|contact|call|bid|who)/i.test(q)){
+const matches=data.contacts.filter(c=>c.trades.includes(trade[0]));
+
+a.innerHTML='<div class="bubble"><b>'+esc(trade[1])+' contacts</b>'+
+(matches.length?
+matches.map(c=>
+'<p>'+esc(c.name)+
+(c.phone?
+' · <a href="tel:'+encodeURIComponent(c.phone)+'">Call</a>':
+'')+
+'</p>'
+).join(''):
+'<p>No matching contacts saved yet.</p>')+
+'</div>';
+return;
+}
+
+if(/approv|next job|ready/i.test(q)){
+const matches=[];
+
+data.developments.forEach((d,dx)=>
+d.parcels.forEach((p,px)=>
+TRADES.forEach(([k,n])=>{
+if(p.jobs[k].state==='review'){
+matches.push({dx,px,k,n,p:p.name,d:d.name});
+}
+})
+)
+);
+
+a.innerHTML='<div class="bubble"><b>'+matches.length+
+' jobs awaiting approval</b>'+
+matches.map(x=>
+'<p><button class="btn alt" onclick="di='+x.dx+
+';pi='+x.px+';pickJob(\''+x.k+'\')">'+
+esc(x.d)+' · '+esc(x.p)+' · '+esc(x.n)+
+'</button></p>'
+).join('')+
+'</div>';
+return;
+}
+
+a.innerHTML='<div class="bubble"><b>Manufactured-home site checklist</b>'+
+'<p>Confirm survey and access, subdivision rules, permit needs, drainage, utilities, septic feasibility, pad or foundation requirements, transport and installation.</p>'+
+'<p class="muted">These are planning prompts. Local requirements must be verified separately.</p>'+
+'</div>';
+}
+
+function useDraft(){
+const d=draft;
+go('newdev');
+
+if(!d)return;
+
+$('pn').value=d.n;
+$('acres').value=d.acres;
+$('price').value=d.price;
+draft=null;
+}
+
+/* BACKUPS */
+
+function settings(){
+return '<h2>Backups & settings</h2>'+
+'<div class="panel">'+
+'<p class="muted">V20 stores records, photos and optional PDFs in this browser. Clearing browser data may erase them. Export a full backup regularly.</p>'+
+'<button class="btn" onclick="backup()">Export full backup</button>'+
+'<label>Restore a V16/V18/V19/V20 backup</label>'+
+'<input class="field" type="file" accept=".json,application/json" onchange="restore(event)">'+
+'<p class="muted">Restoring replaces the current records. This prototype has no secure accounts, cloud sync or authenticated approvals.</p>'+
+'</div>';
+}
+
+const toBase64=blob=>new Promise((ok,no)=>{
+const r=new FileReader();
+r.onload=()=>ok(r.result);
+r.onerror=()=>no(r.error);
+r.readAsDataURL(blob);
+});
+
+async function backup(){
+try{
+const files=[];
+const seen=new Set();
+
+async function add(m){
+if(seen.has(m.id))return;
+seen.add(m.id);
+
+const x=await getFile(m.id);
+
+if(!x?.blob){
+throw Error('Missing file: '+m.name);
+}
+
+files.push({
+id:m.id,
+data:await toBase64(x.blob)
+});
+}
+
+for(const d of data.developments){
+for(const m of d.requirements.documents){
+await add(m);
+}
+
+for(const p of d.parcels){
+for(const j of Object.values(p.jobs)){
+for(const s of ['before','middle','after']){
+for(const m of j.photos?.[s]||[]){
+await add(m);
+}
+}
+}
+}
+}
+
+const payload={
+format:'A7-V20',
+data,
+photos:files
+};
+
+const blob=new Blob(
+[JSON.stringify(payload)],
+{type:'application/json'}
+);
+
+const u=URL.createObjectURL(blob);
+const a=document.createElement('a');
+
+a.href=u;
+a.download='A7-V20-full-backup-'+
+new Date().toISOString().slice(0,10)+'.json';
+
+a.click();
+
+setTimeout(()=>URL.revokeObjectURL(u),60000);
+}catch(e){
+alert('Backup failed: '+e.message);
+}
+}
+
+async function restore(e){
+const f=e.target.files[0];
+if(!f)return;
+
+try{
+const x=JSON.parse(await f.text());
+
+if(!['A7-V16','A7-V19','A7-V20'].includes(x.format)||
+!Array.isArray(x.data?.developments)||
+!Array.isArray(x.data?.contacts)||
+!Array.isArray(x.photos)){
+throw Error('Invalid backup file.');
+}
+
+if(!confirm('Replace current A7 records with this backup?'))
+return;
+
+for(const p of x.photos){
+const r=await fetch(p.data);
+await putFile({
+id:p.id,
+blob:await r.blob()
+});
+}
+
+data=x.data;
+normalize();
+
+if(!save())return;
+
+di=0;
+pi=0;
+selected='clearing';
+
+go('home');
+alert('Backup restored.');
+}catch(err){
+alert('Restore failed: '+err.message);
+}
+}
+
+/* RENDER */
+
+function render(){
+urls.forEach(u=>URL.revokeObjectURL(u));
+urls=[];
+
+if(di>=data.developments.length)di=0;
+if(dev()&&pi>=dev().parcels.length)pi=0;
+
+const pages={
+home,
+newdev,
+parcels,
+development,
+jobs,
+detail,
+people,
+contactedit,
+budget,
+assistant,
+settings
+};
+
+$('app').innerHTML=(pages[view]||home)();
+showPhotos();
+}
+
+save();
+render();
+</script>
+</body>
+</html>
