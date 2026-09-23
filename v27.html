@@ -1,0 +1,7051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>A7 Superintendent — V27</title>
+
+<style>
+:root{
+  --navy:#16314f;
+  --blue:#1768b5;
+  --bg:#f3f6fa;
+  --line:#dce5ef;
+  --muted:#65778b;
+  --green:#14754c;
+  --red:#b83e3e;
+  --amber:#98600d;
+  --pale:#edf5ff;
+  --dark:#10263d;
+}
+
+*{box-sizing:border-box}
+
+html{
+  -webkit-text-size-adjust:100%;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:#27394d;
+  font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+
+button,input,select,textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:white;
+  border-bottom:1px solid var(--line);
+  padding:14px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.brand{
+  font-weight:900;
+  color:var(--navy);
+  letter-spacing:-.4px;
+}
+
+.brand small{
+  display:block;
+  font-size:10px;
+  letter-spacing:1px;
+  color:var(--blue);
+}
+
+nav{
+  display:flex;
+  overflow:auto;
+  gap:5px;
+  padding:8px;
+  background:white;
+  border-bottom:1px solid var(--line);
+  scrollbar-width:none;
+}
+
+nav::-webkit-scrollbar{
+  display:none;
+}
+
+nav button{
+  white-space:nowrap;
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+  padding:10px 12px;
+  border-radius:8px;
+}
+
+nav button.active{
+  background:var(--pale);
+  color:var(--blue);
+}
+
+main{
+  max-width:1200px;
+  margin:auto;
+  padding:19px 13px 100px;
+}
+
+h1,h2,h3{
+  color:var(--navy);
+  letter-spacing:-.3px;
+}
+
+h1{
+  font-size:24px;
+  margin:0 0 4px;
+}
+
+h2{
+  font-size:18px;
+  margin:0 0 12px;
+}
+
+h3{
+  font-size:15px;
+  margin:0 0 9px;
+}
+
+p{
+  margin:0 0 12px;
+}
+
+.sub,.help{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.help{
+  margin-top:7px;
+}
+
+.head{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+  flex-wrap:wrap;
+  margin-bottom:17px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:11px;
+}
+
+.grid.two{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+.card,.stat{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:16px;
+  min-width:0;
+  margin-bottom:12px;
+}
+
+.stat .label{
+  font-size:11px;
+  font-weight:800;
+  color:var(--muted);
+}
+
+.stat .value{
+  font-size:22px;
+  font-weight:900;
+  color:var(--navy);
+  margin-top:5px;
+  overflow-wrap:anywhere;
+  font-variant-numeric:tabular-nums;
+}
+
+.stat .note{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:5px;
+}
+
+.stat.good .value{
+  color:var(--green);
+}
+
+.stat.bad .value{
+  color:var(--red);
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--blue);
+  border-radius:8px;
+  background:var(--blue);
+  color:white;
+  text-decoration:none;
+  padding:10px 13px;
+  min-height:40px;
+  font-size:12px;
+  font-weight:800;
+}
+
+.btn.secondary{
+  background:white;
+  color:var(--blue);
+  border-color:#bfd4e9;
+}
+
+.btn.danger{
+  background:white;
+  color:var(--red);
+  border-color:#ebc6c6;
+}
+
+.btn.small{
+  min-height:33px;
+  padding:7px 10px;
+  font-size:11px;
+}
+
+.actions{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:11px;
+}
+
+.tabs{
+  display:flex;
+  gap:7px;
+  overflow:auto;
+  margin:14px 0;
+  scrollbar-width:none;
+}
+
+.tabs::-webkit-scrollbar{
+  display:none;
+}
+
+.tabs button{
+  border:1px solid var(--line);
+  background:white;
+  color:var(--muted);
+  border-radius:8px;
+  padding:9px 11px;
+  white-space:nowrap;
+  font-size:12px;
+  font-weight:800;
+}
+
+.tabs button.active{
+  border-color:var(--blue);
+  background:var(--pale);
+  color:var(--blue);
+}
+
+.item{
+  padding:13px 0;
+  border-top:1px solid var(--line);
+}
+
+.item:first-child{
+  border-top:0;
+  padding-top:0;
+}
+
+.item:last-child{
+  padding-bottom:0;
+}
+
+.itemhead{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.itemtitle{
+  font-weight:850;
+  color:var(--navy);
+}
+
+.meta{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:3px;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:9px 0;
+  border-bottom:1px solid #edf1f6;
+}
+
+.row:last-child{
+  border-bottom:0;
+}
+
+.row>:last-child{
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+}
+
+.money{
+  font-weight:850;
+  color:var(--navy);
+  font-variant-numeric:tabular-nums;
+}
+
+label{
+  display:block;
+  color:var(--navy);
+  font-weight:800;
+  font-size:12px;
+  margin-bottom:6px;
+}
+
+.field{
+  margin-bottom:13px;
+  min-width:0;
+}
+
+input,select,textarea{
+  width:100%;
+  border:1px solid #c9d6e4;
+  background:white;
+  color:#27394d;
+  border-radius:8px;
+  padding:10px;
+  min-height:41px;
+}
+
+textarea{
+  min-height:92px;
+  resize:vertical;
+}
+
+.fields{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:0 12px;
+}
+
+.notice{
+  background:var(--pale);
+  border:1px solid #c9dff3;
+  border-radius:9px;
+  padding:12px;
+  margin:12px 0;
+  font-size:12px;
+}
+
+.notice.warn{
+  background:#fff8e9;
+  border-color:#ecd8a8;
+}
+
+.notice.good{
+  background:#eaf6ee;
+  border-color:#c9e6d2;
+}
+
+.badge{
+  display:inline-block;
+  background:#edf1f6;
+  color:#53677d;
+  border-radius:20px;
+  padding:4px 8px;
+  font-size:10px;
+  font-weight:850;
+}
+
+.badge.green{
+  background:#e5f5eb;
+  color:var(--green);
+}
+
+.badge.blue{
+  background:var(--pale);
+  color:var(--blue);
+}
+
+.badge.amber{
+  background:#fff1d6;
+  color:var(--amber);
+}
+
+hr{
+  border:0;
+  border-top:1px solid var(--line);
+  margin:19px 0;
+}
+
+.empty{
+  text-align:center;
+  color:var(--muted);
+  padding:26px 8px;
+}
+
+.empty strong{
+  display:block;
+  color:var(--navy);
+}
+
+.tablewrap{
+  overflow-x:auto;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:white;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:680px;
+  font-size:12px;
+}
+
+th{
+  text-align:left;
+  color:var(--muted);
+  background:#f5f8fc;
+  font-size:11px;
+}
+
+th,td{
+  padding:11px 10px;
+  border-bottom:1px solid var(--line);
+  vertical-align:top;
+}
+
+th.num,td.num{
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+
+tr:last-child td{
+  border-bottom:0;
+}
+
+tr.total td{
+  font-weight:900;
+  color:var(--navy);
+  background:#f1f6fc;
+}
+
+.bar{
+  height:9px;
+  background:#e6edf5;
+  border-radius:20px;
+  overflow:hidden;
+  margin:8px 0;
+}
+
+.bar span{
+  display:block;
+  height:100%;
+  background:var(--blue);
+  border-radius:20px;
+}
+
+.file{
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:10px;
+  margin:7px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  overflow-wrap:anywhere;
+}
+
+.bubble{
+  background:#f0f4f9;
+  padding:12px;
+  border-radius:9px;
+  white-space:pre-wrap;
+  margin:8px 0;
+  font-size:12px;
+}
+
+.bubble.me{
+  background:var(--pale);
+  margin-left:20px;
+}
+
+.pill{
+  display:inline-block;
+  background:#eef4fa;
+  color:var(--navy);
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:800;
+}
+
+.kicker{
+  font-size:10px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--blue);
+  font-weight:900;
+}
+
+.layout{
+  background:#e4f1e9;
+  border:1px solid #a6cdb0;
+  border-radius:10px;
+  padding:15px;
+  text-align:center;
+  color:#276444;
+}
+
+.layout-inner{
+  background:#d4e8ff;
+  border:2px solid var(--blue);
+  border-radius:8px;
+  padding:20px 7px;
+  max-width:74%;
+  margin:13px auto;
+  color:var(--navy);
+  font-weight:850;
+}
+
+.dealhero{
+  background:linear-gradient(135deg,#16314f,#214e78);
+  color:white;
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:12px;
+}
+
+.dealhero h2{
+  color:white;
+  margin-bottom:4px;
+}
+
+.dealhero .sub{
+  color:#dce9f7;
+}
+
+.dealhero-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-top:16px;
+}
+
+.dealhero-stat{
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:10px;
+  padding:12px;
+}
+
+.dealhero-stat small{
+  display:block;
+  color:#cfe0f1;
+  font-size:10px;
+  font-weight:800;
+}
+
+.dealhero-stat strong{
+  display:block;
+  font-size:19px;
+  margin-top:5px;
+}
+
+@media(max-width:700px){
+  .grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .grid.two,.fields{
+    grid-template-columns:1fr;
+  }
+
+  .dealhero-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .stat .value{
+    font-size:19px;
+  }
+
+  .card,.stat{
+    padding:13px;
+  }
+
+  h1{
+    font-size:21px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    A7 SUPERINTENDENT
+    <small>PROPERTY DEVELOPMENT COMMAND CENTER</small>
+  </div>
+  <span class="badge blue">V27</span>
+</header>
+
+<nav id="nav"></nav>
+
+<main id="app"></main>
+
+<script>
+"use strict";
+
+/* =========================================================
+   A7 SUPERINTENDENT V27
+   Complete standalone browser prototype.
+   V27 fixes the V26 nested-script parsing problem.
+   ========================================================= */
+
+const KEY="a7-superintendent-v27";
+
+const PREVIOUS_KEYS=[
+  "a7-superintendent-v26",
+  "a7-superintendent-v21"
+];
+
+const DB_NAME="a7-superintendent-v21-files";
+
+const SQFT=43560;
+
+const TRADES=[
+  "Land Clearing",
+  "Entrance & Culvert",
+  "Driveway",
+  "Home Pad",
+  "Water",
+  "Electrical",
+  "Manufactured Home",
+  "Home Transport",
+  "Home Setup",
+  "Septic",
+  "Skirting",
+  "Decks & Steps",
+  "HVAC",
+  "Other"
+];
+
+const CATEGORIES=[
+  ["acquisition","Land Acquisition"],
+  ["due_diligence","Due Diligence & Closing"],
+  ["shared_site","Shared Site Infrastructure"],
+  ["parcel_site","Parcel Site Improvements"],
+  ["home","Manufactured Home & Setup"],
+  ["soft","Engineering, Permits & Soft Costs"],
+  ["finance","Financing & Carrying"],
+  ["sales","Sales & Closing"],
+  ["other","Other"]
+];
+
+const CATEGORY_NAMES=Object.fromEntries(CATEGORIES);
+
+const COST_STATUSES=[
+  ["estimate","Estimate / Not Awarded"],
+  ["quoted","Quoted / Bid Received"],
+  ["committed","Committed / Awarded"],
+  ["complete","Complete"]
+];
+
+const EMPTY={
+  developments:[],
+  contractors:[],
+  bids:[],
+  messages:[],
+  activeDevelopment:null,
+  activeParcel:null,
+  activeJob:null,
+  version:27
+};
+
+let state=load();
+
+let page="dashboard";
+let devTab="overview";
+let budgetTab="deal";
+let jobTab="scope";
+
+let editingContractor=null;
+let editingCost=null;
+let editingPayment=null;
+let db=null;
+let draftClearing=null;
+
+/* =========================================================
+   BASIC HELPERS
+   ========================================================= */
+
+function copy(x){
+  return JSON.parse(JSON.stringify(x));
+}
+
+function uid(){
+  if(typeof crypto!=="undefined" && crypto.randomUUID){
+    return crypto.randomUUID();
+  }
+
+  return Date.now().toString(36)+Math.random().toString(36).slice(2);
+}
+
+function esc(x){
+  return String(x??"").replace(/[&<>"']/g,function(c){
+    return {
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    }[c];
+  });
+}
+
+function num(x){
+  const v=Number(x);
+  return Number.isFinite(v)?v:0;
+}
+
+function pos(x){
+  return Math.max(0,num(x));
+}
+
+function money(x){
+  return new Intl.NumberFormat("en-US",{
+    style:"currency",
+    currency:"USD",
+    maximumFractionDigits:0
+  }).format(num(x));
+}
+
+function money2(x){
+  return new Intl.NumberFormat("en-US",{
+    style:"currency",
+    currency:"USD"
+  }).format(num(x));
+}
+
+function fmt(x,d=1){
+  return num(x).toLocaleString("en-US",{
+    maximumFractionDigits:d
+  });
+}
+
+function pct(x){
+  return Number.isFinite(x)
+    ?(x*100).toFixed(1)+"%"
+    :"—";
+}
+
+function today(){
+  const d=new Date();
+
+  return [
+    d.getFullYear(),
+    String(d.getMonth()+1).padStart(2,"0"),
+    String(d.getDate()).padStart(2,"0")
+  ].join("-");
+}
+
+function valid(raw,zero=true){
+  return String(raw).trim()!=="" &&
+    Number.isFinite(Number(raw)) &&
+    (zero?Number(raw)>=0:Number(raw)>0);
+}
+
+function v(form,name){
+  return form.elements.namedItem(name)?.value?.trim()||"";
+}
+
+function sum(a,fn){
+  return a.reduce(function(s,x){
+    return s+fn(x);
+  },0);
+}
+
+function findDev(){
+  return state.developments.find(function(d){
+    return d.id===state.activeDevelopment;
+  });
+}
+
+function findParcel(){
+  const d=findDev();
+
+  return d?.parcels.find(function(p){
+    return p.id===state.activeParcel;
+  });
+}
+
+function findJob(){
+  const p=findParcel();
+
+  return p?.jobs.find(function(j){
+    return j.id===state.activeJob;
+  });
+}
+
+function findContractor(id){
+  return state.contractors.find(function(c){
+    return c.id===id;
+  });
+}
+
+function jobs(d){
+  return d.parcels.flatMap(function(p){
+    return p.jobs;
+  });
+}
+
+function findJobById(d,id){
+  for(const p of d.parcels){
+    const j=p.jobs.find(function(x){
+      return x.id===id;
+    });
+
+    if(j){
+      return {p:p,j:j};
+    }
+  }
+
+  return null;
+}
+
+/* =========================================================
+   STORAGE
+   ========================================================= */
+
+function save(){
+  state.version=27;
+
+  try{
+    localStorage.setItem(KEY,JSON.stringify(state));
+    return true;
+  }catch(err){
+    alert(
+      "Browser storage is full. Export a backup before continuing. "+
+      err.message
+    );
+
+    return false;
+  }
+}
+
+function load(){
+  try{
+    const current=JSON.parse(localStorage.getItem(KEY));
+
+    if(current?.developments){
+      return normalize(current);
+    }
+  }catch(err){}
+
+  for(const previousKey of PREVIOUS_KEYS){
+    try{
+      const previous=JSON.parse(localStorage.getItem(previousKey));
+
+      if(previous?.developments){
+        const result=normalize(copy(previous));
+
+        result.importedFromPrevious=true;
+        result.importedFromKey=previousKey;
+        result.version=27;
+
+        try{
+          localStorage.setItem(KEY,JSON.stringify(result));
+        }catch(err){}
+
+        return result;
+      }
+    }catch(err){}
+  }
+
+  return copy(EMPTY);
+}
+
+function normalize(s){
+  s={
+    ...copy(EMPTY),
+    ...s
+  };
+
+  s.developments=Array.isArray(s.developments)
+    ?s.developments
+    :[];
+
+  s.contractors=Array.isArray(s.contractors)
+    ?s.contractors
+    :[];
+
+  s.bids=Array.isArray(s.bids)
+    ?s.bids
+    :[];
+
+  s.messages=Array.isArray(s.messages)
+    ?s.messages
+    :[];
+
+  for(const d of s.developments){
+    d.parcels=Array.isArray(d.parcels)
+      ?d.parcels
+      :[];
+
+    d.files=Array.isArray(d.files)
+      ?d.files
+      :[];
+
+    for(const p of d.parcels){
+      p.jobs=Array.isArray(p.jobs)
+        ?p.jobs
+        :[];
+
+      for(const j of p.jobs){
+        j.files=Array.isArray(j.files)
+          ?j.files
+          :[];
+      }
+    }
+
+    ensureBudget(d);
+  }
+
+  return s;
+}
+
+function ensureBudget(d){
+  if(!d.dealV26){
+    d.dealV26={
+      strategy:"land",
+      targetMargin:20,
+      contingencyRate:10,
+      sellingCostRate:6,
+      financingLimit:0,
+      startingCash:0,
+      costItems:[],
+      payments:[],
+      salePrices:{},
+      saleStatuses:{},
+      saleDates:{},
+      legacyReviewed:false
+    };
+  }
+
+  const b=d.dealV26;
+
+  b.costItems=Array.isArray(b.costItems)
+    ?b.costItems
+    :[];
+
+  b.payments=Array.isArray(b.payments)
+    ?b.payments
+    :[];
+
+  b.salePrices=b.salePrices||{};
+  b.saleStatuses=b.saleStatuses||{};
+  b.saleDates=b.saleDates||{};
+
+  if(b.strategy===undefined)b.strategy="land";
+  if(b.targetMargin===undefined)b.targetMargin=20;
+  if(b.contingencyRate===undefined)b.contingencyRate=10;
+  if(b.sellingCostRate===undefined)b.sellingCostRate=6;
+  if(b.financingLimit===undefined)b.financingLimit=0;
+  if(b.startingCash===undefined)b.startingCash=0;
+
+  return b;
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+function go(p){
+  page=p;
+  window.scrollTo(0,0);
+  render();
+}
+
+function openDev(id){
+  state.activeDevelopment=id;
+  state.activeParcel=null;
+  state.activeJob=null;
+
+  devTab="overview";
+  budgetTab="deal";
+
+  save();
+  go("development");
+}
+
+function openParcel(id){
+  state.activeParcel=id;
+  state.activeJob=null;
+
+  save();
+  go("parcel");
+}
+
+function openJob(id){
+  state.activeJob=id;
+  jobTab="scope";
+  draftClearing=null;
+
+  save();
+  go("job");
+}
+
+/* =========================================================
+   HTML HELPERS
+   ========================================================= */
+
+function btn(label,action,kind=""){
+  return `
+    <button
+      type="button"
+      class="btn ${kind}"
+      onclick="${action}">
+      ${esc(label)}
+    </button>
+  `;
+}
+
+function head(title,sub="",action=""){
+  return `
+    <div class="head">
+      <div>
+        <h1>${esc(title)}</h1>
+        <div class="sub">${esc(sub)}</div>
+      </div>
+      ${action}
+    </div>
+  `;
+}
+
+function stat(label,value,note="",tone=""){
+  return `
+    <div class="stat ${tone}">
+      <div class="label">${esc(label)}</div>
+      <div class="value">${esc(value)}</div>
+      <div class="note">${esc(note)}</div>
+    </div>
+  `;
+}
+
+function row(label,value){
+  return `
+    <div class="row">
+      <span class="sub">${esc(label)}</span>
+      <strong>${esc(value)}</strong>
+    </div>
+  `;
+}
+
+function input(name,label,type="text",value="",extra=""){
+  return `
+    <div class="field">
+      <label for="${esc(name)}">${esc(label)}</label>
+      <input
+        id="${esc(name)}"
+        name="${esc(name)}"
+        type="${type}"
+        value="${esc(value)}"
+        ${extra}>
+    </div>
+  `;
+}
+
+function select(name,label,options,value="",extra=""){
+  return `
+    <div class="field">
+      <label for="${esc(name)}">${esc(label)}</label>
+      <select
+        id="${esc(name)}"
+        name="${esc(name)}"
+        ${extra}>
+        ${options.map(function(o){
+          const pair=Array.isArray(o)?o:[o,o];
+          const key=pair[0];
+          const text=pair[1];
+
+          return `
+            <option
+              value="${esc(key)}"
+              ${String(key)===String(value)?"selected":""}>
+              ${esc(text)}
+            </option>
+          `;
+        }).join("")}
+      </select>
+    </div>
+  `;
+}
+
+function textarea(name,label,value=""){
+  return `
+    <div class="field">
+      <label for="${esc(name)}">${esc(label)}</label>
+      <textarea
+        id="${esc(name)}"
+        name="${esc(name)}">${esc(value)}</textarea>
+    </div>
+  `;
+}
+
+function empty(title,sub){
+  return `
+    <div class="empty">
+      <strong>${esc(title)}</strong>
+      ${esc(sub)}
+    </div>
+  `;
+}
+
+function tabs(items,current,variable){
+  return `
+    <div class="tabs">
+      ${items.map(function(item){
+        const key=item[0];
+        const title=item[1];
+
+        return `
+          <button
+            class="${key===current?"active":""}"
+            onclick="${variable}='${key}';render()">
+            ${esc(title)}
+          </button>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
+/* =========================================================
+   V27 PROPERTY DEVELOPMENT DEAL ENGINE
+   ========================================================= */
+
+function budget(d){
+  return ensureBudget(d);
+}
+
+function landCost(d){
+  return pos(d.purchasePrice);
+}
+
+function lotCount(d){
+  return Math.max(1,d.parcels.length);
+}
+
+function share(d){
+  return 1/lotCount(d);
+}
+
+function itemEstimate(i){
+  return pos(i.quantity)*pos(i.unitCost);
+}
+
+function itemForecast(i){
+  if(
+    i.forecastOverride!=="" &&
+    i.forecastOverride!==undefined &&
+    i.forecastOverride!==null
+  ){
+    return pos(i.forecastOverride);
+  }
+
+  return itemEstimate(i);
+}
+
+function itemCommitted(i){
+  return ["committed","complete"].includes(i.status)
+    ?pos(i.committedAmount)
+    :0;
+}
+
+function paidFor(d,itemId){
+  return sum(
+    budget(d).payments.filter(function(p){
+      return p.itemId===itemId;
+    }),
+    function(p){
+      return pos(p.amount);
+    }
+  );
+}
+
+function costItems(d){
+  return budget(d).costItems;
+}
+
+function projectCost(d){
+  return landCost(d)+sum(costItems(d),itemForecast);
+}
+
+function categoryCost(d,cat){
+  const land=cat==="acquisition"
+    ?landCost(d)
+    :0;
+
+  const items=sum(
+    costItems(d).filter(function(i){
+      return i.category===cat;
+    }),
+    itemForecast
+  );
+
+  return land+items;
+}
+
+function committed(d){
+  return sum(costItems(d),itemCommitted);
+}
+
+function paid(d){
+  return sum(
+    budget(d).payments,
+    function(p){
+      return pos(p.amount);
+    }
+  );
+}
+
+function linkedPaid(d){
+  return sum(
+    budget(d).payments.filter(function(p){
+      return p.itemId &&
+        costItems(d).some(function(i){
+          return i.id===p.itemId;
+        });
+    }),
+    function(p){
+      return pos(p.amount);
+    }
+  );
+}
+
+function committedUnpaid(d){
+  return Math.max(
+    0,
+    committed(d)-linkedPaid(d)
+  );
+}
+
+function contingency(d){
+  const b=budget(d);
+
+  return projectCost(d)*
+    pos(b.contingencyRate)/100;
+}
+
+function salePrice(d,p){
+  const x=budget(d).salePrices[p.id];
+
+  if(
+    x==="" ||
+    x===undefined ||
+    x===null
+  ){
+    return null;
+  }
+
+  return pos(x);
+}
+
+function totalRevenue(d){
+  return sum(
+    d.parcels,
+    function(p){
+      return salePrice(d,p)??0;
+    }
+  );
+}
+
+function missingSales(d){
+  return d.parcels.filter(function(p){
+    return salePrice(d,p)===null;
+  }).length;
+}
+
+function sellingCosts(d){
+  return totalRevenue(d)*
+    pos(budget(d).sellingCostRate)/100;
+}
+
+function totalForecast(d){
+  return projectCost(d)+
+    contingency(d)+
+    sellingCosts(d);
+}
+
+function profit(d){
+  return totalRevenue(d)-totalForecast(d);
+}
+
+function margin(d){
+  const revenue=totalRevenue(d);
+
+  return revenue>0
+    ?profit(d)/revenue
+    :NaN;
+}
+
+function cashToFinish(d){
+  return Math.max(
+    0,
+    totalForecast(d)-paid(d)
+  );
+}
+
+function remainingCashGap(d){
+  const b=budget(d);
+
+  return Math.max(
+    0,
+    cashToFinish(d)-
+    pos(b.startingCash)-
+    pos(b.financingLimit)
+  );
+}
+
+function breakEvenRevenue(d){
+  const b=budget(d);
+  const rate=pos(b.sellingCostRate)/100;
+
+  if(rate>=1){
+    return NaN;
+  }
+
+  return (
+    projectCost(d)+contingency(d)
+  )/(1-rate);
+}
+
+function requiredRevenue(d){
+  const b=budget(d);
+
+  const marginRate=
+    pos(b.targetMargin)/100;
+
+  const sellingRate=
+    pos(b.sellingCostRate)/100;
+
+  const divisor=
+    1-marginRate-sellingRate;
+
+  if(divisor<=0){
+    return NaN;
+  }
+
+  return (
+    projectCost(d)+contingency(d)
+  )/divisor;
+}
+
+function lotDirect(d,p){
+  return sum(
+    costItems(d).filter(function(i){
+      return i.parcelId===p.id;
+    }),
+    itemForecast
+  );
+}
+
+function sharedBase(d){
+  return landCost(d)+
+    sum(
+      costItems(d).filter(function(i){
+        return !i.parcelId;
+      }),
+      itemForecast
+    );
+}
+
+function lotBase(d,p){
+  return sharedBase(d)*share(d)+
+    lotDirect(d,p);
+}
+
+function lotContingency(d,p){
+  return lotBase(d,p)*
+    pos(budget(d).contingencyRate)/100;
+}
+
+function lotSelling(d,p){
+  return (salePrice(d,p)??0)*
+    pos(budget(d).sellingCostRate)/100;
+}
+
+function lotAllIn(d,p){
+  return lotBase(d,p)+
+    lotContingency(d,p)+
+    lotSelling(d,p);
+}
+
+function lotProfit(d,p){
+  const sale=salePrice(d,p);
+
+  if(sale===null){
+    return null;
+  }
+
+  return sale-lotAllIn(d,p);
+}
+
+function lotMargin(d,p){
+  const sale=salePrice(d,p);
+
+  return sale>0
+    ?lotProfit(d,p)/sale
+    :NaN;
+}
+
+function progress(d){
+  const active=jobs(d);
+
+  if(!active.length){
+    return 0;
+  }
+
+  return active.filter(function(j){
+    return j.status==="approved";
+  }).length/active.length;
+}
+
+function dealReady(d){
+  return missingSales(d)===0 &&
+    d.parcels.length>0;
+}
+
+function scopeLabel(d,i){
+  if(i.parcelId){
+    return d.parcels.find(function(p){
+      return p.id===i.parcelId;
+    })?.name||"Missing parcel";
+  }
+
+  return "Shared across all parcels";
+}
+
+function costVariance(i){
+  return itemForecast(i)-itemEstimate(i);
+}
+
+function projectVariance(d){
+  return sum(costItems(d),costVariance);
+}
+
+/* =========================================================
+   APP SHELL
+   ========================================================= */
+
+function render(){
+  const navs=[
+    ["dashboard","Dashboard"],
+    ["developments","Developments"],
+    ["contractors","Contractors"],
+    ["bids","Bids"],
+    ["assistant","AI Superintendent"],
+    ["settings","Settings"]
+  ];
+
+  document.getElementById("nav").innerHTML=
+    navs.map(function(item){
+      const k=item[0];
+      const t=item[1];
+
+      return `
+        <button
+          class="${page===k?"active":""}"
+          onclick="go('${k}')">
+          ${t}
+        </button>
+      `;
+    }).join("");
+
+  const views={
+    dashboard:dashboard,
+    developments:developments,
+    newDevelopment:newDevelopment,
+    development:development,
+    parcel:parcelPage,
+    job:jobPage,
+    contractors:contractors,
+    contractorForm:contractorForm,
+    bids:bidsPage,
+    assistant:assistant,
+    settings:settings
+  };
+
+  const view=views[page]||dashboard;
+
+  document.getElementById("app").innerHTML=view();
+
+  if(
+    page==="development" &&
+    devTab==="budget" &&
+    budgetTab==="scenario"
+  ){
+    setTimeout(updateScenario,0);
+  }
+}
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+function dashboard(){
+  const ds=state.developments;
+
+  const totalLots=sum(
+    ds,
+    function(d){
+      return d.parcels.length;
+    }
+  );
+
+  const totalLand=sum(ds,landCost);
+
+  const totalForecastAll=sum(
+    ds,
+    totalForecast
+  );
+
+  return `
+    ${head(
+      "Development Dashboard",
+      "Your property development portfolio",
+      btn(
+        "+ New Development",
+        "go('newDevelopment')"
+      )
+    )}
+
+    <div class="grid">
+      ${stat(
+        "Developments",
+        ds.length
+      )}
+
+      ${stat(
+        "Planned Lots",
+        totalLots
+      )}
+
+      ${stat(
+        "Land Acquisition",
+        money(totalLand)
+      )}
+
+      ${stat(
+        "Forecast Development Cost",
+        money(totalForecastAll),
+        "Current entered deal forecasts"
+      )}
+    </div>
+
+    ${state.importedFromPrevious?`
+      <div class="notice good">
+        V27 copied your existing project records forward from your previous
+        A7 Superintendent browser data. Your older storage remains separate.
+      </div>
+    `:""}
+
+    <div class="card">
+      <h2>Development Portfolio</h2>
+
+      ${ds.length
+        ?ds.map(function(d){
+          return `
+            <div class="item">
+              <div class="itemhead">
+                <div>
+                  <div class="itemtitle">
+                    ${esc(d.name)}
+                  </div>
+
+                  <div class="meta">
+                    ${esc(d.location||"Location not entered")}
+                    ·
+                    ${d.parcels.length} lots
+                  </div>
+                </div>
+
+                ${btn(
+                  "Open Deal",
+                  `openDev('${d.id}')`,
+                  "secondary small"
+                )}
+              </div>
+
+              ${row(
+                "Projected development cost",
+                money(totalForecast(d))
+              )}
+
+              ${row(
+                "Expected sales entered",
+                `${d.parcels.length-missingSales(d)} of ${d.parcels.length}`
+              )}
+
+              ${row(
+                "Projected deal profit",
+                dealReady(d)
+                  ?money(profit(d))
+                  :"Complete sale prices"
+              )}
+            </div>
+          `;
+        }).join("")
+        :empty(
+          "No developments",
+          "Create your first development to begin."
+        )
+      }
+    </div>
+  `;
+}
+
+/* =========================================================
+   DEVELOPMENT CREATION
+   ========================================================= */
+
+function makeJobs(){
+  return TRADES.map(function(trade,index){
+    return {
+      id:uid(),
+      trade:trade,
+      status:index===0?"ready":"locked",
+      contractorId:"",
+      contractorName:"",
+      scope:"",
+      notes:"",
+      files:[],
+      clearingAreas:[],
+      approvedAt:""
+    };
+  });
+}
+
+function makeParcel(i){
+  return {
+    id:uid(),
+    name:`Parcel ${i+1}`,
+    acreage:"",
+    notes:"",
+    jobs:makeJobs()
+  };
+}
+
+function developments(){
+  return `
+    ${head(
+      "Developments",
+      "Properties, parcels, and deal budgets",
+      btn(
+        "+ New Development",
+        "go('newDevelopment')"
+      )
+    )}
+
+    <div class="card">
+      ${state.developments.length
+        ?state.developments.map(function(d){
+          return `
+            <div class="item">
+              <div class="itemhead">
+                <div>
+                  <div class="itemtitle">
+                    ${esc(d.name)}
+                  </div>
+
+                  <div class="meta">
+                    ${esc(d.location)}
+                    ·
+                    ${d.parcels.length} parcels
+                  </div>
+                </div>
+
+                ${btn(
+                  "Open",
+                  `openDev('${d.id}')`,
+                  "secondary small"
+                )}
+              </div>
+
+              ${row(
+                "Land purchase",
+                money(d.purchasePrice)
+              )}
+
+              ${row(
+                "Development forecast",
+                money(totalForecast(d))
+              )}
+            </div>
+          `;
+        }).join("")
+        :empty(
+          "No developments",
+          "Add a property to begin."
+        )
+      }
+    </div>
+  `;
+}
+
+function newDevelopment(){
+  return `
+    ${head(
+      "Create a Development",
+      "Start with the property and planned exit strategy"
+    )}
+
+    <div class="card">
+      <form onsubmit="createDevelopment(event)">
+
+        <div class="fields">
+
+          ${input(
+            "name",
+            "Development Name",
+            "text",
+            "",
+            "required"
+          )}
+
+          ${input(
+            "location",
+            "Location"
+          )}
+
+          ${input(
+            "purchasePrice",
+            "Full Land Purchase Price ($)",
+            "number",
+            "",
+            "required min='0' step='0.01'"
+          )}
+
+          ${input(
+            "acres",
+            "Total Property Acreage",
+            "number",
+            "",
+            "required min='0.01' step='any'"
+          )}
+
+          ${input(
+            "parcelCount",
+            "Planned Number of Lots",
+            "number",
+            "",
+            "required min='1' max='100' step='1'"
+          )}
+
+          ${select(
+            "strategy",
+            "Development Strategy",
+            [
+              ["land","Develop lots and sell land"],
+              ["homes","Develop lots and sell with manufactured homes"],
+              ["mixed","Mixed — some lots with homes"]
+            ]
+          )}
+
+        </div>
+
+        ${textarea(
+          "notes",
+          "Property Notes"
+        )}
+
+        <div class="notice">
+          The property purchase price is counted once.
+          Shared development expenses are also counted once and
+          allocated across the planned lots for lot-level analysis.
+        </div>
+
+        <button class="btn">
+          Create Development
+        </button>
+
+      </form>
+    </div>
+  `;
+}
+
+function createDevelopment(ev){
+  ev.preventDefault();
+
+  const f=ev.target;
+  const c=Number(v(f,"parcelCount"));
+
+  if(
+    !v(f,"name") ||
+    !valid(v(f,"purchasePrice")) ||
+    !valid(v(f,"acres"),false) ||
+    !Number.isInteger(c) ||
+    c<1 ||
+    c>100
+  ){
+    alert("Enter valid property details.");
+    return;
+  }
+
+  const d={
+    id:uid(),
+    name:v(f,"name"),
+    location:v(f,"location"),
+    purchasePrice:num(v(f,"purchasePrice")),
+    acres:num(v(f,"acres")),
+    notes:v(f,"notes"),
+    easements:"Unknown",
+    permits:"Unknown",
+    files:[],
+    parcels:Array.from(
+      {length:c},
+      function(_,i){
+        return makeParcel(i);
+      }
+    ),
+    createdAt:today()
+  };
+
+  ensureBudget(d).strategy=v(f,"strategy");
+
+  state.developments.push(d);
+
+  save();
+  openDev(d.id);
+}
+
+/* =========================================================
+   DEVELOPMENT PAGE
+   ========================================================= */
+
+function development(){
+  const d=findDev();
+
+  if(!d){
+    return head("Development Not Found");
+  }
+
+  return `
+    ${head(
+      d.name,
+      d.location||"Property development",
+      btn(
+        "All Developments",
+        "go('developments')",
+        "secondary"
+      )
+    )}
+
+    <div class="grid">
+
+      ${stat(
+        "Land Purchase",
+        money(d.purchasePrice)
+      )}
+
+      ${stat(
+        "Lots",
+        d.parcels.length
+      )}
+
+      ${stat(
+        "Development Forecast",
+        money(totalForecast(d))
+      )}
+
+      ${stat(
+        "Projected Profit",
+        dealReady(d)
+          ?money(profit(d))
+          :"—",
+        dealReady(d)
+          ?pct(margin(d))+" projected margin"
+          :"Enter all lot sale prices",
+        dealReady(d)
+          ?(profit(d)>=0?"good":"bad")
+          :""
+      )}
+
+    </div>
+
+    ${tabs(
+      [
+        ["overview","Overview"],
+        ["budget","Deal Budget"],
+        ["parcels","Parcels"],
+        ["documents","Documents"],
+        ["details","Property Details"]
+      ],
+      devTab,
+      "devTab"
+    )}
+
+    ${devTab==="overview"
+      ?developmentOverview(d)
+      :""
+    }
+
+    ${devTab==="budget"
+      ?budgetPage(d)
+      :""
+    }
+
+    ${devTab==="parcels"
+      ?parcelList(d)
+      :""
+    }
+
+    ${devTab==="documents"
+      ?`
+        <div class="card">
+          <h2>Property Documents</h2>
+
+          ${uploader(
+            "development",
+            d.id,
+            "document"
+          )}
+
+          ${filesHTML(d.files||[])}
+        </div>
+      `
+      :""
+    }
+
+    ${devTab==="details"
+      ?propertyDetails(d)
+      :""
+    }
+  `;
+}
+
+function developmentOverview(d){
+  return `
+    <div class="grid two">
+
+      <div class="card">
+        <h2>Property</h2>
+
+        ${row(
+          "Acreage",
+          fmt(d.acres,3)+" acres"
+        )}
+
+        ${row(
+          "Lots",
+          d.parcels.length
+        )}
+
+        ${row(
+          "Land cost per lot",
+          money(
+            landCost(d)/lotCount(d)
+          )
+        )}
+
+        ${row(
+          "Approved construction stages",
+          pct(progress(d))
+        )}
+
+        ${btn(
+          "Open Parcels",
+          "devTab='parcels';render()",
+          "secondary"
+        )}
+      </div>
+
+      <div class="card">
+        <h2>Deal Snapshot</h2>
+
+        ${row(
+          "Base development cost",
+          money(projectCost(d))
+        )}
+
+        ${row(
+          "Contingency",
+          money(contingency(d))
+        )}
+
+        ${row(
+          "Estimated selling costs",
+          money(sellingCosts(d))
+        )}
+
+        ${row(
+          "Total forecast",
+          money(totalForecast(d))
+        )}
+
+        ${row(
+          "Cash still required",
+          money(cashToFinish(d))
+        )}
+
+        ${btn(
+          "Open Deal Budget",
+          "devTab='budget';render()"
+        )}
+      </div>
+
+    </div>
+
+    <div class="card">
+      <h2>Lot Pipeline</h2>
+      ${parcelListBody(d)}
+    </div>
+  `;
+}
+
+function parcelList(d){
+  return `
+    <div class="card">
+      <h2>Planned Parcels</h2>
+      ${parcelListBody(d)}
+    </div>
+  `;
+}
+
+function parcelListBody(d){
+  return d.parcels.map(function(p){
+    return `
+      <div class="item">
+
+        <div class="itemhead">
+          <div>
+            <div class="itemtitle">
+              ${esc(p.name)}
+            </div>
+
+            <div class="meta">
+              ${p.jobs.filter(function(j){
+                return j.status==="approved";
+              }).length}
+              /
+              ${p.jobs.length}
+              stages approved
+            </div>
+          </div>
+
+          ${btn(
+            "Open Parcel",
+            `openParcel('${p.id}')`,
+            "secondary small"
+          )}
+        </div>
+
+        ${row(
+          "Projected all-in cost",
+          money(lotAllIn(d,p))
+        )}
+
+        ${row(
+          "Expected sale",
+          salePrice(d,p)===null
+            ?"Not entered"
+            :money(salePrice(d,p))
+        )}
+
+      </div>
+    `;
+  }).join("");
+}
+
+function propertyDetails(d){
+  return `
+    <div class="card">
+
+      <form onsubmit="saveProperty(event)">
+
+        <div class="fields">
+
+          ${input(
+            "name",
+            "Development Name",
+            "text",
+            d.name,
+            "required"
+          )}
+
+          ${input(
+            "location",
+            "Location",
+            "text",
+            d.location
+          )}
+
+          ${input(
+            "purchasePrice",
+            "Full Land Purchase Price ($)",
+            "number",
+            d.purchasePrice,
+            "required min='0' step='0.01'"
+          )}
+
+          ${input(
+            "acres",
+            "Total Acreage",
+            "number",
+            d.acres,
+            "required min='0.01' step='any'"
+          )}
+
+          ${select(
+            "easements",
+            "Easements",
+            ["No","Yes","Unknown"],
+            d.easements
+          )}
+
+          ${select(
+            "permits",
+            "Permits Needed",
+            ["No","Yes","Unknown"],
+            d.permits
+          )}
+
+        </div>
+
+        ${textarea(
+          "notes",
+          "Notes",
+          d.notes
+        )}
+
+        <div class="notice warn">
+          Changing the land purchase price changes the
+          allocated land cost of every parcel.
+          Do not add the same land purchase again as a cost item.
+        </div>
+
+        <button class="btn">
+          Save Property Details
+        </button>
+
+      </form>
+    </div>
+  `;
+}
+
+function saveProperty(ev){
+  ev.preventDefault();
+
+  const d=findDev();
+  const f=ev.target;
+
+  if(
+    !v(f,"name") ||
+    !valid(v(f,"purchasePrice")) ||
+    !valid(v(f,"acres"),false)
+  ){
+    alert("Enter valid property details.");
+    return;
+  }
+
+  Object.assign(d,{
+    name:v(f,"name"),
+    location:v(f,"location"),
+    purchasePrice:num(v(f,"purchasePrice")),
+    acres:num(v(f,"acres")),
+    easements:v(f,"easements"),
+    permits:v(f,"permits"),
+    notes:v(f,"notes")
+  });
+
+  save();
+  render();
+}
+
+/* =========================================================
+   BUDGET PAGE
+   ========================================================= */
+
+function budgetPage(d){
+  return `
+    ${tabs(
+      [
+        ["deal","Deal Sheet"],
+        ["costs","Cost Plan"],
+        ["commitments","Bids & Commitments"],
+        ["cash","Cash Flow"],
+        ["lots","Lot Economics"],
+        ["scenario","What-If"],
+        ["migration","Previous Budget"],
+        ["setup","Assumptions"]
+      ],
+      budgetTab,
+      "budgetTab"
+    )}
+
+    ${budgetTab==="deal"
+      ?dealSheet(d)
+      :""
+    }
+
+    ${budgetTab==="costs"
+      ?costPlan(d)
+      :""
+    }
+
+    ${budgetTab==="commitments"
+      ?commitmentsPage(d)
+      :""
+    }
+
+    ${budgetTab==="cash"
+      ?cashFlow(d)
+      :""
+    }
+
+    ${budgetTab==="lots"
+      ?lotEconomics(d)
+      :""
+    }
+
+    ${budgetTab==="scenario"
+      ?scenarioPage(d)
+      :""
+    }
+
+    ${budgetTab==="migration"
+      ?legacyReview(d)
+      :""
+    }
+
+    ${budgetTab==="setup"
+      ?dealSetup(d)
+      :""
+    }
+  `;
+}
+
+/* =========================================================
+   DEAL SHEET
+   ========================================================= */
+
+function dealSheet(d){
+  const b=budget(d);
+
+  const ready=dealReady(d);
+
+  const base=projectCost(d);
+  const total=totalForecast(d);
+  const rev=totalRevenue(d);
+
+  const be=breakEvenRevenue(d);
+  const required=requiredRevenue(d);
+
+  return `
+    <div class="dealhero">
+
+      <h2>Development Deal Sheet</h2>
+
+      <div class="sub">
+        One view of what the property costs,
+        what it should sell for,
+        and what the deal is projected to make.
+      </div>
+
+      <div class="dealhero-grid">
+
+        <div class="dealhero-stat">
+          <small>GROSS SALES</small>
+          <strong>
+            ${ready
+              ?money(rev)
+              :money(rev)+"*"
+            }
+          </strong>
+        </div>
+
+        <div class="dealhero-stat">
+          <small>ALL-IN FORECAST</small>
+          <strong>
+            ${money(total)}
+          </strong>
+        </div>
+
+        <div class="dealhero-stat">
+          <small>PROJECTED PROFIT</small>
+          <strong>
+            ${ready
+              ?money(profit(d))
+              :"Incomplete"
+            }
+          </strong>
+        </div>
+
+        <div class="dealhero-stat">
+          <small>PROJECTED MARGIN</small>
+          <strong>
+            ${ready
+              ?pct(margin(d))
+              :"—"
+            }
+          </strong>
+        </div>
+
+      </div>
+    </div>
+
+    ${!ready
+      ?`
+        <div class="notice warn">
+          ${missingSales(d)}
+          lot sale price(s) are still missing.
+          Revenue, profit, and margin are not complete
+          until all planned exits are entered.
+        </div>
+      `
+      :""
+    }
+
+    <div class="grid">
+
+      ${stat(
+        "Expected Gross Sales",
+        ready
+          ?money(rev)
+          :money(rev)+"*",
+        `${d.parcels.length-missingSales(d)} of ${d.parcels.length} sale prices entered`
+      )}
+
+      ${stat(
+        "Total Project Cost",
+        money(total),
+        "Forecast + contingency + selling"
+      )}
+
+      ${stat(
+        "Projected Profit",
+        ready
+          ?money(profit(d))
+          :"Incomplete",
+        ready
+          ?pct(margin(d))+" project margin"
+          :"Enter remaining sale prices",
+        ready
+          ?(profit(d)>=0?"good":"bad")
+          :""
+      )}
+
+      ${stat(
+        "Cash Still Required",
+        money(cashToFinish(d)),
+        "Forecast less recorded payments"
+      )}
+
+    </div>
+
+    <div class="grid two">
+
+      <div class="card">
+
+        <div class="kicker">
+          Uses of Funds
+        </div>
+
+        <h2>
+          Development Cost Stack
+        </h2>
+
+        ${CATEGORIES.map(function(pair){
+          const key=pair[0];
+          const label=pair[1];
+
+          return row(
+            label,
+            money(categoryCost(d,key))
+          );
+        }).join("")}
+
+        <hr>
+
+        ${row(
+          "Base project cost",
+          money(base)
+        )}
+
+        ${row(
+          `Contingency (${fmt(b.contingencyRate)}%)`,
+          money(contingency(d))
+        )}
+
+        ${row(
+          `Selling costs (${fmt(b.sellingCostRate)}% of sales)`,
+          money(sellingCosts(d))
+        )}
+
+        ${row(
+          "Total projected uses",
+          money(total)
+        )}
+
+      </div>
+
+      <div class="card">
+
+        <div class="kicker">
+          Deal Returns
+        </div>
+
+        <h2>
+          Exit & Profit
+        </h2>
+
+        ${row(
+          "Expected gross sales",
+          money(rev)
+        )}
+
+        ${row(
+          "Total projected uses",
+          money(total)
+        )}
+
+        ${row(
+          "Projected profit",
+          ready
+            ?money(profit(d))
+            :"Incomplete"
+        )}
+
+        ${row(
+          "Projected margin",
+          ready
+            ?pct(margin(d))
+            :"Incomplete"
+        )}
+
+        ${row(
+          "Break-even total sales",
+          Number.isFinite(be)
+            ?money(be)
+            :"Not calculable"
+        )}
+
+        ${row(
+          "Break-even per lot",
+          Number.isFinite(be)
+            ?money(be/lotCount(d))
+            :"Not calculable"
+        )}
+
+        ${row(
+          `Sales needed for ${fmt(b.targetMargin)}% margin`,
+          Number.isFinite(required)
+            ?money(required)
+            :"Not calculable"
+        )}
+
+        <p class="help">
+          Project margin equals projected profit divided
+          by gross sales.
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        Development Control Panel
+      </h2>
+
+      ${row(
+        "Land acquisition",
+        money(landCost(d))
+      )}
+
+      ${row(
+        "Shared costs beyond land",
+        money(
+          sum(
+            costItems(d).filter(function(i){
+              return !i.parcelId;
+            }),
+            itemForecast
+          )
+        )
+      )}
+
+      ${row(
+        "Lot-specific costs",
+        money(
+          sum(
+            costItems(d).filter(function(i){
+              return i.parcelId;
+            }),
+            itemForecast
+          )
+        )
+      )}
+
+      ${row(
+        "Committed / awarded",
+        money(committed(d))
+      )}
+
+      ${row(
+        "Paid to date",
+        money(paid(d))
+      )}
+
+      ${row(
+        "Committed but unpaid",
+        money(committedUnpaid(d))
+      )}
+
+      ${row(
+        "Projected cost to finish",
+        money(cashToFinish(d))
+      )}
+
+      ${row(
+        "Potential funding gap",
+        money(remainingCashGap(d))
+      )}
+
+      <div class="notice">
+        The funding gap compares remaining projected costs
+        against entered available project cash and remaining
+        financing capacity.
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        Cost Plan by Category
+      </h2>
+
+      ${CATEGORIES.map(function(pair){
+        const key=pair[0];
+        const label=pair[1];
+
+        const amount=categoryCost(d,key);
+
+        const percent=
+          base
+            ?amount/base*100
+            :0;
+
+        return `
+          <div class="item">
+
+            <div class="itemhead">
+              <strong>
+                ${esc(label)}
+              </strong>
+
+              <span class="money">
+                ${money(amount)}
+              </span>
+            </div>
+
+            <div class="bar">
+              <span
+                style="width:${Math.min(100,percent)}%">
+              </span>
+            </div>
+
+            <div class="meta">
+              ${fmt(percent)}% of base project cost
+            </div>
+
+          </div>
+        `;
+      }).join("")}
+
+    </div>
+  `;
+}
+
+/* =========================================================
+   COST PLAN
+   ========================================================= */
+
+function costPlan(d){
+  return `
+    <div class="card">
+
+      <div class="itemhead">
+
+        <div>
+          <h2>
+            Development Cost Plan
+          </h2>
+
+          <p class="sub">
+            Every cost belongs either to the whole development
+            or to one specific parcel.
+          </p>
+        </div>
+
+        ${btn(
+          "+ Add Cost Item",
+          "editingCost=null;render();document.getElementById('costEditor')?.scrollIntoView()"
+        )}
+
+      </div>
+
+      ${row(
+        "Base forecast including land",
+        money(projectCost(d))
+      )}
+
+      ${row(
+        "Forecast change from original estimates",
+        money(projectVariance(d))
+      )}
+
+      <div class="notice">
+        Shared roads, utilities, engineering, drainage,
+        common clearing, and similar development-wide expenses
+        should be entered as shared costs.
+
+        Parcel-specific culverts, driveways, pads, septic systems,
+        home costs, setup, skirting, decks, and similar work should
+        be assigned to the individual parcel.
+      </div>
+
+      ${costTable(d)}
+
+    </div>
+
+    <div class="card" id="costEditor">
+
+      <h2>
+        ${editingCost
+          ?"Edit Cost Item"
+          :"Add Cost Item"
+        }
+      </h2>
+
+      ${costEditor(d)}
+
+    </div>
+  `;
+}
+
+function costTable(d){
+  const items=costItems(d);
+
+  return `
+    <div class="tablewrap">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Cost / Scope</th>
+            <th>Allocation</th>
+            <th class="num">Estimate</th>
+            <th class="num">Forecast</th>
+            <th class="num">Committed</th>
+            <th class="num">Paid</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>
+              <strong>
+                Land purchase
+              </strong>
+
+              <div class="meta">
+                Property acquisition · built in
+              </div>
+            </td>
+
+            <td>
+              Shared
+            </td>
+
+            <td class="num">
+              ${money(landCost(d))}
+            </td>
+
+            <td class="num">
+              ${money(landCost(d))}
+            </td>
+
+            <td class="num">
+              —
+            </td>
+
+            <td class="num">
+              —
+            </td>
+
+            <td>
+              ${btn(
+                "Edit Property",
+                "devTab='details';render()",
+                "secondary small"
+              )}
+            </td>
+          </tr>
+
+          ${items.map(function(i){
+            return `
+              <tr>
+
+                <td>
+                  <strong>
+                    ${esc(i.name)}
+                  </strong>
+
+                  <div class="meta">
+                    ${esc(
+                      CATEGORY_NAMES[i.category]||
+                      "Other"
+                    )}
+                  </div>
+
+                  <div class="meta">
+                    ${esc(i.status)}
+                    ${i.ownerSupplied
+                      ?" · Owner supplied"
+                      :""
+                    }
+                  </div>
+                </td>
+
+                <td>
+                  ${esc(scopeLabel(d,i))}
+                </td>
+
+                <td class="num">
+                  ${money(itemEstimate(i))}
+                </td>
+
+                <td class="num">
+                  ${money(itemForecast(i))}
+                </td>
+
+                <td class="num">
+                  ${money(itemCommitted(i))}
+                </td>
+
+                <td class="num">
+                  ${money(paidFor(d,i.id))}
+                </td>
+
+                <td>
+                  ${btn(
+                    "Edit",
+                    `editingCost='${i.id}';render();document.getElementById('costEditor')?.scrollIntoView()`,
+                    "secondary small"
+                  )}
+                </td>
+
+              </tr>
+            `;
+          }).join("")}
+
+          <tr class="total">
+
+            <td colspan="2">
+              Base Project Cost
+            </td>
+
+            <td class="num">
+              ${money(
+                landCost(d)+
+                sum(items,itemEstimate)
+              )}
+            </td>
+
+            <td class="num">
+              ${money(projectCost(d))}
+            </td>
+
+            <td class="num">
+              ${money(committed(d))}
+            </td>
+
+            <td class="num">
+              ${money(paid(d))}
+            </td>
+
+            <td></td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+  `;
+}
+
+function costEditor(d){
+  const i=costItems(d).find(function(x){
+    return x.id===editingCost;
+  });
+
+  return `
+    <form onsubmit="saveCost(event)">
+
+      ${input(
+        "name",
+        "Cost Item / Scope",
+        "text",
+        i?.name||"",
+        "required placeholder='Example: Shared road base, Parcel 2 culvert, septic...'"
+      )}
+
+      <div class="fields">
+
+        ${select(
+          "category",
+          "Cost Category",
+          CATEGORIES,
+          i?.category||"parcel_site"
+        )}
+
+        ${select(
+          "parcelId",
+          "Cost Allocation",
+          [
+            [
+              "",
+              "Shared across the entire development"
+            ],
+            ...d.parcels.map(function(p){
+              return [p.id,p.name];
+            })
+          ],
+          i?.parcelId||""
+        )}
+
+        ${select(
+          "jobId",
+          "Related Trade Stage",
+          [
+            [
+              "",
+              "No specific trade"
+            ],
+            ...d.parcels.flatMap(function(p){
+              return p.jobs.map(function(j){
+                return [
+                  j.id,
+                  p.name+" · "+j.trade
+                ];
+              });
+            })
+          ],
+          i?.jobId||""
+        )}
+
+        ${select(
+          "status",
+          "Cost Status",
+          COST_STATUSES,
+          i?.status||"estimate"
+        )}
+
+        ${select(
+          "ownerSupplied",
+          "Who Supplies This?",
+          [
+            [
+              "no",
+              "Contractor / vendor supplies scope"
+            ],
+            [
+              "yes",
+              "Owner purchases material or service"
+            ]
+          ],
+          i?.ownerSupplied
+            ?"yes"
+            :"no"
+        )}
+
+        ${input(
+          "vendor",
+          "Contractor / Vendor",
+          "text",
+          i?.vendor||""
+        )}
+
+        ${input(
+          "quantity",
+          "Quantity",
+          "number",
+          i?.quantity??1,
+          "required min='0.000001' step='any'"
+        )}
+
+        ${input(
+          "unit",
+          "Unit",
+          "text",
+          i?.unit||"lot"
+        )}
+
+        ${input(
+          "unitCost",
+          "Estimated Unit Cost ($)",
+          "number",
+          i?.unitCost??"",
+          "required min='0' step='0.01'"
+        )}
+
+        ${input(
+          "forecastOverride",
+          "Current Forecast Total ($)",
+          "number",
+          i?.forecastOverride??"",
+          "min='0' step='0.01' placeholder='Blank = quantity × unit cost'"
+        )}
+
+        ${input(
+          "committedAmount",
+          "Awarded / Committed Total ($)",
+          "number",
+          i?.committedAmount??0,
+          "required min='0' step='0.01'"
+        )}
+
+        ${input(
+          "expectedDate",
+          "Expected Payment Date",
+          "date",
+          i?.expectedDate||""
+        )}
+
+      </div>
+
+      ${textarea(
+        "notes",
+        "Scope, Inclusions, Exclusions & Notes",
+        i?.notes||""
+      )}
+
+      <div class="notice warn">
+        The committed amount is the full awarded obligation.
+        Do not enter a deposit as the committed amount.
+        Deposits and progress payments belong in Cash Flow.
+      </div>
+
+      <div class="actions">
+
+        <button class="btn">
+          ${i
+            ?"Save Changes"
+            :"Add Cost Item"
+          }
+        </button>
+
+        ${i
+          ?btn(
+            "Delete Item",
+            `deleteCost('${i.id}')`,
+            "danger"
+          )
+          :""
+        }
+
+        ${i
+          ?btn(
+            "Cancel Edit",
+            "editingCost=null;render()",
+            "secondary"
+          )
+          :""
+        }
+
+      </div>
+
+    </form>
+  `;
+}
+
+function saveCost(ev){
+  ev.preventDefault();
+
+  const d=findDev();
+  const f=ev.target;
+
+  const qty=Number(v(f,"quantity"));
+  const unit=Number(v(f,"unitCost"));
+
+  const override=v(
+    f,
+    "forecastOverride"
+  );
+
+  const commitment=Number(
+    v(f,"committedAmount")
+  );
+
+  if(
+    !v(f,"name") ||
+    !Number.isFinite(qty) ||
+    qty<=0 ||
+    !valid(v(f,"unitCost")) ||
+    !valid(v(f,"committedAmount")) ||
+    (
+      override!=="" &&
+      !valid(override)
+    )
+  ){
+    alert(
+      "Enter a valid scope, quantity, and amounts."
+    );
+
+    return;
+  }
+
+  const parcelId=v(f,"parcelId");
+  const jobId=v(f,"jobId");
+
+  if(
+    parcelId &&
+    !d.parcels.some(function(p){
+      return p.id===parcelId;
+    })
+  ){
+    alert("Choose a valid parcel.");
+    return;
+  }
+
+  if(jobId){
+    const match=findJobById(
+      d,
+      jobId
+    );
+
+    if(
+      !match ||
+      (
+        parcelId &&
+        match.p.id!==parcelId
+      )
+    ){
+      alert(
+        "The selected trade must match the assigned parcel."
+      );
+
+      return;
+    }
+  }
+
+  const existing=costItems(d).find(function(i){
+    return i.id===editingCost;
+  });
+
+  const x={
+    id:existing?.id||uid(),
+    name:v(f,"name"),
+    category:v(f,"category"),
+    parcelId:parcelId,
+    jobId:jobId,
+    status:v(f,"status"),
+    ownerSupplied:
+      v(f,"ownerSupplied")==="yes",
+    vendor:v(f,"vendor"),
+    quantity:qty,
+    unit:v(f,"unit"),
+    unitCost:unit,
+    forecastOverride:
+      override===""
+        ?""
+        :Number(override),
+    committedAmount:commitment,
+    expectedDate:v(f,"expectedDate"),
+    notes:v(f,"notes")
+  };
+
+  if(existing){
+    Object.assign(existing,x);
+  }else{
+    costItems(d).push(x);
+  }
+
+  editingCost=null;
+
+  save();
+  render();
+}
+
+function deleteCost(id){
+  const d=findDev();
+
+  const count=budget(d).payments.filter(function(p){
+    return p.itemId===id;
+  }).length;
+
+  if(
+    !confirm(
+      "Delete this cost item? "+
+      count+
+      " linked payment(s) will remain but become unassigned."
+    )
+  ){
+    return;
+  }
+
+  const index=costItems(d).findIndex(function(i){
+    return i.id===id;
+  });
+
+  if(index>=0){
+    costItems(d).splice(index,1);
+  }
+
+  budget(d).payments.forEach(function(p){
+    if(p.itemId===id){
+      p.itemId="";
+    }
+  });
+
+  editingCost=null;
+
+  save();
+  render();
+}
+
+/* =========================================================
+   BIDS & COMMITMENTS
+   ========================================================= */
+
+function commitmentsPage(d){
+  const bids=state.bids.filter(function(x){
+    return x.developmentId===d.id;
+  });
+
+  const awarded=costItems(d).filter(function(i){
+    return itemCommitted(i)>0;
+  });
+
+  return `
+    <div class="grid">
+
+      ${stat(
+        "Recorded Bids",
+        bids.length
+      )}
+
+      ${stat(
+        "Awarded Cost Items",
+        awarded.length
+      )}
+
+      ${stat(
+        "Total Committed",
+        money(committed(d))
+      )}
+
+      ${stat(
+        "Committed Unpaid",
+        money(committedUnpaid(d))
+      )}
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        Contractor Bid Register
+      </h2>
+
+      <p class="sub">
+        A bid is only a proposal.
+        It does not become committed project cost until you accept it.
+      </p>
+
+      ${bids.length
+        ?bids.map(function(b){
+          return `
+            <div class="item">
+
+              <div class="itemhead">
+
+                <div>
+                  <strong>
+                    ${esc(b.trade)}
+                    ·
+                    ${esc(b.contractorName)}
+                  </strong>
+
+                  <div class="meta">
+                    ${esc(b.parcelName)}
+                    ·
+                    ${esc(b.date)}
+                  </div>
+
+                  ${b.notes
+                    ?`
+                      <div class="meta">
+                        ${esc(b.notes)}
+                      </div>
+                    `
+                    :""
+                  }
+                </div>
+
+                <strong class="money">
+                  ${money(b.amount)}
+                </strong>
+
+              </div>
+
+              <div class="actions">
+
+                ${b.acceptedV27||b.acceptedV26
+                  ?`
+                    <span class="badge green">
+                      Accepted
+                    </span>
+                  `
+                  :btn(
+                    "Accept & Create Cost",
+                    `acceptBid('${b.id}')`,
+                    "secondary small"
+                  )
+                }
+
+                ${btn(
+                  "Open Trade",
+                  `openBid('${b.developmentId}','${b.parcelId}','${b.jobId}')`,
+                  "secondary small"
+                )}
+
+              </div>
+
+            </div>
+          `;
+        }).join("")
+        :empty(
+          "No bids yet",
+          "Record contractor proposals inside each trade stage."
+        )
+      }
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        Awarded Cost Register
+      </h2>
+
+      ${awarded.length
+        ?awarded.map(function(i){
+          return `
+            <div class="item">
+
+              <div class="itemhead">
+                <strong>
+                  ${esc(i.name)}
+                </strong>
+
+                <strong>
+                  ${money(itemCommitted(i))}
+                </strong>
+              </div>
+
+              ${row(
+                "Forecast",
+                money(itemForecast(i))
+              )}
+
+              ${row(
+                "Paid",
+                money(paidFor(d,i.id))
+              )}
+
+              ${row(
+                "Unpaid commitment",
+                money(
+                  Math.max(
+                    0,
+                    itemCommitted(i)-
+                    paidFor(d,i.id)
+                  )
+                )
+              )}
+
+            </div>
+          `;
+        }).join("")
+        :empty(
+          "Nothing awarded",
+          "Mark cost items as committed when work is awarded."
+        )
+      }
+
+    </div>
+  `;
+}
+
+function acceptBid(id){
+  const b=state.bids.find(function(x){
+    return x.id===id;
+  });
+
+  const d=findDev();
+
+  if(
+    !b ||
+    !d ||
+    b.developmentId!==d.id
+  ){
+    return;
+  }
+
+  if(
+    !confirm(
+      "Accept "+
+      b.contractorName+
+      "'s "+
+      money(b.amount)+
+      " bid?\n\n"+
+      "V27 will create or update a linked committed cost item. "+
+      "Confirm the contractor's material and labor inclusions first."
+    )
+  ){
+    return;
+  }
+
+  const other=state.bids.filter(function(x){
+    return x.jobId===b.jobId;
+  });
+
+  other.forEach(function(x){
+    x.acceptedV27=false;
+    x.acceptedV26=false;
+  });
+
+  b.acceptedV27=true;
+
+  let item=costItems(d).find(function(i){
+    return i.sourceBidId===b.id;
+  });
+
+  if(!item){
+    const homeTrades=[
+      "Manufactured Home",
+      "Home Transport",
+      "Home Setup",
+      "Skirting",
+      "Decks & Steps",
+      "HVAC"
+    ];
+
+    item={
+      id:uid(),
+      name:b.trade+" — "+b.contractorName,
+      category:
+        homeTrades.includes(b.trade)
+          ?"home"
+          :"parcel_site",
+      parcelId:b.parcelId,
+      jobId:b.jobId,
+      status:"committed",
+      ownerSupplied:false,
+      vendor:b.contractorName,
+      quantity:1,
+      unit:"contract",
+      unitCost:pos(b.amount),
+      forecastOverride:pos(b.amount),
+      committedAmount:pos(b.amount),
+      expectedDate:"",
+      notes:b.notes||"",
+      sourceBidId:b.id
+    };
+
+    costItems(d).push(item);
+  }else{
+    item.status="committed";
+    item.unitCost=pos(b.amount);
+    item.forecastOverride=pos(b.amount);
+    item.committedAmount=pos(b.amount);
+  }
+
+  save();
+  render();
+}
+
+/* =========================================================
+   CASH FLOW
+   ========================================================= */
+
+function cashFlow(d){
+  const b=budget(d);
+
+  const sorted=[...b.payments].sort(function(a,c){
+    return String(c.date).localeCompare(
+      String(a.date)
+    );
+  });
+
+  const upcoming=costItems(d).filter(function(i){
+    return i.expectedDate &&
+      itemForecast(i)>paidFor(d,i.id);
+  });
+
+  return `
+    <div class="grid">
+
+      ${stat(
+        "Paid to Date",
+        money(paid(d))
+      )}
+
+      ${stat(
+        "Committed Unpaid",
+        money(committedUnpaid(d))
+      )}
+
+      ${stat(
+        "Forecast to Finish",
+        money(cashToFinish(d))
+      )}
+
+      ${stat(
+        "Potential Funding Gap",
+        money(remainingCashGap(d))
+      )}
+
+    </div>
+
+    <div class="grid two">
+
+      <div class="card">
+
+        <h2>
+          Cash Position
+        </h2>
+
+        ${row(
+          "Available project cash",
+          money(b.startingCash)
+        )}
+
+        ${row(
+          "Undrawn financing capacity",
+          money(b.financingLimit)
+        )}
+
+        ${row(
+          "Remaining forecast uses",
+          money(cashToFinish(d))
+        )}
+
+        ${row(
+          "Potential funding gap",
+          money(remainingCashGap(d))
+        )}
+
+        <p class="help">
+          Available project cash and financing capacity
+          are planning inputs, not verified bank balances.
+        </p>
+
+      </div>
+
+      <div class="card">
+
+        <h2>
+          Upcoming Planned Outflows
+        </h2>
+
+        ${upcoming.length
+          ?upcoming
+            .sort(function(a,c){
+              return a.expectedDate.localeCompare(
+                c.expectedDate
+              );
+            })
+            .map(function(i){
+              return `
+                <div class="row">
+                  <span>
+                    ${esc(i.expectedDate)}
+                    ·
+                    ${esc(i.name)}
+                  </span>
+
+                  <strong>
+                    ${money(
+                      Math.max(
+                        0,
+                        itemForecast(i)-
+                        paidFor(d,i.id)
+                      )
+                    )}
+                  </strong>
+                </div>
+              `;
+            }).join("")
+          :empty(
+            "No payment dates entered",
+            "Add expected payment dates to cost items."
+          )
+        }
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        ${editingPayment
+          ?"Edit Payment"
+          :"Record Payment"
+        }
+      </h2>
+
+      <form onsubmit="savePayment(event)">
+
+        ${input(
+          "description",
+          "Payment Description",
+          "text",
+          editingPayment?.description||"",
+          "required"
+        )}
+
+        <div class="fields">
+
+          ${input(
+            "amount",
+            "Amount Paid ($)",
+            "number",
+            editingPayment?.amount??"",
+            "required min='0.01' step='0.01'"
+          )}
+
+          ${input(
+            "date",
+            "Payment Date",
+            "date",
+            editingPayment?.date||today(),
+            "required"
+          )}
+
+          ${select(
+            "type",
+            "Payment Type",
+            [
+              ["deposit","Deposit"],
+              ["progress","Progress Payment"],
+              ["final","Final Payment"],
+              ["material","Owner Material Purchase"],
+              ["land","Land Purchase Payment"],
+              ["other","Other"]
+            ],
+            editingPayment?.type||"progress"
+          )}
+
+          ${select(
+            "itemId",
+            "Apply to Cost Item",
+            [
+              [
+                "",
+                "Unassigned / land purchase"
+              ],
+              ...costItems(d).map(function(i){
+                return [
+                  i.id,
+                  i.name+
+                  " · "+
+                  scopeLabel(d,i)
+                ];
+              })
+            ],
+            editingPayment?.itemId||""
+          )}
+
+          ${input(
+            "payee",
+            "Paid To",
+            "text",
+            editingPayment?.payee||""
+          )}
+
+          ${input(
+            "reference",
+            "Invoice / Receipt Number",
+            "text",
+            editingPayment?.reference||""
+          )}
+
+        </div>
+
+        ${textarea(
+          "notes",
+          "Payment Notes",
+          editingPayment?.notes||""
+        )}
+
+        <div class="actions">
+
+          <button class="btn">
+            ${editingPayment
+              ?"Save Payment"
+              :"Record Payment"
+            }
+          </button>
+
+          ${editingPayment
+            ?btn(
+              "Cancel",
+              "editingPayment=null;render()",
+              "secondary"
+            )
+            :""
+          }
+
+        </div>
+
+      </form>
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        Payment Ledger
+      </h2>
+
+      <p class="sub">
+        Deposits and progress payments reduce what is still owed.
+        They do not increase the original contract cost.
+      </p>
+
+      ${sorted.length
+        ?sorted.map(function(p){
+          const linked=costItems(d).find(function(i){
+            return i.id===p.itemId;
+          });
+
+          return `
+            <div class="item">
+
+              <div class="itemhead">
+
+                <div>
+                  <strong>
+                    ${esc(p.description)}
+                  </strong>
+
+                  <div class="meta">
+                    ${esc(p.date)}
+                    ·
+                    ${esc(p.type)}
+                    ·
+                    ${esc(p.payee||"")}
+                  </div>
+
+                  <div class="meta">
+                    ${esc(
+                      linked?.name||
+                      "Unassigned / land"
+                    )}
+                  </div>
+                </div>
+
+                <strong class="money">
+                  ${money2(p.amount)}
+                </strong>
+
+              </div>
+
+              <div class="actions">
+
+                ${btn(
+                  "Edit",
+                  `editPayment('${p.id}')`,
+                  "secondary small"
+                )}
+
+                ${btn(
+                  "Delete",
+                  `deletePayment('${p.id}')`,
+                  "danger small"
+                )}
+
+              </div>
+
+            </div>
+          `;
+        }).join("")
+        :empty(
+          "No payments",
+          "Record deposits, contractor draws, materials, and other payments."
+        )
+      }
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        Receipts & Invoices
+      </h2>
+
+      ${uploader(
+        "development",
+        d.id,
+        "receipt"
+      )}
+
+      ${uploader(
+        "development",
+        d.id,
+        "invoice"
+      )}
+
+      ${filesHTML(
+        (d.files||[]).filter(function(f){
+          return [
+            "receipt",
+            "invoice"
+          ].includes(f.category);
+        })
+      )}
+
+    </div>
+  `;
+}
+
+function savePayment(ev){
+  ev.preventDefault();
+
+  const d=findDev();
+  const f=ev.target;
+
+  if(
+    !v(f,"description") ||
+    !valid(v(f,"amount"),false) ||
+    !v(f,"date")
+  ){
+    alert(
+      "Enter a description, date, and positive amount."
+    );
+
+    return;
+  }
+
+  const itemId=v(f,"itemId");
+
+  if(
+    itemId &&
+    !costItems(d).some(function(i){
+      return i.id===itemId;
+    })
+  ){
+    alert(
+      "Select a valid cost item."
+    );
+
+    return;
+  }
+
+  const existing=editingPayment
+    ?budget(d).payments.find(function(p){
+      return p.id===editingPayment.id;
+    })
+    :null;
+
+  const p={
+    id:existing?.id||uid(),
+    description:v(f,"description"),
+    amount:num(v(f,"amount")),
+    date:v(f,"date"),
+    type:v(f,"type"),
+    itemId:itemId,
+    payee:v(f,"payee"),
+    reference:v(f,"reference"),
+    notes:v(f,"notes")
+  };
+
+  if(existing){
+    Object.assign(existing,p);
+  }else{
+    budget(d).payments.push(p);
+  }
+
+  editingPayment=null;
+
+  save();
+  render();
+}
+
+function editPayment(id){
+  const d=findDev();
+
+  editingPayment=
+    budget(d).payments.find(function(p){
+      return p.id===id;
+    })||null;
+
+  render();
+  window.scrollTo(0,0);
+}
+
+function deletePayment(id){
+  if(
+    !confirm(
+      "Delete this payment? Paid-to-date and cash-to-finish totals will change."
+    )
+  ){
+    return;
+  }
+
+  const b=budget(findDev());
+
+  b.payments=b.payments.filter(function(p){
+    return p.id!==id;
+  });
+
+  editingPayment=null;
+
+  save();
+  render();
+}
+
+/* =========================================================
+   LOT ECONOMICS
+   ========================================================= */
+
+function lotEconomics(d){
+  const b=budget(d);
+
+  return `
+    <div class="card">
+
+      <h2>
+        Lot-by-Lot Deal Sheet
+      </h2>
+
+      <p class="sub">
+        Land and shared development expenses are allocated
+        equally across the planned lots.
+        Parcel-specific expenses stay with their assigned lot.
+      </p>
+
+      <div class="tablewrap">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Lot</th>
+              <th class="num">Shared Allocation</th>
+              <th class="num">Direct Cost</th>
+              <th class="num">All-In Cost</th>
+              <th class="num">Expected Sale</th>
+              <th class="num">Profit</th>
+              <th class="num">Margin</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            ${d.parcels.map(function(p){
+              return `
+                <tr>
+
+                  <td>
+                    <strong>
+                      ${esc(p.name)}
+                    </strong>
+                  </td>
+
+                  <td class="num">
+                    ${money(
+                      sharedBase(d)*share(d)
+                    )}
+                  </td>
+
+                  <td class="num">
+                    ${money(
+                      lotDirect(d,p)
+                    )}
+                  </td>
+
+                  <td class="num">
+                    ${money(
+                      lotAllIn(d,p)
+                    )}
+                  </td>
+
+                  <td class="num">
+                    ${salePrice(d,p)===null
+                      ?"—"
+                      :money(salePrice(d,p))
+                    }
+                  </td>
+
+                  <td class="num">
+                    ${lotProfit(d,p)===null
+                      ?"—"
+                      :money(lotProfit(d,p))
+                    }
+                  </td>
+
+                  <td class="num">
+                    ${pct(lotMargin(d,p))}
+                  </td>
+
+                </tr>
+              `;
+            }).join("")}
+
+            <tr class="total">
+
+              <td>
+                Development Total
+              </td>
+
+              <td class="num">
+                ${money(sharedBase(d))}
+              </td>
+
+              <td class="num">
+                ${money(
+                  sum(
+                    d.parcels,
+                    function(p){
+                      return lotDirect(d,p);
+                    }
+                  )
+                )}
+              </td>
+
+              <td class="num">
+                ${money(totalForecast(d))}
+              </td>
+
+              <td class="num">
+                ${money(totalRevenue(d))}
+              </td>
+
+              <td class="num">
+                ${dealReady(d)
+                  ?money(profit(d))
+                  :"Incomplete"
+                }
+              </td>
+
+              <td class="num">
+                ${dealReady(d)
+                  ?pct(margin(d))
+                  :"—"
+                }
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        Sales & Exit Assumptions
+      </h2>
+
+      ${d.parcels.map(function(p){
+        return `
+          <div class="item">
+
+            <h3>
+              ${esc(p.name)}
+            </h3>
+
+            <form
+              onsubmit="saveLotSale(event,'${p.id}')">
+
+              <div class="fields">
+
+                ${input(
+                  "sale",
+                  "Expected Sale Price ($)",
+                  "number",
+                  salePrice(d,p)??"",
+                  "min='0' step='0.01' placeholder='Enter expected sale'"
+                )}
+
+                ${select(
+                  "status",
+                  "Sale Status",
+                  [
+                    ["planning","Planning"],
+                    ["listed","Listed"],
+                    ["contract","Under Contract"],
+                    ["closed","Closed"]
+                  ],
+                  b.saleStatuses[p.id]||
+                  "planning"
+                )}
+
+                ${input(
+                  "saleDate",
+                  "Expected / Actual Closing Date",
+                  "date",
+                  b.saleDates[p.id]||""
+                )}
+
+              </div>
+
+              <button class="btn secondary small">
+                Save Lot Exit
+              </button>
+
+            </form>
+
+            ${row(
+              "All-in forecast",
+              money(lotAllIn(d,p))
+            )}
+
+            ${row(
+              "Projected profit",
+              lotProfit(d,p)===null
+                ?"Enter sale price"
+                :money(lotProfit(d,p))
+            )}
+
+          </div>
+        `;
+      }).join("")}
+
+    </div>
+  `;
+}
+
+function saveLotSale(ev,id){
+  ev.preventDefault();
+
+  const d=findDev();
+  const b=budget(d);
+  const f=ev.target;
+
+  const s=v(f,"sale");
+
+  if(
+    s!=="" &&
+    !valid(s)
+  ){
+    alert(
+      "Enter a valid sale price."
+    );
+
+    return;
+  }
+
+  if(s===""){
+    delete b.salePrices[id];
+  }else{
+    b.salePrices[id]=num(s);
+  }
+
+  b.saleStatuses[id]=v(
+    f,
+    "status"
+  );
+
+  b.saleDates[id]=v(
+    f,
+    "saleDate"
+  );
+
+  save();
+  render();
+}
+
+/* =========================================================
+   V27 WHAT-IF ANALYSIS
+   IMPORTANT:
+   NO NESTED SCRIPT ELEMENTS ARE GENERATED HERE.
+   THIS FIXES THE V26 SAFARI/GITHUB DISPLAY BUG.
+   ========================================================= */
+
+function scenarioPage(d){
+  return `
+    <div class="card">
+
+      <h2>
+        What-If Deal Analysis
+      </h2>
+
+      <p class="sub">
+        Stress-test the deal without changing your saved budget.
+      </p>
+
+      <div class="field">
+
+        <label>
+          Construction Cost Change:
+          <strong id="costChangeLabel">
+            0%
+          </strong>
+        </label>
+
+        <input
+          id="costChange"
+          type="range"
+          min="-20"
+          max="50"
+          value="0"
+          step="1"
+          oninput="updateScenario()">
+
+      </div>
+
+      <div class="field">
+
+        <label>
+          Sale Price Change:
+          <strong id="saleChangeLabel">
+            0%
+          </strong>
+        </label>
+
+        <input
+          id="saleChange"
+          type="range"
+          min="-30"
+          max="30"
+          value="0"
+          step="1"
+          oninput="updateScenario()">
+
+      </div>
+
+      <div id="scenarioResult">
+        ${scenarioResultHTML(d,0,0)}
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        Current Scenario Base
+      </h2>
+
+      ${row(
+        "Land purchase",
+        money(landCost(d))
+      )}
+
+      ${row(
+        "Entered development costs",
+        money(
+          sum(
+            costItems(d),
+            itemForecast
+          )
+        )
+      )}
+
+      ${row(
+        "Contingency allowance",
+        fmt(
+          budget(d).contingencyRate
+        )+"%"
+      )}
+
+      ${row(
+        "Selling cost assumption",
+        fmt(
+          budget(d).sellingCostRate
+        )+"%"
+      )}
+
+      ${row(
+        "Entered gross sales",
+        money(totalRevenue(d))
+      )}
+
+      <p class="help">
+        Construction cost changes apply to entered development
+        cost items but not to the original land purchase price.
+        Selling costs change with the scenario revenue.
+      </p>
+
+    </div>
+  `;
+}
+
+function scenarioResultHTML(d,cc,sc){
+  const b=budget(d);
+
+  const adjustedItems=
+    sum(
+      costItems(d),
+      itemForecast
+    )*(1+cc/100);
+
+  const base=
+    landCost(d)+
+    adjustedItems;
+
+  const adjustedRevenue=
+    totalRevenue(d)*
+    (1+sc/100);
+
+  const adjustedContingency=
+    base*
+    pos(b.contingencyRate)/100;
+
+  const adjustedSelling=
+    adjustedRevenue*
+    pos(b.sellingCostRate)/100;
+
+  const total=
+    base+
+    adjustedContingency+
+    adjustedSelling;
+
+  const scenarioProfit=
+    adjustedRevenue-total;
+
+  const currentProfit=
+    totalRevenue(d)-
+    totalForecast(d);
+
+  const scenarioMargin=
+    adjustedRevenue>0
+      ?scenarioProfit/adjustedRevenue
+      :NaN;
+
+  return `
+    <div class="grid two">
+
+      ${stat(
+        "Scenario Project Cost",
+        money(total)
+      )}
+
+      ${stat(
+        "Scenario Gross Sales",
+        money(adjustedRevenue)
+      )}
+
+      ${stat(
+        "Scenario Profit",
+        dealReady(d)
+          ?money(scenarioProfit)
+          :"Incomplete",
+        dealReady(d)
+          ?pct(scenarioMargin)
+          :"Sale prices missing",
+        dealReady(d)
+          ?(scenarioProfit>=0?"good":"bad")
+          :""
+      )}
+
+      ${stat(
+        "Change From Current Profit",
+        dealReady(d)
+          ?money(
+            scenarioProfit-
+            currentProfit
+          )
+          :"Incomplete"
+      )}
+
+    </div>
+  `;
+}
+
+function updateScenario(){
+  const d=findDev();
+
+  if(!d){
+    return;
+  }
+
+  const costInput=
+    document.getElementById(
+      "costChange"
+    );
+
+  const saleInput=
+    document.getElementById(
+      "saleChange"
+    );
+
+  const result=
+    document.getElementById(
+      "scenarioResult"
+    );
+
+  if(
+    !costInput ||
+    !saleInput ||
+    !result
+  ){
+    return;
+  }
+
+  const cc=num(
+    costInput.value
+  );
+
+  const sc=num(
+    saleInput.value
+  );
+
+  const costLabel=
+    document.getElementById(
+      "costChangeLabel"
+    );
+
+  const saleLabel=
+    document.getElementById(
+      "saleChangeLabel"
+    );
+
+  if(costLabel){
+    costLabel.textContent=
+      (cc>0?"+":"")+
+      cc+
+      "%";
+  }
+
+  if(saleLabel){
+    saleLabel.textContent=
+      (sc>0?"+":"")+
+      sc+
+      "%";
+  }
+
+  result.innerHTML=
+    scenarioResultHTML(
+      d,
+      cc,
+      sc
+    );
+}
+
+/* =========================================================
+   PREVIOUS BUDGET REVIEW
+   ========================================================= */
+
+function legacyReview(d){
+  const old=d.budgetV25;
+
+  if(!old){
+    return `
+      <div class="card">
+
+        <h2>
+          Previous Budget Review
+        </h2>
+
+        ${empty(
+          "No separate V25 budget found",
+          "Your current V27 deal budget is ready to use."
+        )}
+
+      </div>
+    `;
+  }
+
+  const oldTrades=
+    Object.entries(
+      old.trades||{}
+    );
+
+  const oldShared=
+    old.shared||[];
+
+  const oldMaterials=
+    old.materials||[];
+
+  const oldPayments=
+    old.payments||[];
+
+  return `
+    <div class="card">
+
+      <h2>
+        Previous Financial Records
+      </h2>
+
+      <div class="notice warn">
+        These older records remain preserved,
+        but V27 does not automatically add them again
+        to the current deal budget because doing so could
+        double-count costs.
+      </div>
+
+      ${row(
+        "Previous target",
+        money(old.target||0)
+      )}
+
+      ${row(
+        "Previous contingency",
+        money(old.contingency||0)
+      )}
+
+      ${row(
+        "Previous shared cost entries",
+        oldShared.length
+      )}
+
+      ${row(
+        "Previous trade budget entries",
+        oldTrades.length
+      )}
+
+      ${row(
+        "Previous material entries",
+        oldMaterials.length
+      )}
+
+      ${row(
+        "Previous payment entries",
+        oldPayments.length
+      )}
+
+      <hr>
+
+      <h3>
+        Previous Shared Costs
+      </h3>
+
+      ${oldShared.length
+        ?oldShared.map(function(x){
+          return row(
+            x.description||"Shared cost",
+            money(x.amount)
+          );
+        }).join("")
+        :'<p class="sub">None</p>'
+      }
+
+      <hr>
+
+      <h3>
+        Previous Trade Budgets
+      </h3>
+
+      ${oldTrades.length
+        ?oldTrades.map(function(pair){
+          const key=pair[0];
+          const value=pair[1];
+
+          const ids=key.split("::");
+
+          const pid=ids[0];
+          const jid=ids[1];
+
+          const p=d.parcels.find(function(p){
+            return p.id===pid;
+          });
+
+          const j=p?.jobs.find(function(j){
+            return j.id===jid;
+          });
+
+          return row(
+            (p?.name||"Parcel")+
+            " · "+
+            (j?.trade||"Trade"),
+            money(value)
+          );
+        }).join("")
+        :'<p class="sub">None</p>'
+      }
+
+      <hr>
+
+      <h3>
+        Previous Owner Materials
+      </h3>
+
+      ${oldMaterials.length
+        ?oldMaterials.map(function(x){
+          const unitPrice=
+            x.actualUnitPrice==="" ||
+            x.actualUnitPrice===undefined
+              ?x.estimatedUnitPrice
+              :x.actualUnitPrice;
+
+          return row(
+            x.name||"Material",
+            money(
+              pos(x.quantity)*
+              pos(unitPrice)
+            )
+          );
+        }).join("")
+        :'<p class="sub">None</p>'
+      }
+
+      <hr>
+
+      <h3>
+        Previous Payments
+      </h3>
+
+      ${oldPayments.length
+        ?oldPayments.map(function(x){
+          return row(
+            (x.paymentDate||"")+
+            " · "+
+            (x.description||"Payment"),
+            money(x.amount)
+          );
+        }).join("")
+        :'<p class="sub">None</p>'
+      }
+
+      <div class="actions">
+        ${btn(
+          "Export Full V27 Backup",
+          "exportBackup()",
+          "secondary"
+        )}
+      </div>
+
+    </div>
+  `;
+}
+
+/* =========================================================
+   DEAL ASSUMPTIONS
+   ========================================================= */
+
+function dealSetup(d){
+  const b=budget(d);
+
+  return `
+    <div class="card">
+
+      <h2>
+        Development Deal Assumptions
+      </h2>
+
+      <form onsubmit="saveDealSetup(event)">
+
+        ${select(
+          "strategy",
+          "Exit Strategy",
+          [
+            [
+              "land",
+              "Develop lots and sell land"
+            ],
+            [
+              "homes",
+              "Develop lots with manufactured homes"
+            ],
+            [
+              "mixed",
+              "Mixed development"
+            ]
+          ],
+          b.strategy
+        )}
+
+        <div class="fields">
+
+          ${input(
+            "targetMargin",
+            "Target Project Margin (%)",
+            "number",
+            b.targetMargin,
+            "required min='0' max='99' step='0.1'"
+          )}
+
+          ${input(
+            "contingencyRate",
+            "Contingency on Base Costs (%)",
+            "number",
+            b.contingencyRate,
+            "required min='0' max='100' step='0.1'"
+          )}
+
+          ${input(
+            "sellingCostRate",
+            "Estimated Selling Costs (% of Sales)",
+            "number",
+            b.sellingCostRate,
+            "required min='0' max='99' step='0.1'"
+          )}
+
+          ${input(
+            "startingCash",
+            "Available Project Cash ($)",
+            "number",
+            b.startingCash,
+            "required min='0' step='0.01'"
+          )}
+
+          ${input(
+            "financingLimit",
+            "Remaining Available Financing ($)",
+            "number",
+            b.financingLimit,
+            "required min='0' step='0.01'"
+          )}
+
+        </div>
+
+        <button class="btn">
+          Save Deal Assumptions
+        </button>
+
+      </form>
+
+      <div class="notice warn">
+        Interest, property taxes, insurance,
+        engineering, permits, lender fees,
+        utilities, commissions, title expenses,
+        and other real project expenses should be
+        entered when applicable.
+
+        Financing capacity is a funding source,
+        not project revenue or profit.
+      </div>
+
+    </div>
+  `;
+}
+
+function saveDealSetup(ev){
+  ev.preventDefault();
+
+  const b=budget(findDev());
+  const f=ev.target;
+
+  const fields=[
+    "targetMargin",
+    "contingencyRate",
+    "sellingCostRate",
+    "startingCash",
+    "financingLimit"
+  ];
+
+  for(const k of fields){
+    if(!valid(v(f,k))){
+      alert(
+        "Enter valid nonnegative assumptions."
+      );
+
+      return;
+    }
+  }
+
+  const target=num(
+    v(f,"targetMargin")
+  );
+
+  const selling=num(
+    v(f,"sellingCostRate")
+  );
+
+  if(
+    target+selling>=100
+  ){
+    alert(
+      "Target margin plus selling-cost rate must be below 100%."
+    );
+
+    return;
+  }
+
+  b.targetMargin=target;
+
+  b.contingencyRate=num(
+    v(f,"contingencyRate")
+  );
+
+  b.sellingCostRate=selling;
+
+  b.startingCash=num(
+    v(f,"startingCash")
+  );
+
+  b.financingLimit=num(
+    v(f,"financingLimit")
+  );
+
+  b.strategy=v(
+    f,
+    "strategy"
+  );
+
+  save();
+  render();
+}
+
+/* =========================================================
+   PARCEL PAGE
+   ========================================================= */
+
+function parcelPage(){
+  const d=findDev();
+  const p=findParcel();
+
+  if(
+    !d ||
+    !p
+  ){
+    return head(
+      "Parcel Not Found"
+    );
+  }
+
+  return `
+    ${head(
+      p.name,
+      d.name,
+      btn(
+        "Back to Development",
+        "go('development')",
+        "secondary"
+      )
+    )}
+
+    <div class="grid">
+
+      ${stat(
+        "Land Allocation",
+        money(
+          landCost(d)*share(d)
+        )
+      )}
+
+      ${stat(
+        "Shared Cost Allocation",
+        money(
+          sharedBase(d)*share(d)
+        )
+      )}
+
+      ${stat(
+        "Direct Lot Costs",
+        money(
+          lotDirect(d,p)
+        )
+      )}
+
+      ${stat(
+        "All-In Lot Forecast",
+        money(
+          lotAllIn(d,p)
+        )
+      )}
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        Parcel Details
+      </h2>
+
+      <form onsubmit="saveParcel(event)">
+
+        <div class="fields">
+
+          ${input(
+            "name",
+            "Parcel Name",
+            "text",
+            p.name,
+            "required"
+          )}
+
+          ${input(
+            "acreage",
+            "Parcel Acreage",
+            "number",
+            p.acreage,
+            "min='0' step='any'"
+          )}
+
+        </div>
+
+        ${textarea(
+          "notes",
+          "Notes",
+          p.notes
+        )}
+
+        <button class="btn secondary small">
+          Save Parcel Details
+        </button>
+
+      </form>
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        Trade Workflow
+      </h2>
+
+      ${p.jobs.map(function(j,index){
+        return `
+          <div class="item">
+
+            <div class="itemhead">
+
+              <div>
+
+                <div class="meta">
+                  STAGE ${index+1}
+                </div>
+
+                <div class="itemtitle">
+                  ${esc(j.trade)}
+                </div>
+
+                <div class="meta">
+                  ${esc(
+                    j.contractorName||
+                    "No contractor assigned"
+                  )}
+                </div>
+
+              </div>
+
+              <span class="badge ${
+                j.status==="approved"
+                  ?"green"
+                  :j.status==="locked"
+                    ?""
+                    :"blue"
+              }">
+                ${esc(j.status)}
+              </span>
+
+            </div>
+
+            <div class="actions">
+
+              ${btn(
+                "Open Stage",
+                `openJob('${j.id}')`,
+                "secondary small"
+              )}
+
+            </div>
+
+          </div>
+        `;
+      }).join("")}
+
+    </div>
+  `;
+}
+
+function saveParcel(ev){
+  ev.preventDefault();
+
+  const p=findParcel();
+  const f=ev.target;
+
+  if(
+    !v(f,"name") ||
+    (
+      v(f,"acreage") &&
+      !valid(v(f,"acreage"))
+    )
+  ){
+    alert(
+      "Enter valid parcel details."
+    );
+
+    return;
+  }
+
+  p.name=v(f,"name");
+  p.acreage=v(f,"acreage");
+  p.notes=v(f,"notes");
+
+  save();
+  render();
+}
+
+/* =========================================================
+   JOB / TRADE PAGE
+   ========================================================= */
+
+function jobPage(){
+  const d=findDev();
+  const p=findParcel();
+  const j=findJob();
+
+  if(
+    !d ||
+    !p ||
+    !j
+  ){
+    return head(
+      "Trade Not Found"
+    );
+  }
+
+  return `
+    ${head(
+      j.trade,
+      `${d.name} / ${p.name}`,
+      btn(
+        "Back to Parcel",
+        "go('parcel')",
+        "secondary"
+      )
+    )}
+
+    ${tabs(
+      [
+        ["scope","Scope & Contractor"],
+        ["clearing","Clearing Planner"],
+        ["bids","Bids"],
+        ["photos","Photos & Files"],
+        ["approval","Approval"]
+      ],
+      jobTab,
+      "jobTab"
+    )}
+
+    ${jobTab==="scope"
+      ?`
+        <div class="card">
+
+          <h2>
+            Trade Scope & Assignment
+          </h2>
+
+          <form onsubmit="saveJob(event)">
+
+            ${select(
+              "contractorId",
+              "Assigned Contractor",
+              [
+                [
+                  "",
+                  "Not assigned"
+                ],
+                ...state.contractors.map(function(c){
+                  return [
+                    c.id,
+                    c.name
+                  ];
+                })
+              ],
+              j.contractorId
+            )}
+
+            ${textarea(
+              "scope",
+              "Scope of Work",
+              j.scope
+            )}
+
+            ${textarea(
+              "notes",
+              "Stage Notes",
+              j.notes
+            )}
+
+            <button class="btn">
+              Save Stage
+            </button>
+
+          </form>
+
+          ${contactButtons(
+            findContractor(
+              j.contractorId
+            )
+          )}
+
+        </div>
+
+        <div class="card">
+
+          <h2>
+            Linked Budget Items
+          </h2>
+
+          ${costItems(d).filter(function(i){
+            return i.jobId===j.id;
+          }).map(function(i){
+            return `
+              <div class="item">
+                ${row(
+                  i.name,
+                  money(itemForecast(i))
+                )}
+              </div>
+            `;
+          }).join("")||
+          empty(
+            "No linked costs",
+            "Add a cost item in the Deal Budget and select this trade."
+          )}
+
+        </div>
+      `
+      :""
+    }
+
+    ${jobTab==="clearing"
+      ?clearingPlanner(j)
+      :""
+    }
+
+    ${jobTab==="bids"
+      ?bidSection(j)
+      :""
+    }
+
+    ${jobTab==="photos"
+      ?`
+        <div class="card">
+
+          <h2>
+            Stage Photos & Documents
+          </h2>
+
+          ${[
+            "before",
+            "during",
+            "after",
+            "document"
+          ].map(function(k){
+            return uploader(
+              "job",
+              j.id,
+              k
+            );
+          }).join("")}
+
+          ${filesHTML(
+            j.files||[]
+          )}
+
+        </div>
+      `
+      :""
+    }
+
+    ${jobTab==="approval"
+      ?approval(j,p)
+      :""
+    }
+  `;
+}
+
+function saveJob(ev){
+  ev.preventDefault();
+
+  const j=findJob();
+  const f=ev.target;
+
+  j.contractorId=v(
+    f,
+    "contractorId"
+  );
+
+  j.contractorName=
+    findContractor(
+      j.contractorId
+    )?.name||"";
+
+  j.scope=v(
+    f,
+    "scope"
+  );
+
+  j.notes=v(
+    f,
+    "notes"
+  );
+
+  save();
+  render();
+}
+
+/* =========================================================
+   CLEARING PLANNER
+   ========================================================= */
+
+function clearingDraft(j){
+  if(draftClearing){
+    return draftClearing;
+  }
+
+  const x=j.clearingLayout;
+
+  if(
+    x?.mode==="acres"
+  ){
+    draftClearing={
+      clear:String(
+        x.clearAcres??0.25
+      ),
+      brush:String(
+        x.brushAcres??0.25
+      ),
+      notes:x.notes||""
+    };
+  }else if(x){
+    const inner=
+      num(x.innerLength)*
+      num(x.innerWidth);
+
+    const outer=
+      num(x.outerLength)*
+      num(x.outerWidth);
+
+    draftClearing={
+      clear:String(
+        inner/SQFT
+      ),
+      brush:String(
+        Math.max(
+          0,
+          outer-inner
+        )/SQFT
+      ),
+      notes:x.notes||""
+    };
+  }else{
+    draftClearing={
+      clear:"0.25",
+      brush:"0.25",
+      notes:""
+    };
+  }
+
+  return draftClearing;
+}
+
+function clearingMath(c,b){
+  const clearSq=c*SQFT;
+  const brushSq=b*SQFT;
+
+  const inner=
+    Math.sqrt(clearSq);
+
+  const outer=
+    Math.sqrt(
+      clearSq+
+      brushSq
+    );
+
+  return {
+    clearSq:clearSq,
+    brushSq:brushSq,
+    inner:inner,
+    outer:outer,
+    band:(outer-inner)/2
+  };
+}
+
+function clearingPlanner(j){
+  const x=clearingDraft(j);
+  const saved=j.clearingLayout;
+
+  return `
+    <div class="card">
+
+      <h2>
+        Acreage-First Clearing Planner
+      </h2>
+
+      <p class="sub">
+        Enter completely cleared acreage and additional
+        underbrush acreage separately.
+      </p>
+
+      <form onsubmit="saveClearing(event)">
+
+        <div class="fields">
+
+          ${input(
+            "clear",
+            "Completely Cleared Acres",
+            "number",
+            x.clear,
+            "required min='0.000001' step='any' oninput='previewClearing()'"
+          )}
+
+          ${input(
+            "brush",
+            "Additional Underbrush Acres",
+            "number",
+            x.brush,
+            "required min='0.000001' step='any' oninput='previewClearing()'"
+          )}
+
+        </div>
+
+        <div class="notice">
+          Example:
+          for ¼ acre completely cleared plus an
+          additional ¼ acre underbrushed,
+          enter 0.25 and 0.25.
+          Total unique footprint = 0.50 acres.
+        </div>
+
+        <div id="clearingResult">
+          ${clearingResult(
+            x.clear,
+            x.brush
+          )}
+        </div>
+
+        ${textarea(
+          "notes",
+          "Site Notes",
+          x.notes
+        )}
+
+        <button class="btn">
+          Save Layout & Generate Scope
+        </button>
+
+      </form>
+
+      ${saved
+        ?`
+          <hr>
+
+          <h3>
+            Saved Layout
+          </h3>
+
+          ${row(
+            "Complete clearing",
+            fmt(
+              num(saved.innerLength)*
+              num(saved.innerWidth)
+            )+
+            " sq ft"
+          )}
+
+          ${row(
+            "Overall footprint",
+            fmt(
+              num(saved.outerLength)*
+              num(saved.outerWidth)
+            )+
+            " sq ft"
+          )}
+        `
+        :""
+      }
+
+    </div>
+  `;
+}
+
+function clearingResult(c,b){
+  const a=Number(c);
+  const z=Number(b);
+
+  if(
+    c==="" ||
+    b==="" ||
+    !Number.isFinite(a) ||
+    !Number.isFinite(z) ||
+    a<=0 ||
+    z<=0
+  ){
+    return `
+      <div class="notice warn">
+        Enter two positive acreage amounts.
+      </div>
+    `;
+  }
+
+  const m=clearingMath(
+    a,
+    z
+  );
+
+  if(m.outer>2500){
+    return `
+      <div class="notice warn">
+        The calculated square exceeds 2,500 feet per side.
+        Use a surveyed site plan for this size.
+      </div>
+    `;
+  }
+
+  return `
+    <div class="layout">
+
+      <strong>
+        OVERALL:
+        ${fmt(m.outer)}
+        ×
+        ${fmt(m.outer)}
+        FT
+      </strong>
+
+      <div class="layout-inner">
+        COMPLETE CLEARING
+        <br>
+        ${fmt(m.inner)}
+        ×
+        ${fmt(m.inner)}
+        FT
+      </div>
+
+      ADDITIONAL UNDERBRUSH:
+      ${fmt(m.band)}
+      FT OUTSIDE EACH SIDE
+
+    </div>
+
+    ${row(
+      "Completely cleared",
+      `${fmt(m.clearSq)} sq ft · ${fmt(a,4)} acres`
+    )}
+
+    ${row(
+      "Additional underbrush",
+      `${fmt(m.brushSq)} sq ft · ${fmt(z,4)} acres`
+    )}
+
+    ${row(
+      "Total unique footprint",
+      `${fmt(m.clearSq+m.brushSq)} sq ft · ${fmt(a+z,4)} acres`
+    )}
+
+    <p class="help">
+      Dimensions assume a centered square.
+      Verify actual property boundaries,
+      utilities, access, drainage,
+      retained trees, and field layout.
+    </p>
+  `;
+}
+
+function previewClearing(){
+  const c=
+    document.getElementById(
+      "clear"
+    )?.value||"";
+
+  const b=
+    document.getElementById(
+      "brush"
+    )?.value||"";
+
+  const result=
+    document.getElementById(
+      "clearingResult"
+    );
+
+  if(result){
+    result.innerHTML=
+      clearingResult(
+        c,
+        b
+      );
+  }
+}
+
+function saveClearing(ev){
+  ev.preventDefault();
+
+  const f=ev.target;
+  const j=findJob();
+
+  const c=Number(
+    v(f,"clear")
+  );
+
+  const b=Number(
+    v(f,"brush")
+  );
+
+  if(
+    !valid(v(f,"clear"),false) ||
+    !valid(v(f,"brush"),false)
+  ){
+    alert(
+      "Enter positive acreage amounts."
+    );
+
+    return;
+  }
+
+  const m=clearingMath(
+    c,
+    b
+  );
+
+  if(m.outer>2500){
+    alert(
+      "The calculated square exceeds 2,500 feet per side."
+    );
+
+    return;
+  }
+
+  if(
+    j.scope &&
+    !confirm(
+      "Replace the current stage scope with the measured clearing scope?"
+    )
+  ){
+    return;
+  }
+
+  j.clearingLayout={
+    mode:"acres",
+    clearAcres:c,
+    brushAcres:b,
+    innerLength:m.inner,
+    innerWidth:m.inner,
+    outerLength:m.outer,
+    outerWidth:m.outer,
+    centered:true,
+    notes:v(f,"notes")
+  };
+
+  j.scope=[
+    "LAND CLEARING — CONTRACTOR SCOPE",
+    "Development: "+findDev().name,
+    "Parcel: "+findParcel().name,
+    "",
+    "Complete clearing: "+
+      fmt(c,4)+
+      " acres / "+
+      fmt(m.clearSq)+
+      " sq ft.",
+    "Approximate inner square: "+
+      fmt(m.inner)+
+      " ft × "+
+      fmt(m.inner)+
+      " ft.",
+    "",
+    "Additional underbrush ONLY: "+
+      fmt(b,4)+
+      " acres / "+
+      fmt(m.brushSq)+
+      " sq ft.",
+    "Approximate overall square: "+
+      fmt(m.outer)+
+      " ft × "+
+      fmt(m.outer)+
+      " ft.",
+    "Approximate surrounding band: "+
+      fmt(m.band)+
+      " ft beyond each side.",
+    "",
+    "Total unique footprint: "+
+      fmt(c+b,4)+
+      " acres.",
+    "Confirm actual boundaries, utilities, tree retention, debris disposal, drainage, and site measurements.",
+    v(f,"notes")
+      ?"Site notes: "+v(f,"notes")
+      :""
+  ].filter(Boolean).join("\n");
+
+  draftClearing=null;
+
+  save();
+  render();
+}
+
+/* =========================================================
+   BIDS
+   ========================================================= */
+
+function bidSection(j){
+  const bs=state.bids.filter(function(b){
+    return b.jobId===j.id;
+  });
+
+  return `
+    <div class="card">
+
+      <h2>
+        Contractor Bids
+      </h2>
+
+      <form onsubmit="addBid(event)">
+
+        ${select(
+          "contractorId",
+          "Contractor",
+          [
+            [
+              "",
+              "Select Contractor"
+            ],
+            ...state.contractors.map(function(c){
+              return [
+                c.id,
+                c.name
+              ];
+            })
+          ]
+        )}
+
+        <div class="fields">
+
+          ${input(
+            "amount",
+            "Bid Total ($)",
+            "number",
+            "",
+            "required min='0' step='0.01'"
+          )}
+
+          ${input(
+            "date",
+            "Date Received",
+            "date",
+            today(),
+            "required"
+          )}
+
+        </div>
+
+        ${textarea(
+          "notes",
+          "Inclusions / Exclusions"
+        )}
+
+        <button class="btn">
+          Record Bid
+        </button>
+
+      </form>
+
+      <hr>
+
+      ${bs.length
+        ?bs.map(function(b){
+          return `
+            <div class="item">
+
+              <div class="itemhead">
+
+                <div>
+                  <strong>
+                    ${esc(b.contractorName)}
+                  </strong>
+
+                  <div class="meta">
+                    ${esc(b.date)}
+                  </div>
+
+                  <div class="meta">
+                    ${esc(b.notes)}
+                  </div>
+                </div>
+
+                <strong>
+                  ${money(b.amount)}
+                </strong>
+
+              </div>
+
+              <div class="actions">
+
+                ${b.acceptedV27||b.acceptedV26
+                  ?`
+                    <span class="badge green">
+                      Accepted
+                    </span>
+                  `
+                  :btn(
+                    "Accept & Budget",
+                    `acceptBid('${b.id}')`,
+                    "secondary small"
+                  )
+                }
+
+                ${btn(
+                  "Delete",
+                  `deleteBid('${b.id}')`,
+                  "danger small"
+                )}
+
+              </div>
+
+            </div>
+          `;
+        }).join("")
+        :empty(
+          "No bids",
+          "Record contractor proposals above."
+        )
+      }
+
+    </div>
+  `;
+}
+
+function addBid(ev){
+  ev.preventDefault();
+
+  const f=ev.target;
+
+  const c=findContractor(
+    v(f,"contractorId")
+  );
+
+  if(
+    !c ||
+    !valid(v(f,"amount"))
+  ){
+    alert(
+      "Select a contractor and valid bid amount."
+    );
+
+    return;
+  }
+
+  const d=findDev();
+  const p=findParcel();
+  const j=findJob();
+
+  state.bids.push({
+    id:uid(),
+    developmentId:d.id,
+    developmentName:d.name,
+    parcelId:p.id,
+    parcelName:p.name,
+    jobId:j.id,
+    trade:j.trade,
+    contractorId:c.id,
+    contractorName:c.name,
+    amount:num(v(f,"amount")),
+    date:v(f,"date"),
+    notes:v(f,"notes"),
+    acceptedV27:false
+  });
+
+  save();
+  render();
+}
+
+function deleteBid(id){
+  if(
+    !confirm(
+      "Delete this bid? Any linked committed cost item will remain for separate review."
+    )
+  ){
+    return;
+  }
+
+  state.bids=state.bids.filter(function(b){
+    return b.id!==id;
+  });
+
+  save();
+  render();
+}
+
+function openBid(d,p,j){
+  state.activeDevelopment=d;
+  state.activeParcel=p;
+  state.activeJob=j;
+
+  jobTab="bids";
+
+  save();
+  go("job");
+}
+
+function bidsPage(){
+  return `
+    ${head(
+      "Bid Register",
+      "Contractor proposals across developments"
+    )}
+
+    <div class="card">
+
+      ${state.bids.length
+        ?state.bids.map(function(b){
+          return `
+            <div class="item">
+
+              <div class="itemhead">
+
+                <div>
+
+                  <strong>
+                    ${esc(b.trade)}
+                  </strong>
+
+                  <div class="meta">
+                    ${esc(b.developmentName)}
+                    /
+                    ${esc(b.parcelName)}
+                  </div>
+
+                  <div class="meta">
+                    ${esc(b.contractorName)}
+                  </div>
+
+                </div>
+
+                <strong>
+                  ${money(b.amount)}
+                </strong>
+
+              </div>
+
+              <div class="actions">
+
+                ${btn(
+                  "Open Trade",
+                  `openBid('${b.developmentId}','${b.parcelId}','${b.jobId}')`,
+                  "secondary small"
+                )}
+
+              </div>
+
+            </div>
+          `;
+        }).join("")
+        :empty(
+          "No bids",
+          "Add bids within a trade stage."
+        )
+      }
+
+    </div>
+  `;
+}
+
+/* =========================================================
+   STAGE APPROVAL
+   ========================================================= */
+
+function approval(j,p){
+  const counts=[
+    "before",
+    "during",
+    "after"
+  ].map(function(k){
+    return (j.files||[]).filter(function(f){
+      return f.category===k;
+    }).length;
+  });
+
+  const ready=
+    counts.every(function(x){
+      return x>=3;
+    });
+
+  return `
+    <div class="card">
+
+      <h2>
+        Owner Stage Approval
+      </h2>
+
+      ${row(
+        "Before photos",
+        counts[0]+" / 3"
+      )}
+
+      ${row(
+        "During photos",
+        counts[1]+" / 3"
+      )}
+
+      ${row(
+        "After photos",
+        counts[2]+" / 3"
+      )}
+
+      ${j.status==="approved"
+        ?`
+          <div class="notice good">
+            Approved
+            ${esc(j.approvedAt||"")}
+          </div>
+        `
+        :`
+          <div class="notice ${ready?"good":"warn"}">
+            ${ready
+              ?"Photo requirements met."
+              :"Three photos in each category are required before approval."
+            }
+          </div>
+
+          <div class="actions">
+
+            ${btn(
+              "Mark In Progress",
+              "changeJobStatus('in_progress')",
+              "secondary"
+            )}
+
+            ${btn(
+              "Submit for Approval",
+              "changeJobStatus('submitted')",
+              "secondary"
+            )}
+
+            <button
+              class="btn"
+              ${!ready||j.status==="locked"
+                ?"disabled"
+                :""
+              }
+              onclick="approveJob()">
+              Approve & Unlock Next Stage
+            </button>
+
+          </div>
+        `
+      }
+
+      <p class="help">
+        This is a local owner project approval record.
+      </p>
+
+    </div>
+  `;
+}
+
+function changeJobStatus(status){
+  const j=findJob();
+
+  if(
+    ["locked","approved"].includes(
+      j.status
+    )
+  ){
+    return;
+  }
+
+  j.status=status;
+
+  save();
+  render();
+}
+
+function approveJob(){
+  const j=findJob();
+  const p=findParcel();
+
+  if(
+    j.status==="locked" ||
+    j.status==="approved"
+  ){
+    return;
+  }
+
+  const missing=[
+    "before",
+    "during",
+    "after"
+  ].some(function(k){
+    return (j.files||[]).filter(function(f){
+      return f.category===k;
+    }).length<3;
+  });
+
+  if(missing){
+    alert(
+      "Upload all required photos first."
+    );
+
+    return;
+  }
+
+  if(
+    !confirm(
+      "Approve this stage and unlock the next stage?"
+    )
+  ){
+    return;
+  }
+
+  j.status="approved";
+  j.approvedAt=today();
+
+  const index=p.jobs.findIndex(function(x){
+    return x.id===j.id;
+  });
+
+  const next=p.jobs[index+1];
+
+  if(
+    next &&
+    next.status==="locked"
+  ){
+    next.status="ready";
+  }
+
+  save();
+  render();
+}
+
+/* =========================================================
+   CONTRACTORS
+   ========================================================= */
+
+function phoneNumber(phone){
+  const raw=String(
+    phone||""
+  ).trim();
+
+  const digits=raw.replace(
+    /\D/g,
+    ""
+  );
+
+  if(
+    digits.length<7 ||
+    digits.length>15
+  ){
+    return "";
+  }
+
+  return (
+    raw.startsWith("+")
+      ?"+"
+      :""
+  )+digits;
+}
+
+function contactButtons(c){
+  if(!c){
+    return "";
+  }
+
+  const phone=phoneNumber(
+    c.phone
+  );
+
+  if(!phone){
+    return "";
+  }
+
+  return `
+    <div class="actions">
+
+      <a
+        class="btn secondary small"
+        href="tel:${esc(phone)}">
+        Call
+      </a>
+
+      <a
+        class="btn secondary small"
+        href="sms:${esc(phone)}">
+        Text
+      </a>
+
+    </div>
+  `;
+}
+
+function contractors(){
+  return `
+    ${head(
+      "Contractor Directory",
+      "Contacts and trade capabilities",
+      btn(
+        "+ Add Contractor",
+        "editingContractor=null;go('contractorForm')"
+      )
+    )}
+
+    <div class="card">
+
+      ${state.contractors.length
+        ?state.contractors.map(function(c){
+          return `
+            <div class="item">
+
+              <div class="itemhead">
+
+                <div>
+
+                  <div class="itemtitle">
+                    ${esc(c.name)}
+                  </div>
+
+                  <div class="meta">
+                    ${esc(
+                      c.company||
+                      "Independent contractor"
+                    )}
+                  </div>
+
+                  <div class="meta">
+                    ${esc(c.phone||"")}
+                    ${esc(c.email||"")}
+                  </div>
+
+                  <div class="meta">
+                    ${esc(
+                      (c.trades||[]).join(
+                        " · "
+                      )
+                    )}
+                  </div>
+
+                </div>
+
+                ${btn(
+                  "Edit",
+                  `editingContractor='${c.id}';go('contractorForm')`,
+                  "secondary small"
+                )}
+
+              </div>
+
+              ${contactButtons(c)}
+
+            </div>
+          `;
+        }).join("")
+        :empty(
+          "No contractors",
+          "Save your contractor contacts."
+        )
+      }
+
+    </div>
+  `;
+}
+
+function contractorForm(){
+  const c=findContractor(
+    editingContractor
+  );
+
+  return `
+    ${head(
+      c
+        ?"Edit Contractor"
+        :"Add Contractor",
+      "Contact details and trade capabilities"
+    )}
+
+    <div class="card">
+
+      <form onsubmit="saveContractor(event)">
+
+        <div class="fields">
+
+          ${input(
+            "name",
+            "Name",
+            "text",
+            c?.name||"",
+            "required"
+          )}
+
+          ${input(
+            "company",
+            "Company",
+            "text",
+            c?.company||""
+          )}
+
+          ${input(
+            "phone",
+            "Phone",
+            "tel",
+            c?.phone||""
+          )}
+
+          ${input(
+            "email",
+            "Email",
+            "email",
+            c?.email||""
+          )}
+
+        </div>
+
+        <label>
+          Trades Performed
+        </label>
+
+        <div class="grid two">
+
+          ${TRADES.map(function(t){
+            return `
+              <label
+                style="
+                  display:flex;
+                  gap:8px;
+                  align-items:center;
+                  font-weight:500;
+                ">
+
+                <input
+                  type="checkbox"
+                  name="trade"
+                  value="${esc(t)}"
+                  style="
+                    width:18px;
+                    min-height:18px;
+                  "
+                  ${(c?.trades||[]).includes(t)
+                    ?"checked"
+                    :""
+                  }>
+
+                ${esc(t)}
+
+              </label>
+            `;
+          }).join("")}
+
+        </div>
+
+        ${textarea(
+          "notes",
+          "Notes",
+          c?.notes||""
+        )}
+
+        <div class="actions">
+
+          <button class="btn">
+            Save Contractor
+          </button>
+
+          ${btn(
+            "Cancel",
+            "go('contractors')",
+            "secondary"
+          )}
+
+        </div>
+
+      </form>
+
+    </div>
+  `;
+}
+
+function saveContractor(ev){
+  ev.preventDefault();
+
+  const f=ev.target;
+
+  const c=findContractor(
+    editingContractor
+  );
+
+  if(!v(f,"name")){
+    return;
+  }
+
+  const x={
+    id:c?.id||uid(),
+    name:v(f,"name"),
+    company:v(f,"company"),
+    phone:v(f,"phone"),
+    email:v(f,"email"),
+    notes:v(f,"notes"),
+    trades:[
+      ...f.querySelectorAll(
+        'input[name="trade"]:checked'
+      )
+    ].map(function(x){
+      return x.value;
+    })
+  };
+
+  if(c){
+    Object.assign(c,x);
+  }else{
+    state.contractors.push(x);
+  }
+
+  state.developments.forEach(function(d){
+    d.parcels.forEach(function(p){
+      p.jobs.forEach(function(j){
+        if(
+          j.contractorId===x.id
+        ){
+          j.contractorName=x.name;
+        }
+      });
+    });
+  });
+
+  editingContractor=null;
+
+  save();
+  go("contractors");
+}
+
+/* =========================================================
+   BUILT-IN SUPERINTENDENT
+   ========================================================= */
+
+function assistant(){
+  return `
+    ${head(
+      "AI Superintendent",
+      "Project guidance using your saved A7 records"
+    )}
+
+    <div class="card">
+
+      <div class="notice">
+        This standalone HTML build uses local project records
+        and built-in calculations.
+
+        Live AI, live supplier pricing, automatic email,
+        and external integrations will require the connected
+        version of A7 Superintendent.
+      </div>
+
+      ${state.messages.slice(-16).map(function(m){
+        return `
+          <div class="bubble ${
+            m.role==="user"
+              ?"me"
+              :""
+          }">
+            ${esc(m.text)}
+          </div>
+        `;
+      }).join("")}
+
+      <form onsubmit="ask(event)">
+
+        ${textarea(
+          "question",
+          "Ask About Your Project"
+        )}
+
+        <button class="btn">
+          Ask Superintendent
+        </button>
+
+      </form>
+
+    </div>
+  `;
+}
+
+function ask(ev){
+  ev.preventDefault();
+
+  const q=v(
+    ev.target,
+    "question"
+  );
+
+  if(!q){
+    return;
+  }
+
+  const s=q.toLowerCase();
+
+  let answer="";
+
+  if(
+    /budget|profit|margin|cash|cost|finance/.test(s)
+  ){
+    if(state.developments.length){
+      answer=state.developments.map(function(d){
+        return [
+          d.name,
+          "Forecast: "+money(totalForecast(d)),
+          "Paid: "+money(paid(d)),
+          "Cash to finish: "+money(cashToFinish(d)),
+          "Projected profit: "+
+            (
+              dealReady(d)
+                ?money(profit(d))
+                :"Sale prices incomplete"
+            )
+        ].join("\n");
+      }).join("\n\n");
+    }else{
+      answer=
+        "Create a development to start a deal budget.";
+    }
+  }else if(
+    /clear|acre|underbrush/.test(s)
+  ){
+    answer=
+      "Open a parcel's Land Clearing stage. "+
+      "Enter completely cleared acreage and additional underbrush acreage separately. "+
+      "The clearing planner calculates square footage, a centered square footprint, "+
+      "and the approximate surrounding underbrush band.";
+  }else if(
+    /contractor|call|text/.test(s)
+  ){
+    answer=
+      "Save contractors in the Contractor Directory and assign them to trade stages. "+
+      "The Call and Text buttons open your phone's native apps.";
+  }else if(
+    /bid/.test(s)
+  ){
+    answer=
+      "You currently have "+
+      state.bids.length+
+      " recorded bids. "+
+      "A bid remains a proposal until you accept it. "+
+      "When accepted, A7 creates a linked committed cost item.";
+  }else{
+    answer=
+      "I can help summarize your deal budget, lot costs, contractor bids, "+
+      "cash to finish, project stages, and clearing calculations using the records saved in this browser.";
+  }
+
+  state.messages.push(
+    {
+      role:"user",
+      text:q
+    },
+    {
+      role:"assistant",
+      text:answer
+    }
+  );
+
+  save();
+  render();
+}
+
+/* =========================================================
+   FILE STORAGE
+   ========================================================= */
+
+function openDB(){
+  return new Promise(function(resolve,reject){
+    const r=indexedDB.open(
+      DB_NAME,
+      1
+    );
+
+    r.onupgradeneeded=function(){
+      if(
+        !r.result.objectStoreNames.contains(
+          "files"
+        )
+      ){
+        r.result.createObjectStore(
+          "files"
+        );
+      }
+    };
+
+    r.onsuccess=function(){
+      db=r.result;
+      resolve(db);
+    };
+
+    r.onerror=function(){
+      reject(r.error);
+    };
+  });
+}
+
+async function filePut(id,blob){
+  const d=db||await openDB();
+
+  return new Promise(function(ok,no){
+    const t=d.transaction(
+      "files",
+      "readwrite"
+    );
+
+    t.objectStore(
+      "files"
+    ).put(
+      blob,
+      id
+    );
+
+    t.oncomplete=ok;
+
+    t.onerror=function(){
+      no(t.error);
+    };
+  });
+}
+
+async function fileGet(id){
+  const d=db||await openDB();
+
+  return new Promise(function(ok,no){
+    const r=d.transaction(
+      "files",
+      "readonly"
+    ).objectStore(
+      "files"
+    ).get(id);
+
+    r.onsuccess=function(){
+      ok(r.result);
+    };
+
+    r.onerror=function(){
+      no(r.error);
+    };
+  });
+}
+
+async function fileDelete(id){
+  const d=db||await openDB();
+
+  return new Promise(function(ok,no){
+    const t=d.transaction(
+      "files",
+      "readwrite"
+    );
+
+    t.objectStore(
+      "files"
+    ).delete(id);
+
+    t.oncomplete=ok;
+
+    t.onerror=function(){
+      no(t.error);
+    };
+  });
+}
+
+function uploader(type,owner,category){
+  const docs=[
+    "document",
+    "receipt",
+    "invoice"
+  ].includes(category);
+
+  return `
+    <div class="field">
+
+      <label>
+        Upload ${esc(category)}
+      </label>
+
+      <input
+        type="file"
+        accept="${
+          docs
+            ?".pdf,image/*,.doc,.docx"
+            :"image/*"
+        }"
+        ${docs?"":"multiple"}
+        onchange="upload(event,'${type}','${owner}','${category}')">
+
+    </div>
+  `;
+}
+
+async function upload(ev,type,id,category){
+  let owner=null;
+
+  if(type==="development"){
+    owner=state.developments.find(function(d){
+      return d.id===id;
+    });
+  }else{
+    owner=state.developments
+      .flatMap(function(d){
+        return d.parcels.flatMap(function(p){
+          return p.jobs;
+        });
+      })
+      .find(function(j){
+        return j.id===id;
+      });
+  }
+
+  if(!owner){
+    return;
+  }
+
+  owner.files=owner.files||[];
+
+  try{
+    for(const f of [...ev.target.files]){
+      const key=uid();
+
+      await filePut(
+        key,
+        f
+      );
+
+      owner.files.push({
+        id:key,
+        name:f.name,
+        type:f.type,
+        size:f.size,
+        category:category,
+        date:today()
+      });
+    }
+
+    save();
+    render();
+  }catch(err){
+    alert(
+      "Upload failed: "+
+      err.message
+    );
+  }
+}
+
+function filesHTML(files){
+  if(!files.length){
+    return `
+      <p class="sub">
+        No files uploaded.
+      </p>
+    `;
+  }
+
+  return files.map(function(f){
+    return `
+      <div class="file">
+
+        <div>
+          <strong>
+            ${esc(f.name)}
+          </strong>
+
+          <div class="meta">
+            ${esc(f.category)}
+            ·
+            ${esc(f.date)}
+          </div>
+        </div>
+
+        <div class="actions">
+
+          ${btn(
+            "View",
+            `viewFile('${f.id}')`,
+            "secondary small"
+          )}
+
+          ${btn(
+            "Delete",
+            `removeFile('${f.id}')`,
+            "danger small"
+          )}
+
+        </div>
+
+      </div>
+    `;
+  }).join("");
+}
+
+async function viewFile(id){
+  try{
+    const blob=await fileGet(id);
+
+    if(!blob){
+      alert(
+        "This file was not found in this browser."
+      );
+
+      return;
+    }
+
+    const url=URL.createObjectURL(
+      blob
+    );
+
+    const a=document.createElement(
+      "a"
+    );
+
+    a.href=url;
+    a.target="_blank";
+    a.rel="noopener";
+
+    document.body.appendChild(a);
+
+    a.click();
+    a.remove();
+
+    setTimeout(function(){
+      URL.revokeObjectURL(url);
+    },60000);
+  }catch(err){
+    alert(
+      "Cannot open file: "+
+      err.message
+    );
+  }
+}
+
+async function removeFile(id){
+  if(
+    !confirm(
+      "Delete this file?"
+    )
+  ){
+    return;
+  }
+
+  try{
+    await fileDelete(id);
+
+    state.developments.forEach(function(d){
+      d.files=(d.files||[]).filter(function(f){
+        return f.id!==id;
+      });
+
+      d.parcels.forEach(function(p){
+        p.jobs.forEach(function(j){
+          j.files=(j.files||[]).filter(function(f){
+            return f.id!==id;
+          });
+        });
+      });
+    });
+
+    save();
+    render();
+  }catch(err){
+    alert(
+      "Cannot delete file: "+
+      err.message
+    );
+  }
+}
+
+/* =========================================================
+   BACKUP SYSTEM
+   ========================================================= */
+
+function allFiles(){
+  return state.developments.flatMap(function(d){
+    return [
+      ...(d.files||[]),
+      ...d.parcels.flatMap(function(p){
+        return p.jobs.flatMap(function(j){
+          return j.files||[];
+        });
+      })
+    ];
+  });
+}
+
+function blobData(blob){
+  return new Promise(function(ok,no){
+    const r=new FileReader();
+
+    r.onload=function(){
+      ok(r.result);
+    };
+
+    r.onerror=function(){
+      no(r.error);
+    };
+
+    r.readAsDataURL(blob);
+  });
+}
+
+function dataBlob(s){
+  const parts=s.split(",");
+
+  const h=parts[0];
+  const b=parts[1];
+
+  const match=h.match(
+    /data:([^;]+)/
+  );
+
+  const mime=
+    match?.[1]||
+    "application/octet-stream";
+
+  const raw=atob(b);
+
+  const a=new Uint8Array(
+    raw.length
+  );
+
+  for(
+    let i=0;
+    i<raw.length;
+    i++
+  ){
+    a[i]=raw.charCodeAt(i);
+  }
+
+  return new Blob(
+    [a],
+    {
+      type:mime
+    }
+  );
+}
+
+async function exportBackup(){
+  try{
+    const files={};
+
+    for(const f of allFiles()){
+      const blob=await fileGet(
+        f.id
+      );
+
+      if(blob){
+        files[f.id]=await blobData(
+          blob
+        );
+      }
+    }
+
+    const data={
+      format:"a7-v27",
+      exportedAt:
+        new Date().toISOString(),
+      state:state,
+      files:files
+    };
+
+    const backupBlob=
+      new Blob(
+        [
+          JSON.stringify(data)
+        ],
+        {
+          type:"application/json"
+        }
+      );
+
+    const url=
+      URL.createObjectURL(
+        backupBlob
+      );
+
+    const a=
+      document.createElement(
+        "a"
+      );
+
+    a.href=url;
+
+    a.download=
+      "A7-V27-Backup-"+
+      today()+
+      ".json";
+
+    document.body.appendChild(a);
+
+    a.click();
+    a.remove();
+
+    setTimeout(function(){
+      URL.revokeObjectURL(url);
+    },60000);
+
+  }catch(err){
+    alert(
+      "Backup failed: "+
+      err.message
+    );
+  }
+}
+
+async function importBackup(ev){
+  const file=
+    ev.target.files?.[0];
+
+  if(!file){
+    return;
+  }
+
+  let backup;
+
+  try{
+    backup=JSON.parse(
+      await file.text()
+    );
+
+    const allowed=[
+      "a7-v21",
+      "a7-v22",
+      "a7-v23",
+      "a7-v24",
+      "a7-v25",
+      "a7-v26",
+      "a7-v27"
+    ];
+
+    if(
+      !allowed.includes(
+        backup.format
+      ) ||
+      !Array.isArray(
+        backup.state?.developments
+      )
+    ){
+      throw new Error(
+        "Unsupported backup"
+      );
+    }
+  }catch(err){
+    alert(
+      "Cannot read backup: "+
+      err.message
+    );
+
+    return;
+  }
+
+  if(
+    !confirm(
+      "Replace all V27 records and browser files with this backup? "+
+      "Export your current V27 backup first."
+    )
+  ){
+    return;
+  }
+
+  try{
+    const d=db||await openDB();
+
+    await new Promise(function(ok,no){
+      const t=d.transaction(
+        "files",
+        "readwrite"
+      );
+
+      t.objectStore(
+        "files"
+      ).clear();
+
+      t.oncomplete=ok;
+
+      t.onerror=function(){
+        no(t.error);
+      };
+    });
+
+    for(
+      const pair of Object.entries(
+        backup.files||{}
+      )
+    ){
+      const id=pair[0];
+      const data=pair[1];
+
+      await filePut(
+        id,
+        dataBlob(data)
+      );
+    }
+
+    state=normalize(
+      copy(
+        backup.state
+      )
+    );
+
+    state.version=27;
+
+    state.importedFromPrevious=
+      backup.format!=="a7-v27";
+
+    save();
+    go("dashboard");
+
+    alert(
+      "Backup imported successfully."
+    );
+
+  }catch(err){
+    alert(
+      "Import failed: "+
+      err.message
+    );
+  }
+}
+
+/* =========================================================
+   SETTINGS
+   ========================================================= */
+
+function settings(){
+  return `
+    ${head(
+      "Settings & Backups",
+      "Protect your A7 Superintendent project records"
+    )}
+
+    <div class="grid two">
+
+      <div class="card">
+
+        <h2>
+          Export Full V27 Backup
+        </h2>
+
+        <p class="sub">
+          Includes developments,
+          deal budgets,
+          payments,
+          bids,
+          contractors,
+          and uploaded files.
+        </p>
+
+        ${btn(
+          "Export Backup",
+          "exportBackup()"
+        )}
+
+      </div>
+
+      <div class="card">
+
+        <h2>
+          Import Backup
+        </h2>
+
+        <p class="sub">
+          Importing replaces the current V27 records
+          in this browser.
+          Export first.
+        </p>
+
+        <input
+          type="file"
+          accept=".json,application/json"
+          onchange="importBackup(event)">
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        V27 Storage
+      </h2>
+
+      ${row(
+        "Current app records",
+        "A7 V27 browser storage"
+      )}
+
+      ${row(
+        "V26 project records",
+        "Copied forward automatically when available"
+      )}
+
+      ${row(
+        "Uploaded files",
+        "Browser IndexedDB storage"
+      )}
+
+      ${row(
+        "Live AI",
+        "Not connected in standalone HTML"
+      )}
+
+      ${row(
+        "Automatic emails",
+        "Not connected in standalone HTML"
+      )}
+
+      ${row(
+        "Version",
+        "27"
+      )}
+
+      <div class="notice warn">
+        Do not clear Safari website data until you have exported
+        a current A7 backup.
+
+        Uploaded photos and documents are stored in the browser,
+        so a backup is important before changing devices or
+        clearing browser data.
+      </div>
+
+    </div>
+  `;
+}
+
+/* =========================================================
+   START A7 SUPERINTENDENT
+   ========================================================= */
+
+render();
+
+</script>
+
+</body>
+</html>
