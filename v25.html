@@ -1,0 +1,3560 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>A7 Superintendent — V25</title>
+<style>
+:root{
+  --navy:#17304d;--blue:#1768b5;--pale:#edf5ff;--bg:#f4f7fb;
+  --line:#dce5ef;--muted:#68798b;--green:#18734b;--red:#b83e3e
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:#25364a;
+  font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+header{
+  position:sticky;top:0;z-index:10;background:#fff;
+  border-bottom:1px solid var(--line);padding:15px 18px;
+  display:flex;justify-content:space-between;align-items:center
+}
+.brand{font-weight:850;color:var(--navy);letter-spacing:-.4px}
+.brand small{display:block;color:var(--blue);font-size:10px;letter-spacing:1.2px}
+nav{
+  display:flex;overflow:auto;gap:5px;background:#fff;padding:8px;
+  border-bottom:1px solid var(--line);scrollbar-width:none
+}
+nav::-webkit-scrollbar{display:none}
+nav button{
+  border:0;background:transparent;color:var(--muted);padding:10px 12px;
+  border-radius:8px;white-space:nowrap;font-weight:700;font-size:13px
+}
+nav button.active{background:var(--pale);color:var(--blue)}
+main{max-width:1100px;margin:auto;padding:20px 14px 100px}
+h1,h2,h3{color:var(--navy);letter-spacing:-.35px}
+h1{font-size:24px;margin:0 0 5px}
+h2{font-size:18px;margin:0 0 12px}
+h3{font-size:15px;margin:0 0 9px}
+p{margin:0 0 12px}
+.sub,.help{color:var(--muted);font-size:13px}
+.help{font-size:12px;margin-top:5px}
+.head{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  gap:12px;flex-wrap:wrap;margin-bottom:18px
+}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card,.stat{
+  background:#fff;border:1px solid var(--line);border-radius:12px;
+  padding:17px;min-width:0;margin-bottom:13px
+}
+.stat .label{font-size:12px;font-weight:700;color:var(--muted)}
+.stat .value{
+  font-size:23px;font-weight:800;color:var(--navy);
+  margin-top:6px;overflow-wrap:anywhere
+}
+.section{margin-top:22px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  text-decoration:none;background:var(--blue);color:#fff;
+  border:1px solid var(--blue);border-radius:8px;padding:10px 14px;
+  min-height:41px;font-weight:750;font-size:13px
+}
+.btn.secondary{background:#fff;color:var(--blue);border-color:#c4d8ee}
+.btn.danger{background:#fff;color:var(--red);border-color:#eac6c6}
+.btn.call{background:var(--green);border-color:var(--green)}
+.btn.text{background:#fff;border-color:#a9c9eb;color:var(--blue)}
+.btn.small{min-height:34px;padding:7px 10px;font-size:12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.item{border-top:1px solid var(--line);padding:14px 0}
+.item:first-child{border-top:0;padding-top:0}
+.item:last-child{padding-bottom:0}
+.itemhead{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  gap:12px;flex-wrap:wrap
+}
+.itemtitle{font-weight:800;color:var(--navy)}
+.meta{font-size:12px;color:var(--muted);margin-top:4px}
+.row{
+  display:flex;justify-content:space-between;gap:12px;
+  border-bottom:1px solid #edf1f6;padding:9px 0
+}
+.row:last-child{border-bottom:0}
+.row>:last-child{text-align:right}
+.money{font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums}
+label{
+  display:block;color:var(--navy);font-size:12px;
+  font-weight:800;margin:0 0 6px
+}
+.field{margin-bottom:14px;min-width:0}
+input,select,textarea{
+  width:100%;background:#fff;color:#25364a;
+  border:1px solid #cbd7e5;border-radius:8px;
+  padding:10px 11px;min-height:42px
+}
+textarea{min-height:100px;resize:vertical}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 13px}
+.notice{
+  background:var(--pale);border:1px solid #c8dcef;
+  border-radius:9px;padding:12px 13px;font-size:13px;margin:12px 0
+}
+.warning{background:#fff8e9;border-color:#ead9ae}
+.tabs{display:flex;gap:7px;overflow:auto;margin:16px 0;scrollbar-width:none}
+.tabs button{
+  background:#fff;border:1px solid var(--line);border-radius:8px;
+  padding:9px 12px;white-space:nowrap;color:var(--muted);
+  font-weight:700;font-size:12px
+}
+.tabs button.active{color:var(--blue);background:var(--pale);border-color:var(--blue)}
+.badge{
+  display:inline-block;border-radius:20px;background:#edf1f6;
+  color:#50657d;padding:4px 9px;font-size:11px;font-weight:800
+}
+.badge.blue{background:var(--pale);color:var(--blue)}
+.badge.green{background:#e7f5ed;color:var(--green)}
+hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+.empty{text-align:center;color:var(--muted);padding:28px 10px}
+.empty strong{display:block;color:var(--navy)}
+.file{
+  border:1px solid var(--line);border-radius:8px;padding:10px;
+  display:flex;justify-content:space-between;gap:10px;
+  align-items:center;margin:7px 0;overflow-wrap:anywhere
+}
+.bubble{
+  padding:12px;border-radius:9px;background:#f0f4f9;
+  white-space:pre-wrap;margin:8px 0;font-size:13px
+}
+.bubble.me{background:var(--pale);margin-left:20px}
+.segment{
+  display:flex;gap:3px;padding:4px;background:#edf2f8;
+  border-radius:11px;margin:13px 0
+}
+.segment button{
+  flex:1;border:0;background:transparent;color:var(--muted);
+  border-radius:8px;padding:10px 6px;font-size:12px;font-weight:800
+}
+.segment button.active{
+  background:#fff;color:var(--blue);
+  box-shadow:0 1px 5px #17304d18
+}
+.measure-section{
+  border:1px solid var(--line);border-radius:12px;
+  padding:14px;margin:12px 0;background:#fff
+}
+.measure-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px
+}
+.measure-field{min-width:0}
+.measure-control{
+  display:flex;align-items:center;gap:5px;
+  border:1px solid #cbd7e5;border-radius:11px;
+  background:#fff;padding:4px 5px 4px 10px;min-height:47px
+}
+.measure-control input{
+  border:0;outline:0;min-height:35px;padding:4px 0;
+  width:100%;min-width:0;font-size:18px;font-weight:750;color:var(--navy)
+}
+.measure-unit{font-size:12px;color:var(--muted);font-weight:700}
+.wheel-trigger{
+  flex:0 0 36px;width:36px;height:36px;border:0;border-radius:8px;
+  background:#eef4fb;color:var(--blue);font-size:18px;font-weight:700
+}
+.measure-result{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;background:#f4f8fd;border-radius:9px;
+  padding:11px 12px;margin-top:10px
+}
+.measure-result strong{color:var(--green);font-size:18px}
+.measure-result small{display:block;color:var(--muted);font-size:11px}
+.total-result{
+  background:#edf7f1;border:1px solid #d1e9da;
+  border-radius:10px;padding:13px;margin-top:12px
+}
+.total-result strong{font-size:21px;color:var(--green)}
+.layout{
+  background:#e3f1e8;border:1px solid #9dc8aa;border-radius:10px;
+  padding:16px;text-align:center;color:#276444
+}
+.layout-inner{
+  background:#d2e7ff;border:2px solid var(--blue);
+  border-radius:8px;padding:22px 8px;margin:15px auto;
+  max-width:72%;color:var(--navy);font-weight:800
+}
+.wheel-backdrop{
+  position:fixed;inset:0;background:#12263e70;z-index:50;
+  display:flex;align-items:flex-end;justify-content:center
+}
+.wheel-sheet{
+  background:#fff;width:100%;max-width:430px;
+  border-radius:18px 18px 0 0;
+  padding:12px 16px calc(16px + env(safe-area-inset-bottom))
+}
+.wheel-top{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;padding-bottom:12px
+}
+.wheel-top strong{color:var(--navy)}
+.wheel-done{
+  border:0;background:transparent;color:var(--blue);
+  font-size:15px;font-weight:800;padding:8px
+}
+.wheel-frame{position:relative}
+.wheel-window{
+  height:220px;overflow-y:auto;overscroll-behavior:contain;
+  scroll-snap-type:y mandatory;scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;border-radius:12px;background:#f7f9fc
+}
+.wheel-window::-webkit-scrollbar{display:none}
+.wheel-option{
+  height:44px;display:flex;align-items:center;justify-content:center;
+  scroll-snap-align:center;font-size:20px;color:#78899b;
+  font-variant-numeric:tabular-nums;user-select:none
+}
+.wheel-option.selected{color:var(--navy);font-size:23px;font-weight:800}
+.wheel-spacer{height:88px}
+.wheel-selection{
+  position:absolute;left:0;right:0;top:88px;height:44px;
+  border-top:1px solid #c9d9ea;border-bottom:1px solid #c9d9ea;
+  background:#e7f1fd66;pointer-events:none
+}
+.wheel-hint{text-align:center;color:var(--muted);font-size:12px;margin-top:10px}
+@media(max-width:700px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid.two,.fields{grid-template-columns:1fr}
+  .stat .value{font-size:19px}
+  .card,.stat{padding:14px}
+  h1{font-size:22px}
+}
+@media(min-width:600px){
+  .wheel-backdrop{align-items:center;padding:20px}
+  .wheel-sheet{border-radius:18px;padding-bottom:16px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    A7 SUPERINTENDENT
+    <small>DEVELOPMENT MANAGEMENT</small>
+  </div>
+  <span class="sub">V25</span>
+</header>
+<nav id="nav"></nav>
+<main id="app"></main>
+<div id="wheelRoot"></div>
+
+<script>
+"use strict";
+
+/* V25 shares V24 browser records and file storage. */
+const KEY="a7-superintendent-v21";
+const DB="a7-superintendent-v21-files";
+const SQFT_PER_ACRE=43560;
+const WHEEL_MAX=2500;
+
+const TRADES=[
+  "Land Clearing","Entrance & Culvert","Driveway","Home Pad",
+  "Water","Electrical","Manufactured Home","Home Transport",
+  "Home Setup","Septic","Skirting","Decks & Steps","HVAC","Other"
+];
+
+const HOME_TRADES=[
+  "Manufactured Home","Home Transport","Home Setup",
+  "Skirting","Decks & Steps","HVAC"
+];
+
+const FRACTIONS=[
+  ["0.125","⅛ acre"],["0.25","¼ acre"],
+  ["0.3333333333333333","⅓ acre"],["0.5","½ acre"],
+  ["0.6666666666666666","⅔ acre"],["0.75","¾ acre"],
+  ["1","1 acre"],["1.25","1¼ acres"],["1.5","1½ acres"],
+  ["1.75","1¾ acres"],["2","2 acres"]
+];
+
+const EMPTY={
+  developments:[],contractors:[],bids:[],messages:[],
+  activeDevelopment:null,activeParcel:null,activeJob:null
+};
+
+let state=load();
+let page="dashboard";
+let tab="overview";
+let jobTab="details";
+let budgetTab="overview";
+let editingContractor=null;
+let db=null;
+let activeWheel=null;
+let wheelScrollTimer=null;
+let clearingMode="acres";
+let acreageEntryMode="fraction";
+let clearingDraft=null;
+let customAcreFields={clearAcres:false,brushAcres:false};
+
+/* HELPERS */
+
+function clone(x){return JSON.parse(JSON.stringify(x));}
+
+function load(){
+  try{
+    const x=JSON.parse(localStorage.getItem(KEY));
+    return x&&typeof x==="object"
+      ?{...clone(EMPTY),...x}
+      :clone(EMPTY);
+  }catch{return clone(EMPTY);}
+}
+
+function save(){
+  try{
+    localStorage.setItem(KEY,JSON.stringify(state));
+    return true;
+  }catch{
+    alert("Unable to save browser data. Export a backup and check storage.");
+    return false;
+  }
+}
+
+function id(){
+  return typeof crypto!=="undefined"&&crypto.randomUUID
+    ?crypto.randomUUID()
+    :Date.now().toString(36)+Math.random().toString(36).slice(2);
+}
+
+function e(x){
+  return String(x??"").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+function n(x){
+  const v=Number(x);
+  return Number.isFinite(v)?v:0;
+}
+
+function positive(x){return Math.max(0,n(x));}
+
+function usd(x){
+  return new Intl.NumberFormat("en-US",{
+    style:"currency",currency:"USD"
+  }).format(n(x));
+}
+
+function fmt(x,d=2){
+  return n(x).toLocaleString("en-US",{maximumFractionDigits:d});
+}
+
+function acres(sf){return (sf/SQFT_PER_ACRE).toFixed(4);}
+
+function date(){
+  const d=new Date();
+  return [
+    d.getFullYear(),
+    String(d.getMonth()+1).padStart(2,"0"),
+    String(d.getDate()).padStart(2,"0")
+  ].join("-");
+}
+
+function dev(){
+  return state.developments.find(x=>x.id===state.activeDevelopment);
+}
+
+function parcel(){
+  return dev()?.parcels.find(x=>x.id===state.activeParcel);
+}
+
+function job(){
+  return parcel()?.jobs.find(x=>x.id===state.activeJob);
+}
+
+function contractor(cid){
+  return state.contractors.find(x=>x.id===cid);
+}
+
+function jobs(d){return d.parcels.flatMap(p=>p.jobs);}
+
+function land(d){
+  return d.parcels.length?n(d.purchasePrice)/d.parcels.length:0;
+}
+
+function bidsFor(j){
+  return state.bids.filter(b=>b.jobId===j.id);
+}
+
+function allFiles(){
+  return state.developments.flatMap(d=>[
+    ...(d.files||[]),
+    ...d.parcels.flatMap(p=>p.jobs.flatMap(j=>j.files||[]))
+  ]);
+}
+
+function go(p){
+  closeWheel();
+  page=p;
+  window.scrollTo(0,0);
+  render();
+}
+
+function openDev(x){
+  state.activeDevelopment=x;
+  state.activeParcel=null;
+  state.activeJob=null;
+  tab="overview";
+  budgetTab="overview";
+  save();
+  go("development");
+}
+
+function openParcel(x){
+  state.activeParcel=x;
+  state.activeJob=null;
+  tab="overview";
+  save();
+  go("parcel");
+}
+
+function openJob(x){
+  state.activeJob=x;
+  jobTab="details";
+  clearingDraft=null;
+  customAcreFields={clearAcres:false,brushAcres:false};
+  save();
+  go("job");
+}
+
+function head(title,sub="",action=""){
+  return `<div class="head"><div><h1>${e(title)}</h1>
+    <div class="sub">${e(sub)}</div></div>${action}</div>`;
+}
+
+function btn(label,action,kind=""){
+  return `<button type="button" class="btn ${kind}"
+    onclick="${action}">${e(label)}</button>`;
+}
+
+function stat(label,value,note=""){
+  return `<div class="stat"><div class="label">${e(label)}</div>
+    <div class="value">${e(value)}</div>
+    <div class="meta">${e(note)}</div></div>`;
+}
+
+function row(label,value){
+  return `<div class="row"><span class="sub">${e(label)}</span>
+    <strong>${e(value)}</strong></div>`;
+}
+
+function inp(name,label,type="text",value="",extra=""){
+  return `<div class="field">
+    <label for="${e(name)}">${e(label)}</label>
+    <input id="${e(name)}" name="${e(name)}" type="${type}"
+      value="${e(value)}" ${extra}>
+  </div>`;
+}
+
+function area(name,label,value=""){
+  return `<div class="field">
+    <label for="${e(name)}">${e(label)}</label>
+    <textarea id="${e(name)}" name="${e(name)}">${e(value)}</textarea>
+  </div>`;
+}
+
+function sel(name,label,options,value="",extra=""){
+  return `<div class="field">
+    <label for="${e(name)}">${e(label)}</label>
+    <select id="${e(name)}" name="${e(name)}" ${extra}>
+      ${options.map(o=>{
+        const v=Array.isArray(o)?o[0]:o;
+        const t=Array.isArray(o)?o[1]:o;
+        return `<option value="${e(v)}"
+          ${String(v)===String(value)?"selected":""}>${e(t)}</option>`;
+      }).join("")}
+    </select>
+  </div>`;
+}
+
+function val(f,k){
+  return f.elements.namedItem(k)?.value?.trim()||"";
+}
+
+function empty(title,description){
+  return `<div class="empty"><strong>${e(title)}</strong>
+    ${e(description)}</div>`;
+}
+
+function badge(j){
+  const t={
+    approved:["Approved","green"],
+    submitted:["Awaiting approval","blue"],
+    in_progress:["In progress","blue"],
+    ready:["Ready","blue"],
+    locked:["Locked",""]
+  }[j.status]||["Ready","blue"];
+  return `<span class="badge ${t[1]}">${t[0]}</span>`;
+}
+
+function validAmount(raw,allowZero=true){
+  if(String(raw).trim()==="")return false;
+  const v=Number(raw);
+  return Number.isFinite(v)&&(allowZero?v>=0:v>0);
+}
+
+/* CONTRACTOR PHONE LINKS */
+
+function phoneLinkNumber(phone){
+  const raw=String(phone||"").trim();
+  const digits=raw.replace(/\D/g,"");
+  if(digits.length<7||digits.length>15)return "";
+  return (raw.startsWith("+")?"+":"")+digits;
+}
+
+function contactButtons(c){
+  if(!c)return "";
+  const number=phoneLinkNumber(c.phone);
+  if(!number)return "";
+  return `<div class="actions">
+    <a class="btn call small" href="tel:${e(number)}">☎ Call</a>
+    <a class="btn text small" href="sms:${e(number)}">✉ Text</a>
+  </div>`;
+}
+
+function assignedContractorCard(j){
+  const c=contractor(j.contractorId);
+  if(!c)return `<div class="notice">No contractor assigned yet.</div>`;
+  return `<div class="notice">
+    <strong>Assigned Contractor: ${e(c.name)}</strong>
+    ${c.company?`<div class="meta">${e(c.company)}</div>`:""}
+    ${c.phone?`<div class="meta">Phone: ${e(c.phone)}</div>`:""}
+    ${c.email?`<div class="meta">Email: ${e(c.email)}</div>`:""}
+    ${contactButtons(c)}
+  </div>`;
+}
+
+/* PROJECT STRUCTURE */
+
+function makeJobs(){
+  return TRADES.map((trade,i)=>({
+    id:id(),trade,status:i?"locked":"ready",
+    contractorId:"",contractorName:"",
+    scope:"",notes:"",clearingAreas:[],files:[],approvedAt:""
+  }));
+}
+
+function makeParcel(i){
+  return {
+    id:id(),name:`Parcel ${i+1}`,acreage:"",
+    notes:"",jobs:makeJobs()
+  };
+}
+
+/* V25 BUDGET DATA */
+
+function budget(d){
+  if(!d.budgetV25||typeof d.budgetV25!=="object"){
+    d.budgetV25={
+      coverage:"land",target:0,contingency:0,
+      shared:[],trades:{},materials:[],payments:[],
+      salePrices:{},sellingCosts:{},adjustments:{}
+    };
+  }
+  const b=d.budgetV25;
+  b.coverage||="land";
+  b.shared||=[];
+  b.trades||={};
+  b.materials||=[];
+  b.payments||=[];
+  b.salePrices||={};
+  b.sellingCosts||={};
+  b.adjustments||={};
+  return b;
+}
+
+function tradeKey(p,j){return p.id+"::"+j.id;}
+
+function tradeBudget(d,p,j){
+  return positive(budget(d).trades[tradeKey(p,j)]);
+}
+
+function acceptedBid(j){
+  return state.bids.find(b=>
+    b.jobId===j.id&&b.acceptedV25===true
+  )||null;
+}
+
+function tradeForecast(d,p,j){
+  const b=budget(d);
+  const accepted=acceptedBid(j);
+  const base=accepted?positive(accepted.amount):tradeBudget(d,p,j);
+  return Math.max(0,base+n(b.adjustments[tradeKey(p,j)]));
+}
+
+function materialEstimated(m){
+  return positive(m.quantity)*positive(m.estimatedUnitPrice);
+}
+
+function materialActual(m){
+  if(m.actualUnitPrice===""||
+     m.actualUnitPrice===null||
+     m.actualUnitPrice===undefined)return null;
+  return positive(m.quantity)*positive(m.actualUnitPrice);
+}
+
+function materialForecast(m){
+  return materialActual(m)??materialEstimated(m);
+}
+
+function materialCost(d,parcelId=null){
+  return budget(d).materials
+    .filter(m=>parcelId===null||m.parcelId===parcelId)
+    .reduce((s,m)=>s+materialForecast(m),0);
+}
+
+function sharedCost(d){
+  return positive(d.purchasePrice)+budget(d).shared.reduce(
+    (s,x)=>s+positive(x.amount),0
+  );
+}
+
+function sharedPerParcel(d){
+  return d.parcels.length?sharedCost(d)/d.parcels.length:0;
+}
+
+function parcelDirect(d,p){
+  return p.jobs.reduce((s,j)=>s+tradeForecast(d,p,j),0)
+    +materialCost(d,p.id);
+}
+
+function parcelForecast(d,p){
+  return sharedPerParcel(d)+parcelDirect(d,p);
+}
+
+function developmentForecast(d){
+  return sharedCost(d)+
+    d.parcels.reduce((s,p)=>s+parcelDirect(d,p),0);
+}
+
+function paymentTotal(d,parcelId=null,jobId=null){
+  return budget(d).payments.filter(x=>
+    (parcelId===null||x.parcelId===parcelId)&&
+    (jobId===null||x.jobId===jobId)
+  ).reduce((s,x)=>s+positive(x.amount),0);
+}
+
+function costToFinish(d){
+  return Math.max(0,developmentForecast(d)-paymentTotal(d));
+}
+
+function targetTotal(d){
+  const b=budget(d);
+  return positive(b.target)+positive(b.contingency);
+}
+
+function budgetDifference(d){
+  return targetTotal(d)-developmentForecast(d);
+}
+
+function allocatedBudget(d){
+  const b=budget(d);
+  return sharedCost(d)+
+    d.parcels.reduce((s,p)=>
+      s+p.jobs.reduce((t,j)=>t+tradeBudget(d,p,j),0),0
+    )+
+    b.materials.reduce((s,m)=>s+materialEstimated(m),0);
+}
+
+function parcelOptions(d,includeShared=true){
+  return [
+    ...(includeShared?[["","Shared / development-wide"]]:[]),
+    ...d.parcels.map(p=>[p.id,p.name])
+  ];
+}
+
+function jobOptions(d,parcelId=""){
+  const ps=parcelId
+    ?d.parcels.filter(p=>p.id===parcelId)
+    :d.parcels;
+  return [
+    ["","No specific trade"],
+    ...ps.flatMap(p=>p.jobs.map(j=>[
+      j.id,p.name+" · "+j.trade
+    ]))
+  ];
+}
+
+function findJobInDevelopment(d,jobId){
+  for(const p of d.parcels){
+    const j=p.jobs.find(x=>x.id===jobId);
+    if(j)return {p,j};
+  }
+  return null;
+}
+
+function assignmentFromForm(d,f){
+  const jobId=val(f,"jobId");
+  let parcelId=val(f,"parcelId");
+  if(jobId){
+    const match=findJobInDevelopment(d,jobId);
+    if(!match)return null;
+    if(parcelId&&parcelId!==match.p.id)return null;
+    parcelId=match.p.id;
+  }
+  if(parcelId&&!d.parcels.some(p=>p.id===parcelId))return null;
+  return {parcelId,jobId};
+}
+
+/* NAVIGATION */
+
+function render(){
+  const navs=[
+    ["dashboard","Dashboard"],
+    ["developments","Developments"],
+    ["contractors","Contractors"],
+    ["bids","Bids Received"],
+    ["assistant","AI Superintendent"],
+    ["settings","Settings"]
+  ];
+
+  document.getElementById("nav").innerHTML=navs.map(([k,t])=>
+    `<button class="${page===k?"active":""}"
+      onclick="go('${k}')">${t}</button>`
+  ).join("");
+
+  const views={
+    dashboard,developments,newDevelopment,
+    development,parcel:parcelPage,job:jobPage,
+    contractors,contractorForm,bids:bidsPage,
+    assistant,settings
+  };
+
+  document.getElementById("app").innerHTML=
+    (views[page]||dashboard)();
+}
+
+/* DASHBOARD */
+
+function dashboard(){
+  const total=state.developments.reduce(
+    (s,d)=>s+n(d.purchasePrice),0
+  );
+  const count=state.developments.reduce(
+    (s,d)=>s+d.parcels.length,0
+  );
+
+  return `${head(
+    "Dashboard",
+    "Development portfolio and project activity",
+    btn("+ New Development","go('newDevelopment')")
+  )}
+
+  <div class="grid">
+    ${stat("Developments",state.developments.length)}
+    ${stat("Planned Parcels",count)}
+    ${stat("Property Purchase Cost",usd(total))}
+    ${stat("Bids Received",state.bids.length)}
+  </div>
+
+  <div class="section card">
+    <h2>Developments</h2>
+    ${state.developments.length
+      ?state.developments.map(d=>`
+        <div class="item">
+          <div class="itemhead">
+            <div>
+              <div class="itemtitle">${e(d.name)}</div>
+              <div class="meta">
+                ${e(d.location||"Location not entered")}
+                · ${d.parcels.length} parcels
+              </div>
+            </div>
+            ${btn("Open",`openDev('${d.id}')`,"secondary small")}
+          </div>
+          ${row("Full property purchase price",usd(d.purchasePrice))}
+          ${row("Allocated land cost per parcel",usd(land(d)))}
+          <div class="meta">
+            ${jobs(d).filter(j=>j.status==="approved").length}
+            of ${jobs(d).length} stages approved
+          </div>
+        </div>
+      `).join("")
+      :empty("No developments yet","Create a development to get started.")}
+  </div>
+
+  <div class="grid two">
+    <div class="card">
+      <h2>Contractor Directory</h2>
+      <p class="sub">${state.contractors.length} saved contacts</p>
+      ${btn("Open Contractors","go('contractors')","secondary")}
+    </div>
+    <div class="card">
+      <h2>AI Superintendent</h2>
+      <p class="sub">Guidance using your saved project records</p>
+      ${btn("Open Assistant","go('assistant')","secondary")}
+    </div>
+  </div>`;
+}
+
+/* DEVELOPMENTS */
+
+function developments(){
+  return `${head(
+    "Developments",
+    "Property and parcel records",
+    btn("+ New Development","go('newDevelopment')")
+  )}
+  <div class="card">
+    ${state.developments.length
+      ?state.developments.map(d=>`
+        <div class="item">
+          <div class="itemhead">
+            <div>
+              <div class="itemtitle">${e(d.name)}</div>
+              <div class="meta">
+                ${e(d.location)} · ${d.parcels.length} parcels
+              </div>
+            </div>
+            ${btn("Open",`openDev('${d.id}')`,"secondary small")}
+          </div>
+          ${row("Full property purchase price",usd(d.purchasePrice))}
+          ${row("Land cost per parcel",usd(land(d)))}
+        </div>
+      `).join("")
+      :empty("No developments","Enter your first property's details.")}
+  </div>`;
+}
+
+function newDevelopment(){
+  return `${head(
+    "Start a Development",
+    "Enter the full property purchase price once."
+  )}
+  <div class="card">
+    <form onsubmit="createDevelopment(event)">
+      <div class="fields">
+        ${inp("name","Development Name","text","","required")}
+        ${inp("location","Property Location")}
+        ${inp(
+          "purchasePrice","Full Property Purchase Price ($)",
+          "number","","required min='0' step='0.01' oninput='previewLand()'"
+        )}
+        ${inp(
+          "acres","Total Property Acreage","number","",
+          "required min='0.01' step='any'"
+        )}
+        ${inp(
+          "parcelCount","Number of Planned Parcels","number","",
+          "required min='1' max='100' step='1' oninput='previewLand()'"
+        )}
+        ${sel("easements","Easements",["No","Yes","Unknown"])}
+        ${sel("permits","Permits Needed",["No","Yes","Unknown"])}
+      </div>
+
+      <div class="notice">
+        Allocated land cost per parcel:
+        <strong id="landPreview">$0.00</strong><br>
+        <span class="sub">The purchase price is counted once.</span>
+      </div>
+
+      ${area("notes","Development Notes (Optional)")}
+
+      <hr>
+      <h2>V25 · Budget Setup</h2>
+      <p class="sub">
+        Choose the budget coverage for this development.
+        You can change these settings later.
+      </p>
+
+      ${sel("coverage","What Should This Budget Include?",[
+        ["land","Land development only"],
+        ["homes","Land development + manufactured homes"]
+      ])}
+
+      ${inp(
+        "target","Base Target Budget ($)","number","",
+        "min='0' step='0.01' placeholder='Optional'"
+      )}
+
+      ${inp(
+        "contingency","Separate Contingency Allowance ($)",
+        "number","","min='0' step='0.01' placeholder='Optional'"
+      )}
+
+      <div class="notice">
+        Shared costs will be divided equally across parcels.
+        You can enter an overall target, individual trade budgets,
+        or both. Do not add the property purchase price a second time.
+      </div>
+
+      <button class="btn">Create Development & Parcels</button>
+    </form>
+  </div>`;
+}
+
+function previewLand(){
+  const a=n(document.getElementById("purchasePrice")?.value);
+  const b=n(document.getElementById("parcelCount")?.value);
+  const el=document.getElementById("landPreview");
+  if(el)el.textContent=b?usd(a/b):"$0.00";
+}
+
+function createDevelopment(ev){
+  ev.preventDefault();
+  const f=ev.target;
+  const c=n(val(f,"parcelCount"));
+  const price=n(val(f,"purchasePrice"));
+
+  if(
+    !val(f,"name")||
+    !Number.isInteger(c)||c<1||c>100||
+    !validAmount(val(f,"purchasePrice"))||
+    !validAmount(val(f,"acres"),false)||
+    (val(f,"target")&&!validAmount(val(f,"target")))||
+    (val(f,"contingency")&&!validAmount(val(f,"contingency")))
+  ){
+    return alert("Enter valid property and budget details.");
+  }
+
+  const d={
+    id:id(),name:val(f,"name"),location:val(f,"location"),
+    purchasePrice:price,acres:n(val(f,"acres")),
+    easements:val(f,"easements"),permits:val(f,"permits"),
+    notes:val(f,"notes"),files:[],
+    parcels:Array.from({length:c},(_,i)=>makeParcel(i)),
+    createdAt:date(),
+    budgetV25:{
+      coverage:val(f,"coverage")==="homes"?"homes":"land",
+      target:positive(val(f,"target")),
+      contingency:positive(val(f,"contingency")),
+      shared:[],trades:{},materials:[],payments:[],
+      salePrices:{},sellingCosts:{},adjustments:{}
+    }
+  };
+
+  state.developments.push(d);
+  save();
+  openDev(d.id);
+}
+
+function parcelRows(d){
+  return d.parcels.map(p=>`
+    <div class="item">
+      <div class="itemhead">
+        <div>
+          <div class="itemtitle">${e(p.name)}</div>
+          <div class="meta">
+            ${p.jobs.filter(j=>j.status==="approved").length}
+            of ${p.jobs.length} stages approved
+          </div>
+        </div>
+        ${btn("Open Parcel",`openParcel('${p.id}')`,"secondary small")}
+      </div>
+      ${row("Allocated land cost",usd(land(d)))}
+    </div>
+  `).join("");
+}
+
+function development(){
+  const d=dev();
+  if(!d)return head("Development Not Found");
+  const bs=state.bids.filter(b=>b.developmentId===d.id);
+
+  return `${head(
+    d.name,
+    d.location||"Development overview",
+    btn("All Developments","go('developments')","secondary")
+  )}
+
+  <div class="grid">
+    ${stat("Property Purchase",usd(d.purchasePrice))}
+    ${stat("Planned Parcels",d.parcels.length)}
+    ${stat("Land Cost Per Parcel",usd(land(d)))}
+    ${stat(
+      "Approved Stages",
+      `${jobs(d).filter(j=>j.status==="approved").length} / ${jobs(d).length}`
+    )}
+  </div>
+
+  <div class="tabs">
+    ${[
+      ["overview","Overview"],["parcels","Parcels"],
+      ["budget","Budget"],["documents","Documents"],
+      ["edit","Property Details"]
+    ].map(([k,t])=>`
+      <button class="${tab===k?"active":""}"
+        onclick="tab='${k}';render()">${t}</button>
+    `).join("")}
+  </div>
+
+  ${tab==="overview"?`
+    <div class="grid two">
+      <div class="card">
+        <h2>Property Information</h2>
+        ${row("Acreage",`${d.acres} acres`)}
+        ${row("Easements",d.easements)}
+        ${row("Permits needed",d.permits)}
+        <p class="sub">${e(d.notes||"")}</p>
+      </div>
+      <div class="card">
+        <h2>Financial Overview</h2>
+        ${row("Full property purchase",usd(d.purchasePrice))}
+        ${row("Allocated per parcel",usd(land(d)))}
+        ${row("Bids Received",bs.length)}
+        <div class="notice">
+          Competing bids are not committed costs.
+        </div>
+        ${btn("Open Budget","tab='budget';render()","secondary")}
+      </div>
+    </div>
+    <div class="card section">
+      <h2>Parcels</h2>
+      ${parcelRows(d)}
+    </div>
+  `:""}
+
+  ${tab==="parcels"?`
+    <div class="card">
+      <h2>Planned Parcels</h2>
+      ${parcelRows(d)}
+    </div>
+  `:""}
+
+  ${tab==="budget"?budgetPage(d):""}
+
+  ${tab==="documents"?`
+    <div class="card">
+      <h2>Development Documents</h2>
+      <p class="sub">Surveys, permits, easements, PDFs, and photos.</p>
+      ${uploader("development",d.id,"document")}
+      ${filesHTML(d.files||[])}
+    </div>
+  `:""}
+
+  ${tab==="edit"?`
+    <div class="card">
+      <h2>Property Details</h2>
+      <form onsubmit="editDevelopment(event)">
+        <div class="fields">
+          ${inp("name","Development Name","text",d.name,"required")}
+          ${inp("location","Location","text",d.location)}
+          ${inp(
+            "purchasePrice","Full Property Purchase Price ($)",
+            "number",d.purchasePrice,"required min='0' step='0.01'"
+          )}
+          ${inp(
+            "acres","Total Acreage","number",d.acres,
+            "required min='0.01' step='any'"
+          )}
+          ${sel("easements","Easements",
+            ["No","Yes","Unknown"],d.easements)}
+          ${sel("permits","Permits Needed",
+            ["No","Yes","Unknown"],d.permits)}
+        </div>
+        ${area("notes","Notes",d.notes)}
+        <div class="notice">
+          Changing the purchase price recalculates each
+          parcel's allocation and budget forecast.
+        </div>
+        <button class="btn">Save Property Details</button>
+      </form>
+    </div>
+  `:""}`;
+}
+
+function editDevelopment(ev){
+  ev.preventDefault();
+  const d=dev(),f=ev.target;
+  if(
+    !val(f,"name")||
+    !validAmount(val(f,"acres"),false)||
+    !validAmount(val(f,"purchasePrice"))
+  )return alert("Enter valid details.");
+
+  Object.assign(d,{
+    name:val(f,"name"),location:val(f,"location"),
+    purchasePrice:n(val(f,"purchasePrice")),
+    acres:n(val(f,"acres")),
+    easements:val(f,"easements"),
+    permits:val(f,"permits"),
+    notes:val(f,"notes")
+  });
+  save();
+  tab="overview";
+  render();
+}
+
+/* V25 BUDGET TAB */
+
+function budgetPage(d){
+  const b=budget(d);
+  const forecast=developmentForecast(d);
+  const difference=budgetDifference(d);
+
+  return `
+    <div class="grid">
+      ${stat("Total Target",usd(targetTotal(d)),
+        "Base budget + contingency")}
+      ${stat("Projected Final Cost",usd(forecast),
+        "Based on entered costs")}
+      ${stat("Paid to Date",usd(paymentTotal(d)),
+        "Recorded payments")}
+      ${stat(
+        difference>=0?"Projected Under Target":"Projected Over Target",
+        usd(Math.abs(difference)),
+        "Difference from target"
+      )}
+    </div>
+
+    <div class="tabs">
+      ${[
+        ["overview","Overview"],
+        ["trades","Trade Budgets"],
+        ["materials","Materials"],
+        ["payments","Payments & Receipts"],
+        ["profit","Parcel Profit"],
+        ["setup","Settings"]
+      ].map(([k,t])=>`
+        <button class="${budgetTab===k?"active":""}"
+          onclick="budgetTab='${k}';render()">${t}</button>
+      `).join("")}
+    </div>
+
+    ${budgetTab==="overview"?budgetOverview(d):""}
+    ${budgetTab==="trades"?budgetTrades(d):""}
+    ${budgetTab==="materials"?budgetMaterials(d):""}
+    ${budgetTab==="payments"?budgetPayments(d):""}
+    ${budgetTab==="profit"?budgetProfit(d):""}
+    ${budgetTab==="setup"?budgetSettings(d):""}
+  `;
+}
+
+function budgetOverview(d){
+  const b=budget(d);
+  const tradeTotal=d.parcels.reduce(
+    (s,p)=>s+p.jobs.reduce((t,j)=>t+tradeBudget(d,p,j),0),0
+  );
+  const estimatedMaterials=b.materials.reduce(
+    (s,m)=>s+materialEstimated(m),0
+  );
+  const unallocated=positive(b.target)-allocatedBudget(d);
+
+  return `
+    <div class="grid two">
+      <div class="card">
+        <h2>Cost to Finish</h2>
+        ${row("Projected final cost",usd(developmentForecast(d)))}
+        ${row("Recorded payments",usd(paymentTotal(d)))}
+        ${row("Projected cost to finish",usd(costToFinish(d)))}
+        <p class="help">
+          Planning calculation only. Enter all remaining costs
+          and payments to keep this estimate useful.
+        </p>
+      </div>
+      <div class="card">
+        <h2>Budget Coverage</h2>
+        ${row("Includes",b.coverage==="homes"
+          ?"Land + manufactured homes":"Land development only")}
+        ${row("Shared costs","Allocated equally")}
+        ${row("Contingency",usd(b.contingency))}
+        ${row("Accepted bids",state.bids.filter(x=>
+          x.developmentId===d.id&&x.acceptedV25).length)}
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Planning Budget Breakdown</h2>
+      ${row("Property purchase",usd(d.purchasePrice))}
+      ${row("Other shared costs",usd(
+        b.shared.reduce((s,x)=>s+positive(x.amount),0)
+      ))}
+      ${row("Individual trade budgets",usd(tradeTotal))}
+      ${row("Estimated owner-purchased materials",
+        usd(estimatedMaterials))}
+      ${row("Total allocated planning budget",
+        usd(allocatedBudget(d)))}
+      ${row(
+        unallocated>=0?"Base target not yet allocated":
+          "Allocations above base target",
+        usd(Math.abs(unallocated))
+      )}
+      <p class="help">
+        Planning allocations and projected final cost are different:
+        accepted bids, actual material prices, and forecast adjustments
+        affect the projected final cost.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Shared Development Costs</h2>
+      <p class="sub">
+        Enter a shared cost once. A7 divides it equally
+        across ${d.parcels.length} parcels.
+      </p>
+      ${row("Total shared costs",usd(sharedCost(d)))}
+      ${row("Shared cost per parcel",usd(sharedPerParcel(d)))}
+
+      <form onsubmit="addSharedCost(event)">
+        ${inp("description","Shared Cost Description","text","",
+          "required placeholder='Survey, engineering, shared road...'")}
+        ${inp("amount","Amount ($)","number","",
+          "required min='0' step='0.01'")}
+        <button class="btn">Add Shared Cost</button>
+      </form>
+
+      <hr>
+      ${b.shared.length?b.shared.map(x=>`
+        <div class="item">
+          <div class="itemhead">
+            <strong>${e(x.description)}</strong>
+            <strong>${usd(x.amount)}</strong>
+          </div>
+          <div class="actions">
+            ${btn("Delete",`deleteSharedCost('${x.id}')`,
+              "danger small")}
+          </div>
+        </div>
+      `).join(""):empty("No additional shared costs",
+        "The property purchase is already included.")}
+    </div>
+
+    <div class="card">
+      <h2>Parcel Budget Summary</h2>
+      ${d.parcels.map(p=>`
+        <div class="item">
+          <div class="itemhead">
+            <strong>${e(p.name)}</strong>
+            <strong class="money">${usd(parcelForecast(d,p))}</strong>
+          </div>
+          ${row("Equal share of shared costs",
+            usd(sharedPerParcel(d)))}
+          ${row("Direct trades and materials",
+            usd(parcelDirect(d,p)))}
+          ${row("Payments assigned to this parcel",
+            usd(paymentTotal(d,p.id)))}
+        </div>
+      `).join("")}
+    </div>
+
+    <div class="notice warning">
+      Shared payments are included in development-wide paid totals
+      but are not displayed as parcel payments. Parcel profitability
+      allocates shared costs equally, not shared payment records.
+    </div>
+  `;
+}
+
+function addSharedCost(ev){
+  ev.preventDefault();
+  const f=ev.target,d=dev();
+  if(!val(f,"description")||!validAmount(val(f,"amount")))
+    return alert("Enter a description and valid amount.");
+  budget(d).shared.push({
+    id:id(),description:val(f,"description"),
+    amount:n(val(f,"amount"))
+  });
+  save();render();
+}
+
+function deleteSharedCost(x){
+  if(!confirm("Delete this shared cost?"))return;
+  const b=budget(dev());
+  b.shared=b.shared.filter(y=>y.id!==x);
+  save();render();
+}
+
+/* TRADE BUDGETS */
+
+function budgetTrades(d){
+  const b=budget(d);
+
+  return `<div class="card">
+    <h2>Trade Budgets & Accepted Bids</h2>
+    <p class="sub">
+      Enter a planning budget for each trade. Accept one
+      contractor bid when ready. Other bids remain recorded
+      but are not added to the forecast.
+    </p>
+
+    ${d.parcels.map(p=>`
+      <h3 style="margin-top:22px">${e(p.name)}</h3>
+
+      ${p.jobs
+        .filter(j=>b.coverage==="homes"||
+          !HOME_TRADES.includes(j.trade))
+        .map(j=>{
+          const accepted=acceptedBid(j);
+          const key=tradeKey(p,j);
+          const bs=bidsFor(j);
+
+          return `<div class="item">
+            <div class="itemhead">
+              <div>
+                <div class="itemtitle">${e(j.trade)}</div>
+                <div class="meta">
+                  ${accepted
+                    ?`Accepted bid: ${e(accepted.contractorName)}`
+                    :"No accepted bid"}
+                </div>
+              </div>
+              <strong class="money">
+                ${usd(tradeForecast(d,p,j))}
+              </strong>
+            </div>
+
+            <form onsubmit="saveTradeBudget(event,'${p.id}','${j.id}')">
+              ${inp("tradeBudget","Planning Budget ($)","number",
+                tradeBudget(d,p,j),"min='0' step='0.01'")}
+              ${inp("adjustment","Forecast Adjustment (+ / − $)",
+                "number",n(b.adjustments[key]),"step='0.01'")}
+              <button class="btn secondary small">
+                Save Trade Budget
+              </button>
+            </form>
+
+            ${row("Recorded trade payments",
+              usd(paymentTotal(d,p.id,j.id)))}
+            ${row("Projected trade cost to finish",
+              usd(Math.max(0,
+                tradeForecast(d,p,j)-paymentTotal(d,p.id,j.id))))}
+
+            ${bs.length?`
+              <div class="notice">
+                <strong>Recorded Bids</strong>
+                ${bs.map(bid=>`
+                  <div class="row">
+                    <span>
+                      ${e(bid.contractorName)}
+                      ${bid.acceptedV25?" · Accepted":""}
+                    </span>
+                    <strong>${usd(bid.amount)}</strong>
+                  </div>
+                  <div class="actions">
+                    ${bid.acceptedV25
+                      ?btn("Unaccept Bid",
+                        `unacceptBudgetBid('${bid.id}')`,
+                        "secondary small")
+                      :btn("Accept Bid",
+                        `acceptBudgetBid('${bid.id}')`,
+                        "secondary small")}
+                  </div>
+                `).join("")}
+              </div>
+            `:""}
+
+            <div class="actions">
+              ${btn("Open Trade Stage",
+                `openBid('${d.id}','${p.id}','${j.id}')`,
+                "secondary small")}
+            </div>
+          </div>`;
+        }).join("")}
+    `).join("")}
+  </div>`;
+}
+
+function saveTradeBudget(ev,parcelId,jobId){
+  ev.preventDefault();
+  const d=dev(),p=d.parcels.find(x=>x.id===parcelId);
+  const j=p?.jobs.find(x=>x.id===jobId);
+  if(!j)return;
+
+  const f=ev.target;
+  if(!validAmount(val(f,"tradeBudget"))||
+     !Number.isFinite(Number(val(f,"adjustment"))))
+    return alert("Enter valid trade amounts.");
+
+  const b=budget(d),key=tradeKey(p,j);
+  b.trades[key]=n(val(f,"tradeBudget"));
+  b.adjustments[key]=n(val(f,"adjustment"));
+  save();render();
+}
+
+function acceptBudgetBid(bidId){
+  const bid=state.bids.find(x=>x.id===bidId);
+  if(!bid)return;
+  if(!confirm(
+    "Accept this bid for budgeting? Other bids for this trade " +
+    "will remain recorded but will not be counted."
+  ))return;
+
+  state.bids.forEach(x=>{
+    if(x.jobId===bid.jobId)x.acceptedV25=false;
+  });
+  bid.acceptedV25=true;
+  save();render();
+}
+
+function unacceptBudgetBid(bidId){
+  const bid=state.bids.find(x=>x.id===bidId);
+  if(!bid)return;
+  if(!confirm("Remove this bid's accepted status?"))return;
+  bid.acceptedV25=false;
+  save();render();
+}
+
+/* OWNER-PURCHASED MATERIALS */
+
+function budgetMaterials(d){
+  const b=budget(d);
+
+  return `
+    <div class="card">
+      <h2>Owner-Purchased Materials</h2>
+      <p class="sub">
+        Record materials you buy yourself, separately from
+        contractor bids and labor.
+      </p>
+
+      <form onsubmit="addBudgetMaterial(event)">
+        ${inp("name","Material","text","",
+          "required placeholder='Culvert, rock, pipe...'")}
+        ${inp("supplier","Supplier")}
+        <div class="fields">
+          ${inp("quantity","Quantity","number","1",
+            "required min='0.0001' step='any'")}
+          ${inp("unit","Unit","text","each")}
+          ${inp("estimatedUnitPrice","Estimated Unit Price ($)",
+            "number","","required min='0' step='0.01'")}
+          ${inp("actualUnitPrice","Actual Unit Price ($)",
+            "number","","min='0' step='0.01' placeholder='Optional'")}
+        </div>
+        ${sel("parcelId","Assign to Parcel",parcelOptions(d),"",
+          "onchange='refreshBudgetJobOptions(this.form)'")}
+        ${sel("jobId","Related Trade",jobOptions(d))}
+        ${area("notes","Notes / Purchase Details")}
+        <button class="btn">Add Material</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Materials List</h2>
+      ${b.materials.length?b.materials.map(m=>`
+        <div class="item">
+          <div class="itemhead">
+            <div>
+              <strong>${e(m.name)}</strong>
+              <div class="meta">
+                ${e(m.supplier||"Supplier not entered")}
+              </div>
+              <div class="meta">
+                ${e(m.quantity)} ${e(m.unit)}
+              </div>
+            </div>
+            <strong class="money">${usd(materialForecast(m))}</strong>
+          </div>
+          ${row("Estimated total",usd(materialEstimated(m)))}
+          ${row("Actual total",
+            materialActual(m)===null
+              ?"Not entered":usd(materialActual(m)))}
+          ${row("Assigned to",d.parcels.find(p=>
+            p.id===m.parcelId)?.name||"Shared / development-wide")}
+          <div class="actions">
+            ${btn("Edit Actual Price",
+              `editBudgetMaterial('${m.id}')`,"secondary small")}
+            ${btn("Delete",`deleteBudgetMaterial('${m.id}')`,
+              "danger small")}
+          </div>
+        </div>
+      `).join(""):empty("No materials added",
+        "Add your first owner-purchased item above.")}
+    </div>
+
+    <div class="notice warning">
+      Check accepted contractor bids before adding owner-purchased
+      materials. If a bid already includes the material, adjust the
+      contractor scope or bid amount to avoid double-counting.
+      A7 cannot verify bid inclusions automatically.
+    </div>
+  `;
+}
+
+function refreshBudgetJobOptions(f){
+  const d=dev();
+  const select=f.elements.namedItem("jobId");
+  if(!select)return;
+  select.innerHTML=jobOptions(d,val(f,"parcelId"))
+    .map(([v,t])=>`<option value="${e(v)}">${e(t)}</option>`)
+    .join("");
+}
+
+function addBudgetMaterial(ev){
+  ev.preventDefault();
+  const d=dev(),f=ev.target;
+  const quantity=Number(val(f,"quantity"));
+  if(
+    !val(f,"name")||
+    !Number.isFinite(quantity)||quantity<=0||
+    !validAmount(val(f,"estimatedUnitPrice"))||
+    (val(f,"actualUnitPrice")&&
+      !validAmount(val(f,"actualUnitPrice")))
+  )return alert("Enter valid material details.");
+
+  const assignment=assignmentFromForm(d,f);
+  if(!assignment)return alert(
+    "The selected trade and parcel do not match."
+  );
+
+  budget(d).materials.push({
+    id:id(),name:val(f,"name"),supplier:val(f,"supplier"),
+    quantity,unit:val(f,"unit")||"each",
+    estimatedUnitPrice:n(val(f,"estimatedUnitPrice")),
+    actualUnitPrice:val(f,"actualUnitPrice")===""
+      ?"":n(val(f,"actualUnitPrice")),
+    ...assignment,notes:val(f,"notes")
+  });
+  save();render();
+}
+
+function editBudgetMaterial(x){
+  const m=budget(dev()).materials.find(y=>y.id===x);
+  if(!m)return;
+  const result=prompt(
+    "Actual unit price ($). Leave blank if not purchased:",
+    m.actualUnitPrice
+  );
+  if(result===null)return;
+  if(result.trim()===""){
+    m.actualUnitPrice="";
+  }else if(validAmount(result)){
+    m.actualUnitPrice=Number(result);
+  }else{
+    return alert("Enter a valid price.");
+  }
+  save();render();
+}
+
+function deleteBudgetMaterial(x){
+  if(!confirm("Delete this material?"))return;
+  const b=budget(dev());
+  b.materials=b.materials.filter(y=>y.id!==x);
+  save();render();
+}
+
+/* PAYMENTS, DEPOSITS, RECEIPTS */
+
+function budgetPayments(d){
+  const b=budget(d);
+  const receipts=(d.files||[]).filter(f=>
+    f.category==="receipt"||f.category==="invoice"
+  );
+
+  return `
+    <div class="card">
+      <h2>Payments & Deposits</h2>
+      <p class="sub">
+        Record money actually paid. Deposits count toward the
+        total contract amount; they are not additional contract costs.
+      </p>
+
+      <form onsubmit="addBudgetPayment(event)">
+        ${inp("description","Payment Description","text","",
+          "required placeholder='Culvert deposit, rock invoice...'")}
+        <div class="fields">
+          ${inp("amount","Amount Paid ($)","number","",
+            "required min='0.01' step='0.01'")}
+          ${inp("paymentDate","Payment Date","date",date(),"required")}
+        </div>
+        ${sel("paymentType","Payment Type",[
+          ["deposit","Deposit"],
+          ["progress","Progress Payment"],
+          ["final","Final Payment"],
+          ["material","Material Purchase"],
+          ["shared","Shared Development Payment"],
+          ["other","Other Payment"]
+        ])}
+        ${sel("parcelId","Parcel",parcelOptions(d),"",
+          "onchange='refreshBudgetJobOptions(this.form)'")}
+        ${sel("jobId","Related Trade",jobOptions(d))}
+        ${inp("payee","Paid To")}
+        ${inp("reference","Invoice / Receipt Number")}
+        ${sel("fileId","Attached Receipt or Invoice",[
+          ["","No attachment"],
+          ...receipts.map(f=>[f.id,f.name])
+        ])}
+        ${area("notes","Payment Notes")}
+        <button class="btn">Record Payment</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Receipt & Invoice Uploads</h2>
+      <p class="sub">
+        Upload a receipt or invoice first, then select it
+        when recording the related payment.
+      </p>
+      ${uploader("development",d.id,"receipt")}
+      ${uploader("development",d.id,"invoice")}
+      ${filesHTML(receipts)}
+    </div>
+
+    <div class="card">
+      <h2>Payment History</h2>
+      ${row("Total recorded payments",usd(paymentTotal(d)))}
+      ${b.payments.length?[...b.payments].reverse().map(p=>{
+        const file=(d.files||[]).find(f=>f.id===p.fileId);
+        return `<div class="item">
+          <div class="itemhead">
+            <div>
+              <strong>${e(p.description)}</strong>
+              <div class="meta">
+                ${e(p.paymentDate)} · ${e(p.paymentType)}
+              </div>
+              <div class="meta">${e(p.payee||"")}</div>
+              <div class="meta">${e(p.reference||"")}</div>
+            </div>
+            <strong class="money">${usd(p.amount)}</strong>
+          </div>
+          ${file?`
+            <div class="actions">
+              ${btn("View Attached File",
+                `viewFile('${file.id}')`,"secondary small")}
+            </div>
+          `:""}
+          <div class="actions">
+            ${btn("Delete Payment",
+              `deleteBudgetPayment('${p.id}')`,"danger small")}
+          </div>
+        </div>`;
+      }).join(""):empty("No payments recorded",
+        "Record your first payment above.")}
+    </div>
+
+    <div class="notice warning">
+      Payment records and budget estimates are separate. When
+      recording a material payment, also enter its actual unit
+      price in Materials. When recording a shared payment,
+      make sure the underlying shared cost is included in
+      the budget. Do not add the same expense twice.
+    </div>
+  `;
+}
+
+function addBudgetPayment(ev){
+  ev.preventDefault();
+  const d=dev(),f=ev.target;
+  if(!val(f,"description")||
+     !validAmount(val(f,"amount"),false)||
+     !val(f,"paymentDate"))
+    return alert("Enter valid payment details.");
+
+  const assignment=assignmentFromForm(d,f);
+  if(!assignment)return alert(
+    "The selected trade and parcel do not match."
+  );
+
+  const fileId=val(f,"fileId");
+  if(fileId&&!(d.files||[]).some(x=>x.id===fileId))
+    return alert("The selected attachment was not found.");
+
+  budget(d).payments.push({
+    id:id(),description:val(f,"description"),
+    amount:n(val(f,"amount")),
+    paymentDate:val(f,"paymentDate"),
+    paymentType:val(f,"paymentType"),
+    ...assignment,
+    payee:val(f,"payee"),
+    reference:val(f,"reference"),
+    fileId,notes:val(f,"notes")
+  });
+  save();render();
+}
+
+function deleteBudgetPayment(x){
+  if(!confirm(
+    "Delete this payment record? Paid-to-date totals will change."
+  ))return;
+  const b=budget(dev());
+  b.payments=b.payments.filter(y=>y.id!==x);
+  save();render();
+}
+
+/* OPTIONAL PARCEL PROFIT */
+
+function budgetProfit(d){
+  const b=budget(d);
+
+  return `<div class="card">
+    <h2>Projected Parcel Profit</h2>
+    <p class="sub">
+      Expected sale prices are optional. Selling costs are
+      entered separately for each parcel.
+    </p>
+
+    ${d.parcels.map(p=>{
+      const sale=b.salePrices[p.id];
+      const hasSale=sale!==undefined&&sale!==null&&sale!=="";
+      const selling=positive(b.sellingCosts[p.id]);
+      const cost=parcelForecast(d,p)+selling;
+      const profit=hasSale?positive(sale)-cost:null;
+
+      return `<div class="item">
+        <h3>${e(p.name)}</h3>
+        <form onsubmit="saveParcelSale(event,'${p.id}')">
+          ${inp("salePrice","Expected Sale Price ($)","number",
+            hasSale?sale:"",
+            "min='0' step='0.01' placeholder='Optional'")}
+          ${inp("sellingCost",
+            "Additional Selling / Carrying Costs ($)",
+            "number",selling,"min='0' step='0.01'")}
+          <button class="btn secondary small">
+            Save Parcel Projection
+          </button>
+        </form>
+
+        ${row("Allocated shared costs",usd(sharedPerParcel(d)))}
+        ${row("Direct trades and materials",
+          usd(parcelDirect(d,p)))}
+        ${row("Additional selling / carrying costs",
+          usd(selling))}
+        ${row("Projected all-in parcel cost",usd(cost))}
+        ${row("Expected sale price",
+          hasSale?usd(sale):"Not entered")}
+        ${row("Projected profit",
+          profit===null?"Not calculated":usd(profit))}
+      </div>`;
+    }).join("")}
+
+    <div class="notice warning">
+      Projected profit is not guaranteed profit. Include relevant
+      financing, taxes, commissions, closing costs, carrying
+      costs, and other expenses in your budget or selling-cost
+      entries before relying on a projection.
+    </div>
+  </div>`;
+}
+
+function saveParcelSale(ev,parcelId){
+  ev.preventDefault();
+  const b=budget(dev()),f=ev.target;
+  const sale=val(f,"salePrice");
+  const selling=val(f,"sellingCost");
+
+  if((sale&&!validAmount(sale))||
+     !validAmount(selling))
+    return alert("Enter valid amounts.");
+
+  if(sale==="")delete b.salePrices[parcelId];
+  else b.salePrices[parcelId]=n(sale);
+
+  b.sellingCosts[parcelId]=n(selling);
+  save();render();
+}
+
+/* BUDGET SETTINGS */
+
+function budgetSettings(d){
+  const b=budget(d);
+  return `<div class="card">
+    <h2>Budget Settings</h2>
+    <form onsubmit="saveBudgetSettings(event)">
+      ${sel("coverage","Budget Coverage",[
+        ["land","Land development only"],
+        ["homes","Land development + manufactured homes"]
+      ],b.coverage)}
+
+      ${inp("target","Base Target Budget ($)","number",
+        b.target,"required min='0' step='0.01'")}
+      ${inp("contingency","Separate Contingency ($)",
+        "number",b.contingency,
+        "required min='0' step='0.01'")}
+
+      <div class="notice">
+        Shared costs are divided equally across
+        ${d.parcels.length} parcels. The property purchase
+        price is read from Property Details and counted once.
+      </div>
+
+      <button class="btn">Save Budget Settings</button>
+    </form>
+  </div>`;
+}
+
+function saveBudgetSettings(ev){
+  ev.preventDefault();
+  const f=ev.target,b=budget(dev());
+  if(!validAmount(val(f,"target"))||
+     !validAmount(val(f,"contingency")))
+    return alert("Enter valid budget amounts.");
+
+  b.coverage=val(f,"coverage")==="homes"?"homes":"land";
+  b.target=n(val(f,"target"));
+  b.contingency=n(val(f,"contingency"));
+  save();render();
+}
+
+/* PARCELS */
+
+function parcelPage(){
+  const d=dev(),p=parcel();
+  if(!d||!p)return head("Parcel Not Found");
+
+  return `${head(
+    p.name,d.name,
+    btn("Back to Development","go('development')","secondary")
+  )}
+
+  <div class="grid">
+    ${stat("Allocated Land Cost",usd(land(d)))}
+    ${stat("Parcel Acreage",
+      p.acreage?`${p.acreage} acres`:"Not entered")}
+    ${stat("Approved Stages",
+      `${p.jobs.filter(j=>j.status==="approved").length} / ${p.jobs.length}`)}
+    ${stat("Bids Received",
+      state.bids.filter(b=>b.parcelId===p.id).length)}
+  </div>
+
+  <div class="tabs">
+    <button class="${tab==="overview"?"active":""}"
+      onclick="tab='overview';render()">Trade Workflow</button>
+    <button class="${tab==="details"?"active":""}"
+      onclick="tab='details';render()">Parcel Details</button>
+  </div>
+
+  ${tab==="details"?`
+    <div class="card">
+      <form onsubmit="editParcel(event)">
+        ${inp("name","Parcel Name","text",p.name,"required")}
+        ${inp("acreage","Parcel Acreage","number",p.acreage,
+          "min='0' step='any'")}
+        ${area("notes","Notes",p.notes)}
+        <div class="notice">
+          Allocated land cost: ${usd(land(d))}
+        </div>
+        <button class="btn">Save Parcel Details</button>
+      </form>
+    </div>
+  `:`
+    <div class="card">
+      <h2>Construction Workflow</h2>
+      <p class="sub">Owner approval unlocks the next trade stage.</p>
+      ${p.jobs.map((j,i)=>`
+        <div class="item">
+          <div class="itemhead">
+            <div>
+              <div class="meta">
+                STAGE ${i+1} OF ${p.jobs.length}
+              </div>
+              <div class="itemtitle">${e(j.trade)}</div>
+              <div class="meta">
+                ${e(j.contractorName||
+                  contractor(j.contractorId)?.name||
+                  "No contractor assigned")}
+              </div>
+            </div>
+            ${badge(j)}
+          </div>
+          <div class="actions">
+            ${btn("Open Stage",`openJob('${j.id}')`,
+              "secondary small")}
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `}`;
+}
+
+function editParcel(ev){
+  ev.preventDefault();
+  const p=parcel(),f=ev.target;
+  if(!val(f,"name")||
+     (val(f,"acreage")&&!validAmount(val(f,"acreage"))))
+    return alert("Enter valid parcel details.");
+
+  p.name=val(f,"name");
+  p.acreage=val(f,"acreage");
+  p.notes=val(f,"notes");
+  save();render();
+}
+
+/* V24 CLEARING MATH */
+
+function getLayout(j){return j.clearingLayout||null;}
+
+function squareLayout(clearAcres,brushAcres){
+  const inner=clearAcres*SQFT_PER_ACRE;
+  const outer=(clearAcres+brushAcres)*SQFT_PER_ACRE;
+  const innerSide=Math.sqrt(inner);
+  const outerSide=Math.sqrt(outer);
+
+  return {
+    mode:"acres",clearAcres,brushAcres,
+    innerLength:innerSide,innerWidth:innerSide,
+    outerLength:outerSide,outerWidth:outerSide,
+    centered:true
+  };
+}
+
+function clearingNumbers(x){
+  const il=n(x?.innerLength),iw=n(x?.innerWidth);
+  const ol=n(x?.outerLength),ow=n(x?.outerWidth);
+  const inner=il*iw,outer=ol*ow;
+  return {
+    il,iw,ol,ow,inner,outer,
+    brush:Math.max(0,outer-inner),
+    endBand:(ol-il)/2,sideBand:(ow-iw)/2
+  };
+}
+
+function layoutValid(x){
+  if(!x)return false;
+  const z=clearingNumbers(x);
+  return [z.il,z.iw,z.ol,z.ow].every(v=>
+    Number.isFinite(v)&&v>0&&v<=WHEEL_MAX
+  )&&z.ol>=z.il&&z.ow>=z.iw&&z.outer>z.inner;
+}
+
+function clearingScope(j){
+  const x=getLayout(j);
+  if(!layoutValid(x))return "";
+  const z=clearingNumbers(x);
+
+  const lines=[
+    "LAND CLEARING — CONTRACTOR SCOPE OF WORK",
+    `Development: ${dev()?.name||""}`,
+    `Parcel: ${parcel()?.name||""}`,
+    "",
+    "1. COMPLETE CLEARING",
+    `Area: ${acres(z.inner)} acres (${fmt(z.inner)} square feet).`,
+    `Approximate depth: ${fmt(z.il)} feet.`,
+    `Approximate width: ${fmt(z.iw)} feet.`,
+    "Remove designated trees and underbrush inside this area.",
+    "",
+    "2. ADDITIONAL UNDERBRUSH ONLY",
+    `Area: ${acres(z.brush)} acres (${fmt(z.brush)} square feet).`,
+    "This is additional ground outside the complete-clearing area.",
+    "Remove underbrush in this surrounding area.",
+    "Retain trees unless separately marked for removal.",
+    "",
+    "3. OVERALL FOOTPRINT",
+    `Total: ${acres(z.outer)} acres (${fmt(z.outer)} square feet).`,
+    `Approximate outer depth: ${fmt(z.ol)} feet.`,
+    `Approximate outer width: ${fmt(z.ow)} feet.`,
+    "Do not count the complete-clearing area twice."
+  ];
+
+  if(x.centered){
+    lines.push(
+      "","4. APPROXIMATE UNDERBRUSH BAND",
+      `Beyond each end: ${fmt(z.endBand)} feet.`,
+      `Beyond each side: ${fmt(z.sideBand)} feet.`
+    );
+  }else{
+    lines.push(
+      "","4. POSITION",
+      "Position the inner clearing area as marked on site.",
+      "Equal offsets are not assumed."
+    );
+  }
+
+  if(x.mode==="acres"){
+    lines.push(
+      "","LAYOUT ASSUMPTION",
+      "Dimensions are calculated for a centered square layout.",
+      "Confirm actual field dimensions before construction."
+    );
+  }
+
+  if(x.notes)lines.push("","SITE NOTES: "+x.notes);
+
+  lines.push(
+    "",
+    "Verify boundaries, utilities, access, measurements, debris",
+    "disposal, and applicable permits before pricing or starting."
+  );
+
+  return lines.join("\n");
+}
+
+/* CLEARING PLANNER */
+
+function startClearingDraft(){
+  if(clearingDraft)return;
+  const x=getLayout(job());
+
+  if(x?.mode==="acres"){
+    clearingMode="acres";
+    clearingDraft={
+      clearAcres:String(x.clearAcres??(
+        n(x.innerLength)*n(x.innerWidth)/SQFT_PER_ACRE
+      )),
+      brushAcres:String(x.brushAcres??(
+        Math.max(0,
+          n(x.outerLength)*n(x.outerWidth)-
+          n(x.innerLength)*n(x.innerWidth)
+        )/SQFT_PER_ACRE
+      )),
+      innerLength:String(x.innerLength),
+      innerWidth:String(x.innerWidth),
+      outerLength:String(x.outerLength),
+      outerWidth:String(x.outerWidth),
+      centered:x.centered!==false,notes:x.notes||""
+    };
+  }else if(x){
+    clearingMode="feet";
+    const z=clearingNumbers(x);
+    clearingDraft={
+      clearAcres:String(z.inner/SQFT_PER_ACRE),
+      brushAcres:String(z.brush/SQFT_PER_ACRE),
+      innerLength:String(z.il),innerWidth:String(z.iw),
+      outerLength:String(z.ol),outerWidth:String(z.ow),
+      centered:x.centered!==false,notes:x.notes||""
+    };
+  }else{
+    clearingMode="acres";
+    clearingDraft={
+      clearAcres:"0.25",brushAcres:"0.25",
+      innerLength:"0",innerWidth:"0",
+      outerLength:"0",outerWidth:"0",
+      centered:true,notes:""
+    };
+  }
+}
+
+function readClearingDraft(){
+  if(!clearingDraft)return;
+
+  if(clearingMode==="acres"){
+    for(const key of ["clearAcres","brushAcres"]){
+      const custom=document.getElementById(key+"Custom");
+      const el=document.getElementById(key);
+      if(custom)clearingDraft[key]=custom.value;
+      else if(el)clearingDraft[key]=el.value;
+    }
+  }else{
+    for(const key of [
+      "innerLength","innerWidth","outerLength","outerWidth"
+    ]){
+      const el=document.getElementById(key);
+      if(el)clearingDraft[key]=el.value;
+    }
+    const centered=document.getElementById("centered");
+    if(centered)clearingDraft.centered=centered.value==="yes";
+  }
+
+  const notes=document.getElementById("layoutNotes");
+  if(notes)clearingDraft.notes=notes.value;
+}
+
+function changeClearingMode(mode){
+  readClearingDraft();
+
+  if(mode==="feet"&&clearingMode==="acres"){
+    const c=Number(clearingDraft.clearAcres);
+    const b=Number(clearingDraft.brushAcres);
+    if(Number.isFinite(c)&&Number.isFinite(b)&&c>0&&b>0){
+      const x=squareLayout(c,b);
+      clearingDraft.innerLength=String(x.innerLength);
+      clearingDraft.innerWidth=String(x.innerWidth);
+      clearingDraft.outerLength=String(x.outerLength);
+      clearingDraft.outerWidth=String(x.outerWidth);
+    }
+  }
+
+  if(mode==="acres"&&clearingMode==="feet"){
+    const z=clearingNumbers(clearingDraft);
+    clearingDraft.clearAcres=String(z.inner/SQFT_PER_ACRE);
+    clearingDraft.brushAcres=String(z.brush/SQFT_PER_ACRE);
+  }
+
+  clearingMode=mode;
+  render();
+}
+
+function changeAcreageEntryMode(mode){
+  readClearingDraft();
+  acreageEntryMode=mode;
+  render();
+}
+
+function fractionField(key,label){
+  const current=String(clearingDraft[key]??"");
+  const matched=FRACTIONS.some(([v])=>v===current);
+  const custom=customAcreFields[key]||!matched;
+
+  return `<div class="field">
+    <label for="${key}">${e(label)}</label>
+    <select id="${key}"
+      onchange="changeFraction('${key}',this.value)">
+      ${FRACTIONS.map(([v,t])=>`
+        <option value="${v}"
+          ${!custom&&current===v?"selected":""}>${t}</option>
+      `).join("")}
+      <option value="custom" ${custom?"selected":""}>
+        Custom decimal…
+      </option>
+    </select>
+
+    ${custom?`
+      <input id="${key}Custom" type="number"
+        inputmode="decimal" min="0" step="any"
+        value="${e(current)}"
+        placeholder="Enter acres, e.g. 0.30"
+        style="margin-top:8px"
+        oninput="changeCustomAcreage('${key}',this.value)">
+    `:""}
+  </div>`;
+}
+
+function changeFraction(key,value){
+  readClearingDraft();
+  if(value==="custom"){
+    customAcreFields[key]=true;
+    render();
+    document.getElementById(key+"Custom")?.focus();
+    return;
+  }
+  customAcreFields[key]=false;
+  clearingDraft[key]=value;
+  render();
+}
+
+function changeCustomAcreage(key,value){
+  clearingDraft[key]=value;
+  previewClearing();
+}
+
+function decimalField(key,label){
+  return inp(
+    key,label,"number",clearingDraft[key],
+    "min='0' step='any' inputmode='decimal' oninput='previewClearing()'"
+  );
+}
+
+function measurementField(name,label,value){
+  return `<div class="measure-field">
+    <label for="${name}">${e(label)}</label>
+    <div class="measure-control">
+      <input id="${name}" name="${name}" type="number"
+        inputmode="numeric" min="0" max="${WHEEL_MAX}"
+        step="1" value="${e(value??0)}"
+        oninput="previewClearing()"
+        aria-label="${e(label)} in feet">
+      <span class="measure-unit">ft</span>
+      <button type="button" class="wheel-trigger"
+        aria-label="Scroll to select ${e(label)}"
+        onclick="openWheel('${name}','${e(label)}')">⌄</button>
+    </div>
+  </div>`;
+}
+
+function clearingPreviewHTML(x,mode){
+  let layout;
+
+  if(mode==="acres"){
+    const c=Number(x.clearAcres),b=Number(x.brushAcres);
+    if(
+      x.clearAcres===""||x.brushAcres===""||
+      !Number.isFinite(c)||!Number.isFinite(b)||c<=0||b<=0
+    ){
+      return `<div class="notice warning">
+        Enter a positive acreage for complete clearing and
+        additional underbrush.
+      </div>`;
+    }
+
+    layout=squareLayout(c,b);
+    if(!layoutValid(layout)){
+      return `<div class="notice warning">
+        This square layout exceeds the 2,500-foot measurement
+        limit. Enter smaller areas or use a separate site plan.
+      </div>`;
+    }
+  }else{
+    const keys=[
+      "innerLength","innerWidth","outerLength","outerWidth"
+    ];
+    const values=keys.map(k=>Number(x[k]));
+    if(
+      keys.some(k=>x[k]==="")||
+      values.some(v=>!Number.isInteger(v)||v<0||v>WHEEL_MAX)
+    ){
+      return `<div class="notice warning">
+        Enter whole-foot measurements from 0 to 2,500.
+      </div>`;
+    }
+
+    layout={
+      mode:"feet",
+      innerLength:values[0],innerWidth:values[1],
+      outerLength:values[2],outerWidth:values[3],
+      centered:x.centered!==false
+    };
+
+    if(!layoutValid(layout)){
+      return `<div class="notice warning">
+        The outer depth and width must contain the inner area
+        and create additional underbrush-only ground.
+      </div>`;
+    }
+  }
+
+  const z=clearingNumbers(layout);
+
+  return `
+    <div class="measure-result">
+      <div>
+        <strong style="font-size:13px;color:var(--navy)">
+          Complete clearing
+        </strong>
+        <small>${fmt(z.inner)} square feet</small>
+      </div>
+      <strong>${acres(z.inner)} ac</strong>
+    </div>
+
+    <div class="measure-result">
+      <div>
+        <strong style="font-size:13px;color:var(--navy)">
+          Additional underbrush only
+        </strong>
+        <small>${fmt(z.brush)} square feet</small>
+      </div>
+      <strong>${acres(z.brush)} ac</strong>
+    </div>
+
+    <div class="total-result">
+      <div class="sub">Total unique clearing footprint</div>
+      <strong>${acres(z.outer)} acres</strong>
+      <div class="help">${fmt(z.outer)} square feet</div>
+    </div>
+
+    <hr>
+
+    ${row("Inner dimensions",
+      `${fmt(z.il,1)} × ${fmt(z.iw,1)} ft`)}
+    ${row("Outer dimensions",
+      `${fmt(z.ol,1)} × ${fmt(z.ow,1)} ft`)}
+
+    ${layout.centered?`
+      ${row("Underbrush beyond each end",
+        `${fmt(z.endBand,1)} ft`)}
+      ${row("Underbrush beyond each side",
+        `${fmt(z.sideBand,1)} ft`)}
+    `:`
+      <p class="help">
+        Inner area position is determined on site;
+        equal offsets are not assumed.
+      </p>
+    `}
+
+    ${mode==="acres"?`
+      <p class="help">
+        Estimated dimensions assume a centered square.
+        Actual site boundaries may require a different layout.
+      </p>
+    `:""}
+  `;
+}
+
+function previewClearing(){
+  const x={...clearingDraft};
+
+  if(clearingMode==="acres"){
+    for(const key of ["clearAcres","brushAcres"]){
+      const custom=document.getElementById(key+"Custom");
+      const normal=document.getElementById(key);
+      if(custom)x[key]=custom.value;
+      else if(normal)x[key]=normal.value;
+    }
+  }else{
+    for(const key of [
+      "innerLength","innerWidth","outerLength","outerWidth"
+    ]){
+      const el=document.getElementById(key);
+      if(el)x[key]=el.value;
+    }
+    const centered=document.getElementById("centered");
+    if(centered)x.centered=centered.value==="yes";
+  }
+
+  Object.assign(clearingDraft,x);
+  const target=document.getElementById("clearingPreview");
+  if(target)target.innerHTML=clearingPreviewHTML(x,clearingMode);
+}
+
+function clearingForm(j){
+  startClearingDraft();
+  const x=getLayout(j);
+
+  return `<div class="card">
+    <h2>Land Clearing Planner</h2>
+    <p class="sub">
+      Plan by acreage or enter measurements in feet.
+      A7 calculates the clearing areas automatically.
+    </p>
+
+    <div class="segment">
+      <button type="button"
+        class="${clearingMode==="acres"?"active":""}"
+        onclick="changeClearingMode('acres')">
+        Plan by Acres
+      </button>
+      <button type="button"
+        class="${clearingMode==="feet"?"active":""}"
+        onclick="changeClearingMode('feet')">
+        Enter Feet
+      </button>
+    </div>
+
+    <form id="clearingForm" onsubmit="saveClearingLayout(event)">
+      ${clearingMode==="acres"?`
+        <div class="segment">
+          <button type="button"
+            class="${acreageEntryMode==="fraction"?"active":""}"
+            onclick="changeAcreageEntryMode('fraction')">
+            Choose Fraction
+          </button>
+          <button type="button"
+            class="${acreageEntryMode==="decimal"?"active":""}"
+            onclick="changeAcreageEntryMode('decimal')">
+            Enter Decimal
+          </button>
+        </div>
+
+        <div class="measure-section">
+          <h3>1. Complete Clearing</h3>
+          <p class="sub">Remove trees and underbrush.</p>
+          ${acreageEntryMode==="fraction"
+            ?fractionField("clearAcres",
+              "Completely Cleared Acreage")
+            :decimalField("clearAcres",
+              "Completely Cleared Acreage")}
+        </div>
+
+        <div class="measure-section">
+          <h3>2. Additional Underbrush Only</h3>
+          <p class="sub">
+            Enter the extra acreage around the completely
+            cleared area—not the total outer acreage.
+          </p>
+          ${acreageEntryMode==="fraction"
+            ?fractionField("brushAcres",
+              "Additional Underbrush Acreage")
+            :decimalField("brushAcres",
+              "Additional Underbrush Acreage")}
+        </div>
+
+        <div class="notice">
+          Example: ¼ acre cleared + ¼ acre underbrushed
+          = ½ acre total footprint.
+        </div>
+      `:`
+        <div class="measure-section">
+          <h3>1. Complete Clearing</h3>
+          <p class="sub">
+            Type feet or tap ⌄ to use the vertical scroll wheel.
+          </p>
+          <div class="measure-grid">
+            ${measurementField("innerLength","Depth",
+              clearingDraft.innerLength)}
+            ${measurementField("innerWidth","Width",
+              clearingDraft.innerWidth)}
+          </div>
+        </div>
+
+        <div class="measure-section">
+          <h3>2. Overall Underbrush Boundary</h3>
+          <p class="sub">
+            Enter the full outside dimensions.
+            A7 subtracts the inner clearing area.
+          </p>
+          <div class="measure-grid">
+            ${measurementField("outerLength","Overall Depth",
+              clearingDraft.outerLength)}
+            ${measurementField("outerWidth","Overall Width",
+              clearingDraft.outerWidth)}
+          </div>
+        </div>
+
+        ${sel("centered",
+          "Is the Complete-Clearing Area Centered?",[
+            ["yes","Yes — centered"],
+            ["no","No — positioned on site"]
+          ],
+          clearingDraft.centered?"yes":"no",
+          "onchange='previewClearing()'")}
+      `}
+
+      <div id="clearingPreview" aria-live="polite">
+        ${clearingPreviewHTML(clearingDraft,clearingMode)}
+      </div>
+
+      <div style="margin-top:16px">
+        ${area("layoutNotes","Clearing Layout Notes",
+          clearingDraft.notes||"")}
+      </div>
+
+      <button class="btn">
+        Save Measurements & Generate Scope
+      </button>
+    </form>
+
+    ${layoutValid(x)?`
+      <hr>
+      <h3>Saved Clearing Layout</h3>
+      ${layoutDiagram(x)}
+      <div class="actions">
+        ${btn("Regenerate Contractor Scope",
+          "regenerateScope()","secondary")}
+      </div>
+    `:""}
+
+    ${j.clearingAreas?.length?`
+      <div class="notice warning">
+        This stage also contains ${j.clearingAreas.length}
+        older clearing area(s). They remain saved but are
+        excluded from V25 calculations to avoid double-counting.
+      </div>
+    `:""}
+  </div>`;
+}
+
+function layoutDiagram(x){
+  const z=clearingNumbers(x);
+  return `<div class="layout">
+    <strong>OVERALL: ${fmt(z.ol,1)} × ${fmt(z.ow,1)} FT</strong>
+    <div class="layout-inner">
+      COMPLETE CLEARING<br>
+      ${fmt(z.il,1)} × ${fmt(z.iw,1)} FT<br>
+      <span class="sub">${fmt(z.inner)} sq ft</span>
+    </div>
+    <strong>SURROUNDING: UNDERBRUSH ONLY</strong><br>
+    ${fmt(z.brush)} sq ft
+  </div>
+
+  ${row("Complete clearing",
+    `${fmt(z.inner)} sq ft · ${acres(z.inner)} acres`)}
+  ${row("Additional underbrush only",
+    `${fmt(z.brush)} sq ft · ${acres(z.brush)} acres`)}
+  ${row("Total unique footprint",
+    `${fmt(z.outer)} sq ft · ${acres(z.outer)} acres`)}
+
+  ${x.centered?`
+    ${row("Band beyond each end",`${fmt(z.endBand,1)} ft`)}
+    ${row("Band beyond each side",`${fmt(z.sideBand,1)} ft`)}
+  `:`
+    <p class="help">
+      Inner area position is determined on site.
+    </p>
+  `}`;
+}
+
+function saveClearingLayout(ev){
+  ev.preventDefault();
+  readClearingDraft();
+  const j=job();
+  let x;
+
+  if(clearingMode==="acres"){
+    const c=Number(clearingDraft.clearAcres);
+    const b=Number(clearingDraft.brushAcres);
+    if(
+      clearingDraft.clearAcres===""||
+      clearingDraft.brushAcres===""||
+      !Number.isFinite(c)||!Number.isFinite(b)||c<=0||b<=0
+    )return alert(
+      "Enter positive acreages for both clearing categories."
+    );
+    x=squareLayout(c,b);
+  }else{
+    const keys=[
+      "innerLength","innerWidth","outerLength","outerWidth"
+    ];
+    if(keys.some(k=>
+      clearingDraft[k]===""||
+      !Number.isInteger(Number(clearingDraft[k]))
+    ))return alert("Enter whole-foot measurements.");
+
+    x={
+      mode:"feet",
+      innerLength:Number(clearingDraft.innerLength),
+      innerWidth:Number(clearingDraft.innerWidth),
+      outerLength:Number(clearingDraft.outerLength),
+      outerWidth:Number(clearingDraft.outerWidth),
+      centered:clearingDraft.centered
+    };
+  }
+
+  x.notes=clearingDraft.notes||"";
+
+  if(!layoutValid(x)){
+    return alert(
+      "The measurements must fit within 0–2,500 feet. " +
+      "The outer boundary must contain a smaller inner clearing area."
+    );
+  }
+
+  if(j.scope&&!confirm(
+    "Replace the current scope with the new measured clearing scope?"
+  ))return;
+
+  j.clearingLayout=x;
+  j.scope=clearingScope(j);
+  clearingDraft=null;
+  save();render();
+}
+
+function regenerateScope(){
+  const j=job();
+  if(!layoutValid(getLayout(j)))return;
+  if(j.scope&&!confirm(
+    "Replace the current scope with the saved clearing measurements?"
+  ))return;
+  j.scope=clearingScope(j);
+  save();render();
+}
+
+/* VERTICAL SCROLL WHEEL — 0 TO 2,500 FT */
+
+function openWheel(fieldId,label){
+  const input=document.getElementById(fieldId);
+  if(!input)return;
+  closeWheel();
+
+  activeWheel={
+    fieldId,label,
+    selected:Math.max(0,
+      Math.min(WHEEL_MAX,Math.round(n(input.value))))
+  };
+
+  document.getElementById("wheelRoot").innerHTML=`
+    <div class="wheel-backdrop" id="wheelBackdrop">
+      <div class="wheel-sheet" role="dialog" aria-modal="true"
+        aria-label="${e(label)} number picker">
+        <div class="wheel-top">
+          <strong>${e(label)} · Feet</strong>
+          <button type="button" class="wheel-done"
+            onclick="closeWheel()">Done</button>
+        </div>
+
+        <div class="wheel-frame">
+          <div class="wheel-window" id="wheelWindow"
+            aria-label="Scroll vertically to select feet">
+            <div class="wheel-spacer"></div>
+            ${Array.from({length:WHEEL_MAX+1},(_,i)=>`
+              <div class="wheel-option
+                ${i===activeWheel.selected?"selected":""}"
+                data-feet="${i}"
+                onclick="chooseWheelNumber(${i})">
+                ${i} ft
+              </div>
+            `).join("")}
+            <div class="wheel-spacer"></div>
+          </div>
+          <div class="wheel-selection"></div>
+        </div>
+
+        <div class="wheel-hint">
+          Swipe up or down · 0–2,500 feet
+        </div>
+      </div>
+    </div>
+  `;
+
+  const backdrop=document.getElementById("wheelBackdrop");
+  backdrop.addEventListener("click",ev=>{
+    if(ev.target===backdrop)closeWheel();
+  });
+
+  const wheel=document.getElementById("wheelWindow");
+  wheel.addEventListener("scroll",()=>{
+    if(!activeWheel)return;
+    const selected=Math.max(0,
+      Math.min(WHEEL_MAX,Math.round(wheel.scrollTop/44)));
+    setWheelSelection(selected);
+    clearTimeout(wheelScrollTimer);
+    wheelScrollTimer=setTimeout(()=>{
+      if(activeWheel){
+        wheel.scrollTo({
+          top:activeWheel.selected*44,
+          behavior:"smooth"
+        });
+      }
+    },130);
+  },{passive:true});
+
+  requestAnimationFrame(()=>{
+    if(activeWheel)wheel.scrollTop=activeWheel.selected*44;
+  });
+}
+
+function setWheelSelection(number){
+  if(!activeWheel)return;
+  const selected=Math.max(0,
+    Math.min(WHEEL_MAX,Math.round(number)));
+  const previous=activeWheel.selected;
+  activeWheel.selected=selected;
+
+  const input=document.getElementById(activeWheel.fieldId);
+  if(input){
+    input.value=String(selected);
+    previewClearing();
+  }
+
+  const wheel=document.getElementById("wheelWindow");
+  if(wheel&&previous!==selected){
+    wheel.querySelector(`[data-feet="${previous}"]`)
+      ?.classList.remove("selected");
+    wheel.querySelector(`[data-feet="${selected}"]`)
+      ?.classList.add("selected");
+  }
+}
+
+function chooseWheelNumber(number){
+  if(!activeWheel)return;
+  setWheelSelection(number);
+  document.getElementById("wheelWindow")?.scrollTo({
+    top:activeWheel.selected*44,
+    behavior:"smooth"
+  });
+}
+
+function closeWheel(){
+  clearTimeout(wheelScrollTimer);
+  activeWheel=null;
+  const root=document.getElementById("wheelRoot");
+  if(root)root.innerHTML="";
+}
+
+/* TRADE STAGES */
+
+function jobPage(){
+  const d=dev(),p=parcel(),j=job();
+  if(!d||!p||!j)return head("Stage Not Found");
+  const i=p.jobs.findIndex(x=>x.id===j.id);
+
+  return `${head(
+    j.trade,`${d.name} / ${p.name}`,
+    btn("Back to Parcel","go('parcel')","secondary")
+  )}
+
+  <div class="card">
+    <div class="itemhead">
+      <div>
+        <div class="meta">STAGE ${i+1} OF ${p.jobs.length}</div>
+        <h2>${e(j.trade)}</h2>
+      </div>
+      ${badge(j)}
+    </div>
+
+    ${j.status==="locked"?`
+      <div class="notice warning">
+        This stage is locked until the previous stage is approved.
+        You can still prepare the scope and record bids.
+      </div>
+    `:""}
+  </div>
+
+  <div class="tabs">
+    ${[
+      ["details","Scope & Assignment"],
+      ["bids","Bids Received"],
+      ["photos","Photos & Files"],
+      ["approval","Approval"]
+    ].map(([k,t])=>`
+      <button class="${jobTab===k?"active":""}"
+        onclick="jobTab='${k}';render()">${t}</button>
+    `).join("")}
+  </div>
+
+  ${jobTab==="details"?`
+    ${j.trade==="Land Clearing"?clearingForm(j):""}
+
+    <div class="card">
+      <h2>Scope of Work & Contractor</h2>
+      ${assignedContractorCard(j)}
+
+      <form onsubmit="saveJob(event)">
+        ${sel("contractorId","Assigned Contractor",[
+          ["","Not assigned"],
+          ...state.contractors.map(c=>[c.id,c.name])
+        ],j.contractorId)}
+
+        ${area("scope","Editable Contractor Scope",j.scope||"")}
+        ${area("notes","Stage Notes",j.notes||"")}
+        <button class="btn">Save Stage Details</button>
+      </form>
+
+      <div class="notice">
+        Assignments are saved locally. Call and Text open
+        your phone's apps; A7 does not automatically
+        contact contractors.
+      </div>
+    </div>
+  `:""}
+
+  ${jobTab==="bids"?bidSection(j):""}
+
+  ${jobTab==="photos"?`
+    <div class="card">
+      <h2>Photos & Files</h2>
+      <p class="sub">
+        Upload before, during, and after photos.
+      </p>
+      ${["before","during","after","document"].map(
+        k=>uploader("job",j.id,k)
+      ).join("")}
+      ${filesHTML(j.files||[])}
+    </div>
+  `:""}
+
+  ${jobTab==="approval"?approval(j,p,i):""}`;
+}
+
+function saveJob(ev){
+  ev.preventDefault();
+  const f=ev.target,j=job();
+  j.contractorId=val(f,"contractorId");
+  j.contractorName=contractor(j.contractorId)?.name||"";
+  j.scope=val(f,"scope");
+  j.notes=val(f,"notes");
+  save();render();
+}
+
+/* BIDS RECEIVED */
+
+function bidSection(j){
+  const bs=bidsFor(j);
+
+  return `<div class="card">
+    <h2>Bids Received</h2>
+    <p class="sub">
+      Competing bids are recorded separately, not added together
+      as committed costs.
+    </p>
+
+    <form onsubmit="addBid(event)">
+      ${sel("contractorId","Contractor",[
+        ["","Select Contractor"],
+        ...state.contractors.map(c=>[c.id,c.name])
+      ])}
+
+      <div class="fields">
+        ${inp("amount","Bid Amount ($)","number","",
+          "required min='0' step='0.01'")}
+        ${inp("date","Date Received","date",date(),"required")}
+      </div>
+
+      ${area("notes","Bid Notes / Inclusions / Exclusions")}
+      <button class="btn">Save Bid Received</button>
+    </form>
+
+    <hr>
+    <h3>Recorded Bids Received (${bs.length})</h3>
+
+    ${bs.length?bs.map(b=>`
+      <div class="item">
+        <div class="itemhead">
+          <div>
+            <strong>${e(b.contractorName)}</strong>
+            <div class="meta">${e(b.date)} · ${e(b.notes)}</div>
+            ${b.acceptedV25?`
+              <span class="badge green">Accepted for budget</span>
+            `:""}
+          </div>
+          <strong class="money">${usd(b.amount)}</strong>
+        </div>
+        <div class="actions">
+          ${b.acceptedV25
+            ?btn("Unaccept Bid",
+              `unacceptBudgetBid('${b.id}')`,"secondary small")
+            :btn("Accept for Budget",
+              `acceptBudgetBid('${b.id}')`,"secondary small")}
+          ${btn("Delete Bid",
+            `deleteBid('${b.id}')`,"danger small")}
+        </div>
+      </div>
+    `).join("")
+    :empty("No bids received","Add a contractor bid above.")}
+  </div>`;
+}
+
+function addBid(ev){
+  ev.preventDefault();
+  const f=ev.target;
+  const c=contractor(val(f,"contractorId"));
+  const d=dev(),p=parcel(),j=job();
+
+  if(!c)return alert("Select a contractor from the directory.");
+  if(!validAmount(val(f,"amount")))
+    return alert("Enter a valid bid amount.");
+
+  state.bids.push({
+    id:id(),developmentId:d.id,developmentName:d.name,
+    parcelId:p.id,parcelName:p.name,jobId:j.id,trade:j.trade,
+    contractorId:c.id,contractorName:c.name,
+    amount:n(val(f,"amount")),date:val(f,"date"),
+    notes:val(f,"notes"),acceptedV25:false
+  });
+  save();render();
+}
+
+function deleteBid(x){
+  if(confirm("Delete this recorded bid?")){
+    state.bids=state.bids.filter(b=>b.id!==x);
+    save();render();
+  }
+}
+
+/* APPROVAL */
+
+function approval(j,p,i){
+  const counts=["before","during","after"].map(
+    k=>(j.files||[]).filter(f=>f.category===k).length
+  );
+  const ready=counts.every(x=>x>=3);
+
+  return `<div class="card">
+    <h2>Owner Approval</h2>
+    ${row("Before photos",`${counts[0]} / 3`)}
+    ${row("During photos",`${counts[1]} / 3`)}
+    ${row("After photos",`${counts[2]} / 3`)}
+
+    ${j.status==="approved"?`
+      <div class="notice">
+        Approved on ${e(j.approvedAt||"a previous date")}.
+      </div>
+    `:`
+      <div class="notice ${ready?"":"warning"}">
+        ${ready
+          ?"Photo requirements met."
+          :"Upload at least three before, three during, and three after photos before approval."}
+      </div>
+
+      <div class="actions">
+        <button class="btn secondary"
+          ${j.status==="locked"?"disabled":""}
+          onclick="changeStatus('in_progress')">
+          Mark In Progress
+        </button>
+        <button class="btn secondary"
+          ${j.status==="locked"?"disabled":""}
+          onclick="changeStatus('submitted')">
+          Submit for Approval
+        </button>
+        <button class="btn"
+          ${j.status==="locked"||!ready?"disabled":""}
+          onclick="approve()">
+          Approve & Unlock Next Stage
+        </button>
+      </div>
+    `}
+
+    <p class="help">
+      This is a local owner approval record,
+      not a verified electronic signature.
+    </p>
+  </div>`;
+}
+
+function changeStatus(s){
+  const j=job();
+  if(j.status==="locked"||j.status==="approved")return;
+  j.status=s;
+  save();render();
+}
+
+function approve(){
+  const j=job(),p=parcel();
+  if(j.status==="locked"||j.status==="approved")return;
+
+  if(["before","during","after"].some(
+    k=>(j.files||[]).filter(f=>f.category===k).length<3
+  ))return alert("Upload all required photos first.");
+
+  if(!confirm(
+    `Approve ${j.trade} and unlock the next stage?`
+  ))return;
+
+  j.status="approved";
+  j.approvedAt=date();
+
+  const next=p.jobs[
+    p.jobs.findIndex(x=>x.id===j.id)+1
+  ];
+  if(next&&next.status==="locked")next.status="ready";
+
+  save();render();
+}
+
+/* CONTRACTOR DIRECTORY */
+
+function contractors(){
+  return `${head(
+    "Contractor Directory",
+    "Contacts, trade capabilities, calling, and texting",
+    btn("+ Add Contractor",
+      "editingContractor=null;go('contractorForm')")
+  )}
+
+  <div class="card">
+    ${state.contractors.length
+      ?state.contractors.map(c=>`
+        <div class="item">
+          <div class="itemhead">
+            <div>
+              <div class="itemtitle">${e(c.name)}</div>
+              <div class="meta">
+                ${e(c.company||"Independent Contractor")}
+              </div>
+              ${c.phone?`
+                <div class="meta">Phone: ${e(c.phone)}</div>
+              `:""}
+              ${c.email?`
+                <div class="meta">Email: ${e(c.email)}</div>
+              `:""}
+              <div class="meta">
+                ${e((c.trades||[]).join(" · "))}
+              </div>
+            </div>
+            <div class="actions">
+              ${btn("Edit",
+                `editingContractor='${c.id}';go('contractorForm')`,
+                "secondary small")}
+              ${btn("Delete",
+                `deleteContractor('${c.id}')`,
+                "danger small")}
+            </div>
+          </div>
+
+          ${contactButtons(c)}
+          ${c.phone&&!phoneLinkNumber(c.phone)?`
+            <p class="help">
+              Check this phone number to enable Call and Text.
+            </p>
+          `:""}
+          ${c.notes?`<div class="meta">${e(c.notes)}</div>`:""}
+        </div>
+      `).join("")
+      :empty("No contractors saved",
+        "Add a contractor to assign trade work.")}
+  </div>`;
+}
+
+function contractorForm(){
+  const c=contractor(editingContractor);
+
+  return `${head(
+    c?"Edit Contractor":"Add Contractor",
+    "Contact details and trades"
+  )}
+
+  <div class="card">
+    <form onsubmit="saveContractor(event)">
+      <div class="fields">
+        ${inp("name","Contractor Name","text",
+          c?.name||"","required")}
+        ${inp("company","Company","text",c?.company||"")}
+        ${inp("phone","Phone Number","tel",c?.phone||"",
+          "autocomplete='tel'")}
+        ${inp("email","Email","email",c?.email||"")}
+      </div>
+
+      <div class="notice">
+        Save a phone number to enable Call and Text buttons
+        in the directory and assigned trade stages.
+      </div>
+
+      <label>Trades Performed</label>
+      <div class="grid two" style="margin:10px 0 18px">
+        ${TRADES.map(t=>`
+          <label style="
+            display:flex;align-items:center;gap:8px;font-weight:500
+          ">
+            <input style="width:18px;min-height:18px"
+              type="checkbox" name="trade" value="${e(t)}"
+              ${(c?.trades||[]).includes(t)?"checked":""}>
+            ${e(t)}
+          </label>
+        `).join("")}
+      </div>
+
+      ${area("notes","Notes",c?.notes||"")}
+      <div class="actions">
+        <button class="btn">Save Contractor</button>
+        ${btn("Cancel",
+          "editingContractor=null;go('contractors')",
+          "secondary")}
+      </div>
+    </form>
+  </div>`;
+}
+
+function saveContractor(ev){
+  ev.preventDefault();
+  const f=ev.target;
+  const c=contractor(editingContractor);
+  const name=val(f,"name");
+  if(!name)return;
+
+  const x={
+    id:c?.id||id(),name,
+    company:val(f,"company"),
+    phone:val(f,"phone"),
+    email:val(f,"email"),
+    trades:[
+      ...f.querySelectorAll('input[name="trade"]:checked')
+    ].map(el=>el.value),
+    notes:val(f,"notes")
+  };
+
+  if(c){
+    Object.assign(c,x);
+    state.developments.forEach(d=>
+      d.parcels.forEach(p=>
+        p.jobs.forEach(j=>{
+          if(j.contractorId===c.id)j.contractorName=name;
+        })
+      )
+    );
+  }else{
+    state.contractors.push(x);
+  }
+
+  editingContractor=null;
+  save();go("contractors");
+}
+
+function deleteContractor(cid){
+  const c=contractor(cid);
+  if(!c)return;
+
+  const assigned=state.developments.flatMap(d=>
+    d.parcels.flatMap(p=>
+      p.jobs.filter(j=>j.contractorId===cid)
+    )
+  ).length;
+
+  const bc=state.bids.filter(b=>b.contractorId===cid).length;
+
+  if(!confirm(
+    `Delete "${c.name}"?\n\n`+
+    `${assigned} stage assignment(s) will be cleared.\n`+
+    `${bc} recorded bid(s) will remain under this contractor's name.\n\n`+
+    "This cannot be undone."
+  ))return;
+
+  state.developments.forEach(d=>
+    d.parcels.forEach(p=>
+      p.jobs.forEach(j=>{
+        if(j.contractorId===cid){
+          j.contractorId="";
+          j.contractorName="";
+        }
+      })
+    )
+  );
+
+  state.contractors=state.contractors.filter(x=>x.id!==cid);
+  save();render();
+}
+
+/* ALL BIDS RECEIVED */
+
+function bidsPage(){
+  return `${head("Bids Received","Recorded contractor proposals")}
+
+  <div class="grid">
+    ${stat("Bids Received",state.bids.length)}
+    ${stat("Sum of Bid Amounts",
+      usd(state.bids.reduce((s,b)=>s+n(b.amount),0)))}
+    ${stat("Contractors with Bids",
+      new Set(state.bids.map(b=>b.contractorName)).size)}
+    ${stat("Developments with Bids",
+      new Set(state.bids.map(b=>b.developmentId)).size)}
+  </div>
+
+  <div class="notice">
+    The sum of bids received may include competing offers
+    and is not a committed project budget.
+  </div>
+
+  <div class="card">
+    ${state.bids.length
+      ?[...state.bids].reverse().map(b=>`
+        <div class="item">
+          <div class="itemhead">
+            <div>
+              <div class="itemtitle">${e(b.trade)}</div>
+              <div class="meta">
+                ${e(b.developmentName)} / ${e(b.parcelName)}
+              </div>
+              <div class="meta">
+                ${e(b.contractorName)} · ${e(b.date)}
+              </div>
+              ${b.acceptedV25?`
+                <span class="badge green">Accepted for budget</span>
+              `:""}
+            </div>
+            <strong class="money">${usd(b.amount)}</strong>
+          </div>
+          <div class="actions">
+            ${btn("Open Stage",
+              `openBid('${b.developmentId}','${b.parcelId}','${b.jobId}')`,
+              "secondary small")}
+            ${btn("Delete Bid",
+              `deleteBid('${b.id}')`,"danger small")}
+          </div>
+        </div>
+      `).join("")
+      :empty("No bids received",
+        "Record bids inside a parcel's trade stage.")}
+  </div>`;
+}
+
+function openBid(d,p,j){
+  state.activeDevelopment=d;
+  state.activeParcel=p;
+  state.activeJob=j;
+  jobTab="bids";
+  save();go("job");
+}
+
+/* BUILT-IN ASSISTANT */
+
+function assistant(){
+  return `${head(
+    "AI Superintendent",
+    "Project guidance and saved records"
+  )}
+
+  <div class="card">
+    <div class="notice">
+      <strong>Project Assistant</strong><br>
+      This standalone version provides built-in guidance.
+      It is not connected to a live AI model, supplier prices,
+      or contractor email.
+    </div>
+
+    <div id="chat">
+      ${state.messages.slice(-20).map(m=>`
+        <div class="bubble ${m.role==="user"?"me":""}">
+          ${e(m.text)}
+        </div>
+      `).join("")}
+    </div>
+
+    <form onsubmit="ask(event)">
+      ${area("question","Ask a Question")}
+      <button class="btn">Ask Superintendent</button>
+    </form>
+  </div>`;
+}
+
+function ask(ev){
+  ev.preventDefault();
+  const q=val(ev.target,"question");
+  if(!q)return;
+
+  const s=q.toLowerCase();
+  let answer;
+
+  if(
+    s.includes("budget")||
+    s.includes("profit")||
+    s.includes("payment")||
+    s.includes("material")||
+    s.includes("cost to finish")
+  ){
+    answer=state.developments.length
+      ?state.developments.map(d=>
+        `${d.name}: target ${usd(targetTotal(d))}, `+
+        `projected final cost ${usd(developmentForecast(d))}, `+
+        `paid ${usd(paymentTotal(d))}, `+
+        `projected cost to finish ${usd(costToFinish(d))}.`
+      ).join("\n")
+      :"Create a development to start budgeting.";
+  }else if(
+    s.includes("clear")||
+    s.includes("underbrush")||
+    s.includes("acre")||
+    s.includes("scope")||
+    s.includes("feet")
+  ){
+    answer=
+      "In Land Clearing, choose Plan by Acres to select fractions " +
+      "or enter decimals. A7 calculates square footage, estimated " +
+      "square dimensions, and the surrounding underbrush band. " +
+      "Additional underbrush acreage is separate from completely " +
+      "cleared acreage. You can also enter feet or use the " +
+      "vertical 0–2,500 ft number wheels.";
+  }else if(
+    s.includes("call")||
+    s.includes("text")||
+    s.includes("phone")
+  ){
+    answer=
+      "Open Contractors and save a phone number. Call and Text " +
+      "buttons will appear in the directory and assigned stages. " +
+      "You choose whether to place the call or send the message.";
+  }else if(s.includes("contractor")){
+    answer=state.contractors.length
+      ?state.contractors.map(c=>
+        `${c.name}: ${(c.trades||[]).join(", ")}`
+      ).join("\n")
+      :"No contractors saved yet.";
+  }else if(s.includes("bid")){
+    answer=
+      `You have ${state.bids.length} bids received. Their submitted `+
+      `amounts total ${usd(
+        state.bids.reduce((a,b)=>a+n(b.amount),0)
+      )}. Competing proposals are not committed costs.`;
+  }else if(
+    s.includes("land")||
+    s.includes("parcel")||
+    s.includes("property")
+  ){
+    answer=state.developments.length
+      ?state.developments.map(d=>
+        `${d.name}: ${d.parcels.length} parcels, `+
+        `${usd(d.purchasePrice)} full purchase price, `+
+        `${usd(land(d))} allocated per parcel.`
+      ).join("\n")
+      :"Create a development to begin.";
+  }else{
+    answer=
+      "I can summarize your developments, contractors, bids, " +
+      "budgets, payments, and measured land clearing scopes. " +
+      "Live AI and supplier searches require a connected service.";
+  }
+
+  state.messages.push(
+    {role:"user",text:q},
+    {role:"assistant",text:answer}
+  );
+  save();render();
+}
+
+/* INDEXEDDB FILE STORAGE */
+
+function openDB(){
+  return new Promise((resolve,reject)=>{
+    const r=indexedDB.open(DB,1);
+
+    r.onupgradeneeded=()=>{
+      if(!r.result.objectStoreNames.contains("files")){
+        r.result.createObjectStore("files");
+      }
+    };
+
+    r.onsuccess=()=>{
+      db=r.result;
+      resolve(db);
+    };
+
+    r.onerror=()=>reject(r.error);
+  });
+}
+
+async function filePut(k,v){
+  const d=db||await openDB();
+  return new Promise((ok,no)=>{
+    const t=d.transaction("files","readwrite");
+    t.objectStore("files").put(v,k);
+    t.oncomplete=ok;
+    t.onerror=()=>no(t.error);
+  });
+}
+
+async function fileGet(k){
+  const d=db||await openDB();
+  return new Promise((ok,no)=>{
+    const r=d.transaction("files","readonly")
+      .objectStore("files").get(k);
+    r.onsuccess=()=>ok(r.result);
+    r.onerror=()=>no(r.error);
+  });
+}
+
+async function fileDelete(k){
+  const d=db||await openDB();
+  return new Promise((ok,no)=>{
+    const t=d.transaction("files","readwrite");
+    t.objectStore("files").delete(k);
+    t.oncomplete=ok;
+    t.onerror=()=>no(t.error);
+  });
+}
+
+function uploader(type,owner,category){
+  const documentLike=[
+    "document","receipt","invoice"
+  ].includes(category);
+
+  const label={
+    document:"Document / PDF",
+    receipt:"Receipt",
+    invoice:"Invoice"
+  }[category]||
+    category[0].toUpperCase()+category.slice(1)+" Photos";
+
+  return `<div class="field">
+    <label>${e(label)}</label>
+    <input type="file"
+      accept="${documentLike
+        ?".pdf,image/*,.doc,.docx"
+        :"image/*"}"
+      ${documentLike?"":"multiple"}
+      onchange="upload(event,'${type}','${owner}','${category}')">
+  </div>`;
+}
+
+async function upload(ev,type,ownerId,category){
+  const owner=type==="development"
+    ?state.developments.find(d=>d.id===ownerId)
+    :state.developments.flatMap(d=>
+      d.parcels.flatMap(p=>p.jobs)
+    ).find(j=>j.id===ownerId);
+
+  if(!owner)return;
+  owner.files||=[];
+
+  try{
+    for(const f of [...ev.target.files]){
+      const k=id();
+      await filePut(k,f);
+      owner.files.push({
+        id:k,name:f.name,type:f.type,size:f.size,
+        category,date:date()
+      });
+    }
+    save();render();
+  }catch(err){
+    alert("Upload failed: "+err.message);
+  }
+}
+
+function filesHTML(fs){
+  return fs.length?fs.map(f=>`
+    <div class="file">
+      <div>
+        <strong>${e(f.name)}</strong>
+        <div class="meta">${e(f.category)} · ${e(f.date)}</div>
+      </div>
+      <div class="actions">
+        ${btn("View",`viewFile('${f.id}')`,"secondary small")}
+        ${btn("Delete",`removeFile('${f.id}')`,"danger small")}
+      </div>
+    </div>
+  `).join("")
+  :`<p class="sub">No files uploaded yet.</p>`;
+}
+
+async function viewFile(k){
+  try{
+    const blob=await fileGet(k);
+    if(!blob)return alert("File not found in this browser.");
+
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;
+    a.target="_blank";
+    a.rel="noopener";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+  }catch(err){
+    alert("Unable to open file: "+err.message);
+  }
+}
+
+async function removeFile(k){
+  if(!confirm("Delete this uploaded file?"))return;
+
+  try{
+    await fileDelete(k);
+
+    state.developments.forEach(d=>{
+      d.files=(d.files||[]).filter(f=>f.id!==k);
+      d.parcels.forEach(p=>
+        p.jobs.forEach(j=>
+          j.files=(j.files||[]).filter(f=>f.id!==k)
+        )
+      );
+
+      if(d.budgetV25){
+        d.budgetV25.payments.forEach(p=>{
+          if(p.fileId===k)p.fileId="";
+        });
+      }
+    });
+
+    save();render();
+  }catch(err){
+    alert("Delete failed: "+err.message);
+  }
+}
+
+/* FULL JSON BACKUP */
+
+function blobData(blob){
+  return new Promise((ok,no)=>{
+    const r=new FileReader();
+    r.onload=()=>ok(r.result);
+    r.onerror=()=>no(r.error);
+    r.readAsDataURL(blob);
+  });
+}
+
+function dataBlob(s){
+  const [h,b]=s.split(",");
+  const mime=h.match(/data:([^;]+)/)?.[1]||
+    "application/octet-stream";
+  const raw=atob(b);
+  const a=new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;i++)a[i]=raw.charCodeAt(i);
+  return new Blob([a],{type:mime});
+}
+
+async function exportBackup(){
+  try{
+    const files={};
+
+    for(const f of allFiles()){
+      const blob=await fileGet(f.id);
+      if(blob)files[f.id]=await blobData(blob);
+    }
+
+    const backup={
+      format:"a7-v25",
+      exportedAt:new Date().toISOString(),
+      state,files
+    };
+
+    const url=URL.createObjectURL(
+      new Blob([JSON.stringify(backup)],{
+        type:"application/json"
+      })
+    );
+
+    const a=document.createElement("a");
+    a.href=url;
+    a.download=`A7-Superintendent-V25-Backup-${date()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+  }catch(err){
+    alert("Backup failed: "+err.message);
+  }
+}
+
+async function importBackup(ev){
+  const f=ev.target.files?.[0];
+  if(!f)return;
+
+  let backup;
+
+  try{
+    backup=JSON.parse(await f.text());
+
+    if(
+      !["a7-v21","a7-v22","a7-v23","a7-v24","a7-v25"]
+        .includes(backup.format)||
+      !Array.isArray(backup.state?.developments)||
+      !Array.isArray(backup.state?.contractors)||
+      !Array.isArray(backup.state?.bids)
+    )throw Error("Invalid V21–V25 backup");
+  }catch(err){
+    return alert("Cannot read backup: "+err.message);
+  }
+
+  if(!confirm(
+    "Replace ALL current A7 data in this browser with this backup? " +
+    "Export your current backup first."
+  ))return;
+
+  try{
+    const d=db||await openDB();
+
+    await new Promise((ok,no)=>{
+      const t=d.transaction("files","readwrite");
+      t.objectStore("files").clear();
+      t.oncomplete=ok;
+      t.onerror=()=>no(t.error);
+    });
+
+    for(const [k,v] of Object.entries(backup.files||{})){
+      await filePut(k,dataBlob(v));
+    }
+
+    state={...clone(EMPTY),...backup.state};
+    save();go("dashboard");
+    alert("Backup imported.");
+  }catch(err){
+    alert("Import failed: "+err.message);
+  }
+}
+
+/* SETTINGS */
+
+function settings(){
+  return `${head(
+    "Settings & Backup",
+    "Manage locally stored records"
+  )}
+
+  <div class="grid two">
+    <div class="card">
+      <h2>Export Full Backup</h2>
+      <p class="sub">
+        Save developments, contractors, bids, clearing layouts,
+        budgets, payments, and uploaded files.
+      </p>
+      ${btn("Export Backup","exportBackup()")}
+    </div>
+
+    <div class="card">
+      <h2>Import Backup</h2>
+      <p class="sub">
+        Import a V21, V22, V23, V24, or V25 backup.
+        Importing replaces current records in this browser.
+      </p>
+      <input type="file" accept=".json,application/json"
+        onchange="importBackup(event)">
+    </div>
+  </div>
+
+  <div class="card section">
+    <h2>About V25</h2>
+    ${row("Design","White & Blue")}
+    ${row("Clearing Planning","Acreage or feet")}
+    ${row("Acreage Entry","Fractions or decimals")}
+    ${row("Manual Feet","Type or vertical scroll wheel")}
+    ${row("Feet Picker Range","0–2,500 ft")}
+    ${row("Acreage Calculations","Automatic")}
+    ${row("Square Layout","Estimated automatically")}
+    ${row("Underbrush Band","Calculated for centered layout")}
+    ${row("Budget Coverage","Selected per development")}
+    ${row("Shared Costs","Equal allocation per parcel")}
+    ${row("Budget Entry","Overall target and trade budgets")}
+    ${row("Accepted Bids","One per trade")}
+    ${row("Owner Materials","Estimated and actual prices")}
+    ${row("Payments","Deposits and progress payments")}
+    ${row("Receipts & Invoices","Browser file storage")}
+    ${row("Cost to Finish","Planning forecast")}
+    ${row("Parcel Profit","Optional projection")}
+    ${row("Data","Same local browser storage as V24")}
+    ${row("Files","IndexedDB in this browser")}
+    ${row("Call / Text","Opens your phone's apps")}
+    ${row("Live AI","Not connected")}
+    ${row("Automatic contractor email","Not connected")}
+
+    <div class="notice warning">
+      Export a backup before making changes. Clearing Safari
+      website data, using private browsing, or changing devices
+      may make locally stored records unavailable. V25 shares
+      browser data with V24 on the same website.
+    </div>
+  </div>`;
+}
+
+/* START APP */
+
+render();
+
+</script>
+</body>
+</html>
