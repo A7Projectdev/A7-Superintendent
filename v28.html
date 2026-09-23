@@ -1,0 +1,5673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+<meta name="theme-color" content="#0f2740" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="A7 Superintendent" />
+<title>A7 Superintendent — V28</title>
+
+<style>
+:root{
+  --navy:#0f2740;
+  --navy2:#173a5d;
+  --blue:#1873c9;
+  --blue2:#eaf4ff;
+  --bg:#f3f6f9;
+  --card:#fff;
+  --line:#dce5ee;
+  --text:#23384c;
+  --muted:#6c7f91;
+  --green:#16744b;
+  --greenbg:#eaf7ef;
+  --amber:#9a620c;
+  --amberbg:#fff6df;
+  --red:#b83d3d;
+  --redbg:#fff0f0;
+  --shadow:0 8px 28px rgba(15,39,64,.08);
+  --radius:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  overscroll-behavior-y:none;
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+a{color:inherit}
+header{
+  position:sticky;top:0;z-index:30;background:rgba(255,255,255,.95);
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+  padding:calc(12px + env(safe-area-inset-top)) 15px 12px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.brand{font-weight:950;color:var(--navy);letter-spacing:-.4px;line-height:1.05}
+.brand small{display:block;color:var(--blue);font-size:9px;letter-spacing:1.15px;margin-top:4px}
+.version{font-size:11px;font-weight:900;color:var(--blue);background:var(--blue2);padding:6px 9px;border-radius:999px}
+main{max-width:1180px;margin:auto;padding:16px 13px 112px}
+h1,h2,h3{margin:0;color:var(--navy);letter-spacing:-.3px}
+h1{font-size:24px}
+h2{font-size:18px}
+h3{font-size:15px}
+p{margin:0 0 10px}
+.sub{font-size:12px;color:var(--muted)}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:15px;margin-bottom:12px;box-shadow:0 1px 0 rgba(15,39,64,.02)
+}
+.hero{
+  background:linear-gradient(135deg,var(--navy),var(--navy2));color:white;
+  border-radius:20px;padding:18px;margin-bottom:13px;box-shadow:var(--shadow)
+}
+.hero h1,.hero h2,.hero h3{color:white}
+.hero .sub{color:#cfe0f1}
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:13px}
+.row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #edf2f6}
+.row:last-child{border-bottom:0}
+.row strong{text-align:right}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.stat{
+  background:white;border:1px solid var(--line);border-radius:14px;padding:13px;min-width:0
+}
+.stat small{display:block;color:var(--muted);font-weight:800;font-size:10px;text-transform:uppercase;letter-spacing:.55px}
+.stat strong{display:block;color:var(--navy);font-size:21px;margin-top:4px;overflow-wrap:anywhere}
+.pill{
+  display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;
+  font-size:10px;font-weight:900;background:#eef3f8;color:#536b80
+}
+.pill.blue{background:var(--blue2);color:var(--blue)}
+.pill.green{background:var(--greenbg);color:var(--green)}
+.pill.amber{background:var(--amberbg);color:var(--amber)}
+.pill.red{background:var(--redbg);color:var(--red)}
+.btn{
+  border:0;border-radius:12px;background:var(--blue);color:white;font-weight:900;
+  min-height:44px;padding:10px 14px;display:inline-flex;align-items:center;justify-content:center;gap:7px
+}
+.btn.secondary{background:white;color:var(--blue);border:1px solid #bed5e9}
+.btn.soft{background:var(--blue2);color:var(--blue)}
+.btn.danger{background:white;color:var(--red);border:1px solid #ecc8c8}
+.btn.green{background:var(--green);color:white}
+.btn.small{min-height:36px;padding:7px 10px;font-size:12px;border-radius:9px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+label{display:block;font-weight:850;color:var(--navy);font-size:12px;margin-bottom:6px}
+.field{margin-bottom:12px}
+input,select,textarea{
+  width:100%;border:1px solid #c9d7e4;background:#fff;color:var(--text);
+  border-radius:12px;padding:11px 12px;min-height:46px;outline:none
+}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(24,115,201,.1)}
+textarea{min-height:95px;resize:vertical}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 11px}
+.notice{border:1px solid #cbe0f1;background:#eff7ff;border-radius:12px;padding:12px;font-size:12px;margin:10px 0}
+.notice.good{background:var(--greenbg);border-color:#c5e4d1}
+.notice.warn{background:var(--amberbg);border-color:#eed9a4}
+.notice.bad{background:var(--redbg);border-color:#efcaca}
+.list-item{padding:12px 0;border-top:1px solid #edf2f6}
+.list-item:first-child{border-top:0;padding-top:0}
+.list-item:last-child{padding-bottom:0}
+.item-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.item-title{font-weight:900;color:var(--navy)}
+.meta{font-size:12px;color:var(--muted);margin-top:3px}
+.empty{text-align:center;color:var(--muted);padding:26px 8px}
+.empty strong{display:block;color:var(--navy);margin-bottom:4px}
+.bottom-nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.96);
+  backdrop-filter:blur(18px);border-top:1px solid var(--line);
+  padding:7px 8px calc(7px + env(safe-area-inset-bottom));
+  display:grid;grid-template-columns:repeat(5,1fr);gap:5px
+}
+.bottom-nav button{
+  border:0;background:transparent;border-radius:12px;min-height:52px;color:var(--muted);
+  font-size:10px;font-weight:850;padding:5px 2px
+}
+.bottom-nav button span{display:block;font-size:20px;line-height:1.05;margin-bottom:3px}
+.bottom-nav button.active{background:var(--blue2);color:var(--blue)}
+.mic-wrap{text-align:center;padding:14px 4px 7px}
+.mic{
+  width:112px;height:112px;border-radius:50%;border:8px solid #dceeff;
+  background:var(--blue);color:white;font-size:38px;box-shadow:0 10px 28px rgba(24,115,201,.25)
+}
+.mic.listening{animation:pulse 1.1s infinite;background:var(--red)}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(184,61,61,.35)}
+  70%{box-shadow:0 0 0 22px rgba(184,61,61,0)}
+  100%{box-shadow:0 0 0 0 rgba(184,61,61,0)}
+}
+.command-box{display:flex;gap:8px;align-items:flex-end}
+.command-box textarea{min-height:54px;max-height:120px;margin:0}
+.command-box button{min-width:74px}
+.quick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.quick{
+  border:1px solid var(--line);background:#fff;border-radius:13px;min-height:78px;
+  padding:9px 5px;color:var(--navy);font-weight:900;font-size:11px
+}
+.quick span{display:block;font-size:24px;margin-bottom:4px}
+.question{
+  border:1px solid #bfd9ef;background:#f6fbff;border-radius:15px;padding:14px;margin-bottom:10px
+}
+.question .q{font-weight:900;color:var(--navy);font-size:16px;margin-bottom:4px}
+.fact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+.fact{background:#f6f8fb;border:1px solid #e7edf3;border-radius:11px;padding:10px}
+.fact small{display:block;color:var(--muted);font-size:10px;font-weight:850;text-transform:uppercase}
+.fact strong{display:block;color:var(--navy);margin-top:3px;overflow-wrap:anywhere}
+.activity{position:relative;padding-left:18px;margin:12px 0}
+.activity:before{
+  content:"";position:absolute;left:3px;top:7px;width:8px;height:8px;border-radius:50%;background:var(--blue)
+}
+.activity:after{
+  content:"";position:absolute;left:6px;top:18px;bottom:-13px;width:2px;background:#dbe6ef
+}
+.activity:last-child:after{display:none}
+.activity strong{display:block;color:var(--navy)}
+.toast{
+  position:fixed;left:12px;right:12px;bottom:90px;z-index:100;max-width:520px;margin:auto;
+  background:#0d2033;color:white;padding:12px 14px;border-radius:13px;box-shadow:var(--shadow);
+  opacity:0;transform:translateY(12px);pointer-events:none;transition:.22s
+}
+.toast.show{opacity:1;transform:none}
+.sheet{
+  position:fixed;inset:0;z-index:80;background:rgba(10,27,44,.4);display:none;align-items:flex-end
+}
+.sheet.open{display:flex}
+.sheet-panel{
+  width:100%;max-height:88vh;overflow:auto;background:var(--bg);
+  border-radius:24px 24px 0 0;padding:10px 13px calc(20px + env(safe-area-inset-bottom))
+}
+.sheet-grab{width:46px;height:5px;background:#c8d2db;border-radius:10px;margin:2px auto 14px}
+@media(max-width:760px){
+  main{padding-top:12px}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid.two,.fields{grid-template-columns:1fr}
+  .quick-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .card{padding:13px}
+  .hero{padding:16px}
+  h1{font-size:21px}
+  .stat strong{font-size:18px}
+  .fact-grid{grid-template-columns:1fr 1fr}
+}
+@media(min-width:900px){
+  body{padding-left:90px}
+  .bottom-nav{
+    top:0;bottom:0;right:auto;width:90px;border-top:0;border-right:1px solid var(--line);
+    grid-template-columns:1fr;grid-template-rows:repeat(5,75px);align-content:center;padding:12px
+  }
+  header{left:90px}
+  main{padding-bottom:30px}
+  .toast{bottom:25px}
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="brand">
+    A7 SUPERINTENDENT
+    <small>FIELD COMMAND CENTER</small>
+  </div>
+  <div class="version">V28</div>
+</header>
+
+<main id="app"></main>
+<nav class="bottom-nav" id="bottomNav"></nav>
+
+<div class="toast" id="toast"></div>
+
+<div class="sheet" id="sheet" onclick="sheetBackdrop(event)">
+  <div class="sheet-panel" id="sheetPanel"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+"use strict";
+
+const KEY="a7-superintendent-v28";
+const OLD_KEY="a7-superintendent-v27";
+const FILE_DB="a7-superintendent-v28-files";
+
+const TRADES=[
+  "Land Clearing",
+  "Entrance & Culvert",
+  "Driveway",
+  "Home Pad",
+  "Water",
+  "Electrical",
+  "Manufactured Home",
+  "Home Transport",
+  "Home Setup",
+  "Septic",
+  "Skirting",
+  "Decks & Steps",
+  "HVAC",
+  "Other"
+];
+
+const NAV=[
+  ["field","🎙️","Field"],
+  ["overview","🏗️","Overview"],
+  ["bids","💵","Bids"],
+  ["jobs","📋","Jobs"],
+  ["settings","⚙️","Settings"]
+];
+
+let page="field";
+let state=loadState();
+
+let listening=false;
+let recognition=null;
+
+let cloudClient=null;
+let cloudSession=null;
+let syncTimer=null;
+
+let fileDB=null;
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+function uid(){
+  if(window.crypto&&crypto.randomUUID){
+    return crypto.randomUUID();
+  }
+
+  return Date.now().toString(36)+
+    Math.random().toString(36).slice(2);
+}
+
+function copy(x){
+  return JSON.parse(JSON.stringify(x));
+}
+
+function esc(x){
+  return String(x??"").replace(
+    /[&<>"']/g,
+    c=>({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    }[c])
+  );
+}
+
+function num(x){
+  const n=Number(
+    String(x??"").replace(/[$,]/g,"")
+  );
+
+  return Number.isFinite(n)?n:0;
+}
+
+function money(x){
+  return new Intl.NumberFormat(
+    "en-US",
+    {
+      style:"currency",
+      currency:"USD",
+      maximumFractionDigits:0
+    }
+  ).format(num(x));
+}
+
+function today(){
+  const d=new Date();
+
+  return [
+    d.getFullYear(),
+    String(d.getMonth()+1).padStart(2,"0"),
+    String(d.getDate()).padStart(2,"0")
+  ].join("-");
+}
+
+function nowISO(){
+  return new Date().toISOString();
+}
+
+function fmtDate(x){
+  if(!x){
+    return "—";
+  }
+
+  try{
+    return new Date(x).toLocaleDateString(
+      "en-US",
+      {
+        month:"short",
+        day:"numeric",
+        year:"numeric"
+      }
+    );
+  }catch(e){
+    return x;
+  }
+}
+
+function toast(msg){
+  const t=document.getElementById("toast");
+
+  t.textContent=msg;
+  t.classList.add("show");
+
+  clearTimeout(t._timer);
+
+  t._timer=setTimeout(
+    ()=>t.classList.remove("show"),
+    2400
+  );
+}
+
+function field(form,name){
+  return form.elements.namedItem(name)
+    ?.value
+    ?.trim()||"";
+}
+
+function currentDev(){
+  return state.developments.find(
+    d=>d.id===state.activeDevelopment
+  )||
+  state.developments[0]||
+  null;
+}
+
+function currentParcel(){
+  const d=currentDev();
+
+  if(!d){
+    return null;
+  }
+
+  return d.parcels?.find(
+    p=>p.id===state.activeParcel
+  )||
+  d.parcels?.[0]||
+  null;
+}
+
+function currentJob(){
+  const p=currentParcel();
+
+  if(!p){
+    return null;
+  }
+
+  return p.jobs?.find(
+    j=>j.id===state.activeJob
+  )||
+  p.jobs?.[0]||
+  null;
+}
+
+function allJobs(dev=currentDev()){
+  if(!dev){
+    return [];
+  }
+
+  return (dev.parcels||[]).flatMap(
+    p=>(p.jobs||[]).map(
+      j=>({
+        dev,
+        p,
+        j
+      })
+    )
+  );
+}
+
+function findJobById(id){
+  for(const x of state.developments){
+
+    for(const p of x.parcels||[]){
+
+      const j=(p.jobs||[]).find(
+        j=>j.id===id
+      );
+
+      if(j){
+        return {
+          dev:x,
+          p,
+          j
+        };
+      }
+    }
+  }
+
+  return null;
+}
+
+function findParcelByName(dev,text){
+  const q=(text||"")
+    .toLowerCase()
+    .replace(/\s+/g,"")
+    .replace(/parcel/g,"lot");
+
+  return (dev?.parcels||[]).find(
+    p=>{
+      const n=String(
+        p.name||
+        p.label||
+        ""
+      )
+      .toLowerCase()
+      .replace(/\s+/g,"")
+      .replace(/parcel/g,"lot");
+
+      return n===q||
+        n.includes(q)||
+        q.includes(n);
+    }
+  )||null;
+}
+
+function devBids(){
+  const d=currentDev();
+
+  return state.bids.filter(
+    b=>!d||
+    b.developmentId===d.id
+  );
+}
+
+function devQuestions(){
+  const d=currentDev();
+
+  return state.v28.questions.filter(
+    q=>
+      q.status==="open"&&
+      (
+        !d||
+        q.developmentId===d.id
+      )
+  );
+}
+
+function devActivity(){
+  const d=currentDev();
+
+  return state.v28.activity
+    .filter(
+      a=>
+        !d||
+        a.developmentId===d.id
+    )
+    .slice()
+    .sort(
+      (a,b)=>
+        b.at.localeCompare(a.at)
+    );
+}
+
+function addActivity(
+  text,
+  type="update",
+  refs={}
+){
+  const d=currentDev();
+
+  state.v28.activity.push({
+    id:uid(),
+    at:nowISO(),
+    date:today(),
+    type,
+    text,
+    developmentId:
+      refs.developmentId||
+      d?.id||
+      null,
+    parcelId:
+      refs.parcelId||
+      null,
+    jobId:
+      refs.jobId||
+      null
+  });
+}
+
+function saveState(sync=true){
+  state.version=28;
+  state.v28.updatedAt=nowISO();
+
+  localStorage.setItem(
+    KEY,
+    JSON.stringify(state)
+  );
+
+  if(sync){
+    scheduleCloudSave();
+  }
+}
+
+function normalize(s){
+  s=s||{};
+
+  s.version=28;
+
+  s.developments=
+    Array.isArray(s.developments)
+      ?s.developments
+      :[];
+
+  s.contractors=
+    Array.isArray(s.contractors)
+      ?s.contractors
+      :[];
+
+  s.bids=
+    Array.isArray(s.bids)
+      ?s.bids
+      :[];
+
+  s.messages=
+    Array.isArray(s.messages)
+      ?s.messages
+      :[];
+
+  s.activeDevelopment=
+    s.activeDevelopment||
+    s.developments[0]?.id||
+    null;
+
+  s.activeParcel=
+    s.activeParcel||
+    null;
+
+  s.activeJob=
+    s.activeJob||
+    null;
+
+  s.v28=s.v28||{};
+
+  s.v28.questions=
+    Array.isArray(s.v28.questions)
+      ?s.v28.questions
+      :[];
+
+  s.v28.activity=
+    Array.isArray(s.v28.activity)
+      ?s.v28.activity
+      :[];
+
+  s.v28.budgetLines=
+    Array.isArray(s.v28.budgetLines)
+      ?s.v28.budgetLines
+      :[];
+
+  s.v28.photos=
+    Array.isArray(s.v28.photos)
+      ?s.v28.photos
+      :[];
+
+  s.v28.updatedAt=
+    s.v28.updatedAt||
+    nowISO();
+
+  s.settings=s.settings||{};
+
+  s.settings.supabaseUrl=
+    s.settings.supabaseUrl||
+    "";
+
+  s.settings.supabaseAnonKey=
+    s.settings.supabaseAnonKey||
+    "";
+
+  s.settings.syncEnabled=
+    !!s.settings.syncEnabled;
+
+  s.settings.aiEndpoint=
+    s.settings.aiEndpoint||
+    "";
+
+  s.settings.email=
+    s.settings.email||
+    "";
+
+  for(const d of s.developments){
+
+    d.parcels=
+      Array.isArray(d.parcels)
+        ?d.parcels
+        :[];
+
+    for(const p of d.parcels){
+
+      p.jobs=
+        Array.isArray(p.jobs)
+          ?p.jobs
+          :[];
+
+      for(const j of p.jobs){
+
+        j.a7Overview=
+          j.a7Overview||
+          {};
+
+        j.a7Overview.facts=
+          j.a7Overview.facts||
+          {};
+
+        j.files=
+          Array.isArray(j.files)
+            ?j.files
+            :[];
+      }
+    }
+  }
+
+  return s;
+}
+
+function loadState(){
+
+  try{
+    const v28=JSON.parse(
+      localStorage.getItem(KEY)
+    );
+
+    if(v28?.developments){
+      return normalize(v28);
+    }
+
+  }catch(e){}
+
+  try{
+    const old=JSON.parse(
+      localStorage.getItem(
+        OLD_KEY
+      )
+    );
+
+    if(old?.developments){
+
+      const migrated=
+        normalize(
+          copy(old)
+        );
+
+      migrated.v28.migratedFrom=
+        "V27";
+
+      localStorage.setItem(
+        KEY,
+        JSON.stringify(
+          migrated
+        )
+      );
+
+      return migrated;
+    }
+
+  }catch(e){}
+
+  return normalize({
+    developments:[],
+    contractors:[],
+    bids:[],
+    messages:[],
+    activeDevelopment:null,
+    activeParcel:null,
+    activeJob:null
+  });
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+function go(p){
+  page=p;
+
+  window.scrollTo(
+    0,
+    0
+  );
+
+  render();
+}
+
+function setDev(id){
+  state.activeDevelopment=id;
+
+  const d=currentDev();
+
+  state.activeParcel=
+    d?.parcels?.[0]?.id||
+    null;
+
+  state.activeJob=
+    d?.parcels?.[0]
+      ?.jobs?.[0]?.id||
+    null;
+
+  saveState(false);
+  render();
+}
+
+function setParcel(id){
+  state.activeParcel=id;
+
+  const p=currentParcel();
+
+  state.activeJob=
+    p?.jobs?.[0]?.id||
+    null;
+
+  saveState(false);
+  render();
+}
+
+function setJob(id){
+  state.activeJob=id;
+
+  const found=
+    findJobById(id);
+
+  if(found){
+
+    state.activeDevelopment=
+      found.dev.id;
+
+    state.activeParcel=
+      found.p.id;
+
+    seedQuestionsForJob(
+      found.dev,
+      found.p,
+      found.j
+    );
+  }
+
+  saveState();
+  render();
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+
+function render(){
+
+  document.getElementById(
+    "bottomNav"
+  ).innerHTML=
+    NAV.map(
+      n=>`
+        <button
+          class="${
+            page===n[0]
+              ?"active"
+              :""
+          }"
+          onclick="go('${n[0]}')">
+
+          <span>
+            ${n[1]}
+          </span>
+
+          ${n[2]}
+
+        </button>
+      `
+    ).join("");
+
+  const app=
+    document.getElementById(
+      "app"
+    );
+
+  if(
+    !state.developments.length&&
+    page!=="settings"
+  ){
+    app.innerHTML=
+      emptyStart();
+
+    return;
+  }
+
+  if(page==="field"){
+    app.innerHTML=
+      fieldPage();
+  }
+
+  if(page==="overview"){
+    app.innerHTML=
+      overviewPage();
+  }
+
+  if(page==="bids"){
+    app.innerHTML=
+      bidsPage();
+  }
+
+  if(page==="jobs"){
+    app.innerHTML=
+      jobsPage();
+  }
+
+  if(page==="settings"){
+    app.innerHTML=
+      settingsPage();
+  }
+}
+
+function projectPicker(){
+
+  if(!state.developments.length){
+    return "";
+  }
+
+  return `
+    <div class="card">
+
+      <div class="fields">
+
+        <div class="field">
+
+          <label>
+            Development
+          </label>
+
+          <select
+            onchange="
+              setDev(this.value)
+            ">
+
+            ${
+              state.developments
+                .map(
+                  d=>`
+                    <option
+                      value="${d.id}"
+                      ${
+                        d.id===
+                        currentDev()?.id
+                          ?"selected"
+                          :""
+                      }>
+
+                      ${
+                        esc(
+                          d.name||
+                          "Unnamed Development"
+                        )
+                      }
+
+                    </option>
+                  `
+                )
+                .join("")
+            }
+
+          </select>
+
+        </div>
+
+        <div class="field">
+
+          <label>
+            Lot / Parcel
+          </label>
+
+          <select
+            onchange="
+              setParcel(this.value)
+            ">
+
+            ${
+              (
+                currentDev()
+                  ?.parcels||
+                []
+              )
+              .map(
+                p=>`
+                  <option
+                    value="${p.id}"
+                    ${
+                      p.id===
+                      currentParcel()?.id
+                        ?"selected"
+                        :""
+                    }>
+
+                    ${
+                      esc(
+                        p.name||
+                        p.label||
+                        "Parcel"
+                      )
+                    }
+
+                  </option>
+                `
+              )
+              .join("")
+            }
+
+          </select>
+
+        </div>
+
+      </div>
+
+    </div>
+  `;
+}
+
+function emptyStart(){
+  return `
+    <div class="hero">
+
+      <h1>
+        A7 Superintendent V28
+      </h1>
+
+      <div class="sub">
+        Field-first command center
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        Create your first development
+      </h2>
+
+      <p
+        class="sub"
+        style="margin-top:6px">
+
+        V28 will also import
+        V27 automatically when
+        V27 data exists in this
+        same browser.
+
+      </p>
+
+      <form
+        onsubmit="
+          createDevelopment(event)
+        "
+        style="margin-top:14px">
+
+        <div class="field">
+
+          <label>
+            Development name
+          </label>
+
+          <input
+            name="name"
+            placeholder="
+              Example:
+              Franklin County — 15 Acres
+            "
+            required>
+
+        </div>
+
+        <div class="field">
+
+          <label>
+            First lot / parcel name
+          </label>
+
+          <input
+            name="parcel"
+            placeholder="Lot 1"
+            value="Lot 1">
+
+        </div>
+
+        <button class="btn">
+          Create Development
+        </button>
+
+      </form>
+
+    </div>
+  `;
+}
+
+function createDevelopment(e){
+  e.preventDefault();
+
+  const f=e.target;
+
+  const name=
+    field(f,"name");
+
+  const parcelName=
+    field(f,"parcel")||
+    "Lot 1";
+
+  const dev={
+    id:uid(),
+    name,
+    parcels:[],
+    files:[]
+  };
+
+  const parcel={
+    id:uid(),
+    name:parcelName,
+    jobs:[]
+  };
+
+  dev.parcels.push(
+    parcel
+  );
+
+  state.developments.push(
+    dev
+  );
+
+  state.activeDevelopment=
+    dev.id;
+
+  state.activeParcel=
+    parcel.id;
+
+  addActivity(
+    "Development created",
+    "project",
+    {
+      developmentId:dev.id,
+      parcelId:parcel.id
+    }
+  );
+
+  saveState();
+  render();
+}
+
+/* =========================================================
+   FIELD PAGE
+   ========================================================= */
+
+function fieldPage(){
+
+  const d=currentDev();
+  const p=currentParcel();
+  const j=currentJob();
+
+  const questions=
+    devQuestions();
+
+  return `
+    <div class="hero">
+
+      <div
+        class="head"
+        style="margin:0">
+
+        <div>
+
+          <div
+            class="pill"
+            style="
+              background:
+              rgba(255,255,255,.13);
+              color:#fff;
+              margin-bottom:8px
+            ">
+
+            FIELD MODE
+
+          </div>
+
+          <h1>
+            ${
+              esc(
+                d?.name||
+                "A7 Superintendent"
+              )
+            }
+          </h1>
+
+          <div class="sub">
+
+            ${
+              esc(
+                p?.name||
+                "No lot selected"
+              )
+            }
+
+            ${
+              j
+                ?" · "+
+                  esc(
+                    j.name||
+                    j.trade||
+                    j.title||
+                    "Job"
+                  )
+                :""
+            }
+
+          </div>
+
+        </div>
+
+        <div
+          class="
+            pill
+            ${
+              navigator.onLine
+                ?"green"
+                :"amber"
+            }
+          ">
+
+          ${
+            navigator.onLine
+              ?"ONLINE"
+              :"OFFLINE"
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <div class="mic-wrap">
+
+        <button
+          id="micBtn"
+          class="
+            mic
+            ${
+              listening
+                ?"listening"
+                :""
+            }
+          "
+          onclick="
+            toggleVoice()
+          "
+          aria-label="
+            Talk to A7
+          ">
+
+          🎙️
+
+        </button>
+
+        <h2
+          style="margin-top:12px">
+
+          Talk to A7
+
+        </h2>
+
+        <p class="sub">
+
+          Example:
+          “We got a bid from
+          Landon for five thousand
+          dollars on land clearing
+          for Lot 2.”
+
+        </p>
+
+      </div>
+
+      <form
+        class="command-box"
+        onsubmit="
+          submitCommand(event)
+        ">
+
+        <textarea
+          name="command"
+          id="commandInput"
+          placeholder="
+            Type a quick field update…
+          "></textarea>
+
+        <button class="btn">
+          Send
+        </button>
+
+      </form>
+
+    </div>
+
+    <div
+      class="quick-grid"
+      style="margin-bottom:12px">
+
+      <button
+        class="quick"
+        onclick="
+          openQuick('bid')
+        ">
+
+        <span>💵</span>
+        New Bid
+
+      </button>
+
+      <button
+        class="quick"
+        onclick="
+          openQuick('progress')
+        ">
+
+        <span>✅</span>
+        Progress
+
+      </button>
+
+      <button
+        class="quick"
+        onclick="
+          openQuick('problem')
+        ">
+
+        <span>⚠️</span>
+        Problem
+
+      </button>
+
+      <button
+        class="quick"
+        onclick="
+          document
+            .getElementById(
+              'photoInput'
+            )
+            .click()
+        ">
+
+        <span>📷</span>
+        Photo
+
+      </button>
+
+    </div>
+
+    <input
+      id="photoInput"
+      type="file"
+      accept="image/*"
+      capture="environment"
+      hidden
+      onchange="
+        capturePhoto(event)
+      ">
+
+    ${
+      questions.length
+        ?`
+          <div class="card">
+
+            <div class="head">
+
+              <div>
+
+                <h2>
+                  A7 Needs From You
+                </h2>
+
+                <div class="sub">
+
+                  Answer it once.
+                  It disappears and
+                  becomes part of the
+                  job overview.
+
+                </div>
+
+              </div>
+
+              <span
+                class="pill amber">
+
+                ${questions.length}
+                OPEN
+
+              </span>
+
+            </div>
+
+            ${
+              questionCard(
+                questions[0]
+              )
+            }
+
+            ${
+              questions.length>1
+                ?`
+                  <div
+                    class="sub"
+                    style="
+                      text-align:center
+                    ">
+
+                    +
+                    ${
+                      questions.length-1
+                    }
+                    more question
+                    ${
+                      questions.length>2
+                        ?"s"
+                        :""
+                    }
+
+                  </div>
+                `
+                :""
+            }
+
+          </div>
+        `
+        :""
+    }
+
+    <div class="card">
+
+      <div class="head">
+
+        <div>
+
+          <h2>
+            Latest Field Activity
+          </h2>
+
+          <div class="sub">
+            Saved automatically
+          </div>
+
+        </div>
+
+      </div>
+
+      ${
+        devActivity()
+          .slice(0,6)
+          .map(activityHTML)
+          .join("")
+        ||
+        `
+          <div class="empty">
+
+            <strong>
+              No updates yet
+            </strong>
+
+            Talk or type to A7
+            to start the field log.
+
+          </div>
+        `
+      }
+
+    </div>
+  `;
+}
+
+function questionCard(q){
+
+  return `
+    <div class="question">
+
+      <div class="q">
+        ${esc(q.question)}
+      </div>
+
+      <div class="sub">
+        ${esc(q.context||"")}
+      </div>
+
+      <form
+        onsubmit="
+          answerQuestion(
+            event,
+            '${q.id}'
+          )
+        "
+        style="margin-top:12px">
+
+        <div class="command-box">
+
+          <input
+            name="answer"
+            placeholder="${
+              esc(
+                q.placeholder||
+                "Your answer"
+              )
+            }"
+            required>
+
+          <button
+            class="btn green">
+
+            Save
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+  `;
+}
+
+/* =========================================================
+   VOICE
+   ========================================================= */
+
+function setupRecognition(){
+
+  const SR=
+    window.SpeechRecognition||
+    window.webkitSpeechRecognition;
+
+  if(!SR){
+    return null;
+  }
+
+  const r=new SR();
+
+  r.lang="en-US";
+  r.interimResults=false;
+  r.continuous=false;
+
+  r.onstart=()=>{
+    listening=true;
+    updateMic();
+  };
+
+  r.onend=()=>{
+    listening=false;
+    updateMic();
+  };
+
+  r.onerror=()=>{
+    listening=false;
+    updateMic();
+
+    toast(
+      "Voice input was not available. "+
+      "You can type the update instead."
+    );
+  };
+
+  r.onresult=e=>{
+
+    const text=
+      e.results[0][0]
+        .transcript;
+
+    const box=
+      document.getElementById(
+        "commandInput"
+      );
+
+    if(box){
+      box.value=text;
+    }
+
+    processCommand(text);
+  };
+
+  return r;
+}
+
+function updateMic(){
+
+  const b=
+    document.getElementById(
+      "micBtn"
+    );
+
+  if(!b){
+    return;
+  }
+
+  b.classList.toggle(
+    "listening",
+    listening
+  );
+
+  b.textContent=
+    listening
+      ?"■"
+      :"🎙️";
+}
+
+function toggleVoice(){
+
+  if(!recognition){
+    recognition=
+      setupRecognition();
+  }
+
+  if(!recognition){
+
+    toast(
+      "Voice recognition is not "+
+      "available in this browser. "+
+      "Type the update below."
+    );
+
+    document
+      .getElementById(
+        "commandInput"
+      )
+      ?.focus();
+
+    return;
+  }
+
+  if(listening){
+    recognition.stop();
+    return;
+  }
+
+  try{
+    recognition.start();
+  }catch(e){}
+}
+
+function submitCommand(e){
+
+  e.preventDefault();
+
+  const text=
+    field(
+      e.target,
+      "command"
+    );
+
+  if(!text){
+    return;
+  }
+
+  e.target.reset();
+
+  processCommand(text);
+}
+
+/* =========================================================
+   COMMAND BRAIN
+   ========================================================= */
+
+function processCommand(text){
+
+  const raw=text.trim();
+
+  const lower=
+    raw.toLowerCase();
+
+  if(!raw){
+    return;
+  }
+
+  state.messages.push({
+    role:"user",
+    text:raw,
+    at:nowISO()
+  });
+
+  if(
+    /\b(bid|quote|estimate)\b/
+      .test(lower)
+  ){
+
+    const parsed=
+      parseBid(raw);
+
+    createBidFromCommand(
+      parsed,
+      raw
+    );
+
+    return;
+  }
+
+  if(
+    /\b(complete|completed|finished|done)\b/
+      .test(lower)
+  ){
+
+    const j=currentJob();
+
+    if(j){
+
+      j.status="complete";
+      j.completedDate=today();
+
+      addActivity(
+        `${
+          j.name||
+          j.trade||
+          "Job"
+        } marked complete.`,
+        "progress",
+        {
+          parcelId:
+            currentParcel()?.id,
+          jobId:j.id
+        }
+      );
+
+      state.messages.push({
+        role:"assistant",
+        text:
+          "Marked the current "+
+          "job complete.",
+        at:nowISO()
+      });
+
+      saveState();
+      render();
+
+      toast(
+        "Job marked complete"
+      );
+
+      return;
+    }
+  }
+
+  if(
+    /\b(problem|issue|delay|broke|failed|stuck)\b/
+      .test(lower)
+  ){
+
+    const j=currentJob();
+
+    const note=
+      raw.replace(
+        /^.*?\b(problem|issue|delay)\b[:\s-]*/i,
+        ""
+      );
+
+    addActivity(
+      note||raw,
+      "problem",
+      {
+        parcelId:
+          currentParcel()?.id,
+        jobId:
+          j?.id
+      }
+    );
+
+    if(j){
+
+      j.a7Overview=
+        j.a7Overview||
+        {facts:{}};
+
+      j.a7Overview.facts=
+        j.a7Overview.facts||
+        {};
+
+      j.a7Overview.facts[
+        "Latest issue"
+      ]=
+        note||raw;
+    }
+
+    state.messages.push({
+      role:"assistant",
+      text:
+        "I logged that issue "+
+        "in the project record.",
+      at:nowISO()
+    });
+
+    saveState();
+    render();
+
+    toast(
+      "Issue logged"
+    );
+
+    return;
+  }
+
+  if(
+    /\b(progress|today|installed|graded|cleared|delivered|started)\b/
+      .test(lower)
+  ){
+
+    const j=currentJob();
+
+    addActivity(
+      raw,
+      "progress",
+      {
+        parcelId:
+          currentParcel()?.id,
+        jobId:
+          j?.id
+      }
+    );
+
+    if(j){
+
+      j.a7Overview=
+        j.a7Overview||
+        {facts:{}};
+
+      j.a7Overview.facts=
+        j.a7Overview.facts||
+        {};
+
+      j.a7Overview.facts[
+        "Latest progress"
+      ]=
+        raw;
+    }
+
+    state.messages.push({
+      role:"assistant",
+      text:
+        "Saved as a field "+
+        "progress update.",
+      at:nowISO()
+    });
+
+    saveState();
+    render();
+
+    toast(
+      "Progress saved"
+    );
+
+    return;
+  }
+
+  callExternalAI(raw);
+}
+
+/* =========================================================
+   EXTERNAL AI CONNECTION
+   ========================================================= */
+
+async function callExternalAI(text){
+
+  const endpoint=
+    state.settings.aiEndpoint;
+
+  if(!endpoint){
+
+    addActivity(
+      text,
+      "note",
+      {
+        parcelId:
+          currentParcel()?.id,
+        jobId:
+          currentJob()?.id
+      }
+    );
+
+    state.messages.push({
+      role:"assistant",
+      text:
+        "I saved that as a field note. "+
+        "Connect the A7 AI endpoint "+
+        "in Settings for full "+
+        "natural-language reasoning.",
+      at:nowISO()
+    });
+
+    saveState();
+    render();
+
+    toast(
+      "Field note saved"
+    );
+
+    return;
+  }
+
+  toast(
+    "A7 is thinking…"
+  );
+
+  try{
+
+    const res=
+      await fetch(
+        endpoint,
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+            message:text,
+
+            context:
+              buildAIContext(),
+
+            allowedActions:[
+              "create_bid",
+              "add_activity",
+              "update_job_fact",
+              "add_question"
+            ]
+          })
+        }
+      );
+
+    if(!res.ok){
+      throw new Error(
+        "AI endpoint returned "+
+        res.status
+      );
+    }
+
+    const data=
+      await res.json();
+
+    if(
+      Array.isArray(
+        data.actions
+      )
+    ){
+      data.actions.forEach(
+        applyAIAction
+      );
+    }
+
+    state.messages.push({
+      role:"assistant",
+      text:
+        data.reply||
+        "Update processed.",
+      at:nowISO()
+    });
+
+    saveState();
+    render();
+
+    toast(
+      data.reply||
+      "A7 update processed"
+    );
+
+  }catch(err){
+
+    addActivity(
+      text,
+      "note",
+      {
+        parcelId:
+          currentParcel()?.id,
+        jobId:
+          currentJob()?.id
+      }
+    );
+
+    saveState();
+    render();
+
+    toast(
+      "AI connection failed. "+
+      "I saved the update locally."
+    );
+  }
+}
+
+function buildAIContext(){
+
+  const d=currentDev();
+  const p=currentParcel();
+  const j=currentJob();
+
+  return {
+
+    development:
+      d
+        ?{
+          id:d.id,
+          name:d.name
+        }
+        :null,
+
+    parcel:
+      p
+        ?{
+          id:p.id,
+          name:p.name
+        }
+        :null,
+
+    job:
+      j
+        ?{
+          id:j.id,
+          name:
+            j.name||
+            j.trade||
+            j.title,
+          status:j.status,
+          facts:
+            j.a7Overview?.facts||
+            {}
+        }
+        :null,
+
+    openQuestions:
+      devQuestions()
+        .slice(0,10),
+
+    recentActivity:
+      devActivity()
+        .slice(0,10),
+
+    recentBids:
+      devBids()
+        .slice(-10)
+  };
+}
+
+function applyAIAction(a){
+
+  if(!a||!a.type){
+    return;
+  }
+
+  if(
+    a.type===
+    "add_activity"
+  ){
+
+    addActivity(
+      String(
+        a.text||
+        "AI update"
+      ),
+      a.activityType||
+      "update",
+      {
+        parcelId:a.parcelId,
+        jobId:a.jobId
+      }
+    );
+  }
+
+  if(
+    a.type===
+    "update_job_fact"
+  ){
+
+    const f=
+      findJobById(
+        a.jobId||
+        currentJob()?.id
+      );
+
+    if(f){
+
+      f.j.a7Overview=
+        f.j.a7Overview||
+        {facts:{}};
+
+      f.j.a7Overview.facts=
+        f.j.a7Overview.facts||
+        {};
+
+      f.j.a7Overview.facts[
+        String(
+          a.label||
+          "Update"
+        )
+      ]=
+        String(
+          a.value||
+          ""
+        );
+    }
+  }
+
+  if(
+    a.type===
+    "add_question"
+  ){
+
+    state.v28.questions.push({
+      id:uid(),
+      status:"open",
+
+      developmentId:
+        currentDev()?.id||
+        null,
+
+      parcelId:
+        a.parcelId||
+        currentParcel()?.id||
+        null,
+
+      jobId:
+        a.jobId||
+        currentJob()?.id||
+        null,
+
+      entityType:
+        a.entityType||
+        "job",
+
+      entityId:
+        a.entityId||
+        a.jobId||
+        currentJob()?.id||
+        null,
+
+      field:
+        a.field||
+        "note",
+
+      question:
+        a.question||
+        "What should A7 know?",
+
+      context:
+        a.context||
+        "",
+
+      placeholder:
+        a.placeholder||
+        "Answer"
+    });
+  }
+
+  if(
+    a.type===
+    "create_bid"
+  ){
+
+    createBidFromCommand(
+      {
+        contractor:
+          a.contractor||
+          "Unknown",
+
+        amount:
+          num(a.amount),
+
+        scope:
+          a.scope||
+          "Other",
+
+        parcelText:
+          a.parcel||
+          ""
+      },
+
+      a.sourceText||
+      "AI-created bid",
+
+      true
+    );
+  }
+}
+
+/* =========================================================
+   BID PARSING
+   ========================================================= */
+
+function wordsToNumber(text){
+
+  const small={
+    zero:0,
+    one:1,
+    two:2,
+    three:3,
+    four:4,
+    five:5,
+    six:6,
+    seven:7,
+    eight:8,
+    nine:9,
+    ten:10,
+    eleven:11,
+    twelve:12,
+    thirteen:13,
+    fourteen:14,
+    fifteen:15,
+    sixteen:16,
+    seventeen:17,
+    eighteen:18,
+    nineteen:19,
+    twenty:20,
+    thirty:30,
+    forty:40,
+    fifty:50,
+    sixty:60,
+    seventy:70,
+    eighty:80,
+    ninety:90
+  };
+
+  const scale={
+    hundred:100,
+    thousand:1000,
+    million:1000000
+  };
+
+  let total=0;
+  let current=0;
+  let found=false;
+
+  const words=
+    String(text)
+      .toLowerCase()
+      .replace(/-/g," ")
+      .split(/\s+/);
+
+  for(const w of words){
+
+    if(w in small){
+
+      current+=small[w];
+      found=true;
+
+      continue;
+    }
+
+    if(w==="hundred"){
+
+      current=
+        Math.max(
+          1,
+          current
+        )*100;
+
+      found=true;
+      continue;
+    }
+
+    if(
+      w==="thousand"||
+      w==="million"
+    ){
+
+      total+=
+        Math.max(
+          1,
+          current
+        )*
+        scale[w];
+
+      current=0;
+      found=true;
+
+      continue;
+    }
+  }
+
+  return found
+    ?total+current
+    :0;
+}
+
+function extractAmount(raw){
+
+  let m=
+    raw.match(
+      /\$\s*([\d,]+(?:\.\d{1,2})?)/
+    );
+
+  if(m){
+    return num(m[1]);
+  }
+
+  m=
+    raw.match(
+      /\b([\d,]+(?:\.\d{1,2})?)\s*(k|thousand)?\b/i
+    );
+
+  if(m){
+
+    let n=
+      num(m[1]);
+
+    if(
+      (m[2]||"")
+        .toLowerCase()===
+      "k"
+    ){
+      n*=1000;
+    }
+
+    if(n>=100){
+      return n;
+    }
+  }
+
+  const beforeDollars=
+    raw.split(
+      /\bdollars?\b/i
+    )[0];
+
+  return wordsToNumber(
+    beforeDollars
+  );
+}
+
+function detectScope(raw){
+
+  const s=
+    raw.toLowerCase();
+
+  const map=[
+    [
+      "land clearing",
+      /land\s*clear|clearing|clear the lot|underbrush/
+    ],
+    [
+      "entrance & culvert",
+      /culvert|entrance/
+    ],
+    [
+      "driveway",
+      /driveway|rock drive|gravel/
+    ],
+    [
+      "home pad",
+      /home pad|house pad|building pad|pad work/
+    ],
+    [
+      "water",
+      /water line|water meter|water/
+    ],
+    [
+      "electrical",
+      /electric|power|electrical/
+    ],
+    [
+      "septic",
+      /septic/
+    ],
+    [
+      "decks & steps",
+      /deck|steps|stairs|porch/
+    ],
+    [
+      "manufactured home",
+      /manufactured home|mobile home|double wide|double-wide/
+    ],
+    [
+      "home setup",
+      /home setup|set the home|blocking|tie.?down/
+    ],
+    [
+      "hvac",
+      /hvac|air conditioning|a\/c/
+    ]
+  ];
+
+  for(const [name,re] of map){
+
+    if(re.test(s)){
+      return name;
+    }
+  }
+
+  return "other";
+}
+
+function parseBid(raw){
+
+  const amount=
+    extractAmount(raw);
+
+  let contractor="";
+
+  const from=
+    raw.match(
+      /\bfrom\s+(.+?)\s+for\s+(?=\$|[\d]|[a-z])/i
+    );
+
+  if(from){
+
+    contractor=
+      from[1]
+        .trim()
+        .replace(/[,.]$/,"");
+  }
+
+  if(!contractor){
+
+    const by=
+      raw.match(
+        /\b(?:contractor|bidder)\s+([A-Za-z][A-Za-z' -]{1,40}?)(?:\s+for|\s+at|,|$)/i
+      );
+
+    if(by){
+      contractor=
+        by[1].trim();
+    }
+  }
+
+  let parcelText="";
+
+  const pm=
+    raw.match(
+      /\b(?:lot|parcel)\s*([A-Za-z0-9-]+)/i
+    );
+
+  if(pm){
+    parcelText=
+      "Lot "+
+      pm[1];
+  }
+
+  return {
+    contractor,
+    amount,
+    scope:
+      detectScope(raw),
+    parcelText
+  };
+}
+
+function createBidFromCommand(
+  parsed,
+  raw,
+  silent=false
+){
+
+  const d=currentDev();
+
+  if(!d){
+
+    toast(
+      "Create a development first."
+    );
+
+    return;
+  }
+
+  const p=
+    parsed.parcelText
+      ?findParcelByName(
+        d,
+        parsed.parcelText
+      )
+      :currentParcel();
+
+  const scope=
+    parsed.scope||
+    "other";
+
+  const jobHit=
+    (p?.jobs||[])
+      .find(
+        j=>
+          String(
+            j.name||
+            j.trade||
+            j.title||
+            ""
+          )
+          .toLowerCase()
+          .includes(
+            scope.toLowerCase()
+          )
+          ||
+          scope
+            .toLowerCase()
+            .includes(
+              String(
+                j.name||
+                j.trade||
+                j.title||
+                ""
+              )
+              .toLowerCase()
+            )
+      );
+
+  const bid={
+    id:uid(),
+
+    developmentId:
+      d.id,
+
+    parcelId:
+      p?.id||
+      null,
+
+    jobId:
+      jobHit?.id||
+      null,
+
+    contractorName:
+      parsed.contractor||
+      "",
+
+    scope,
+
+    amount:
+      num(parsed.amount),
+
+    status:"received",
+
+    date:today(),
+
+    createdAt:nowISO(),
+
+    sourceText:raw
+  };
+
+  state.bids.push(
+    bid
+  );
+
+  if(jobHit){
+
+    jobHit.a7Overview=
+      jobHit.a7Overview||
+      {facts:{}};
+
+    jobHit.a7Overview.facts=
+      jobHit.a7Overview.facts||
+      {};
+
+    if(bid.contractorName){
+
+      jobHit.a7Overview.facts[
+        "Latest bidder"
+      ]=
+        bid.contractorName;
+    }
+
+    if(bid.amount){
+
+      jobHit.a7Overview.facts[
+        "Latest bid"
+      ]=
+        money(
+          bid.amount
+        );
+    }
+  }
+
+  addActivity(
+    `Bid received${
+      bid.contractorName
+        ?" from "+
+          bid.contractorName
+        :""
+    }${
+      bid.amount
+        ?" for "+
+          money(bid.amount)
+        :""
+    } — ${scope}.`,
+    "bid",
+    {
+      parcelId:
+        bid.parcelId,
+      jobId:
+        bid.jobId
+    }
+  );
+
+  if(!bid.contractorName){
+
+    addBidQuestion(
+      bid,
+      "contractor",
+      "Who is this bid from?",
+      "Contractor / company name"
+    );
+  }
+
+  if(!bid.amount){
+
+    addBidQuestion(
+      bid,
+      "amount",
+      "What is the bid amount?",
+      "Example: 5000"
+    );
+  }
+
+  if(scope==="other"){
+
+    addBidQuestion(
+      bid,
+      "scope",
+      "What work is this bid for?",
+      "Example: Land clearing"
+    );
+  }
+
+  if(
+    !bid.parcelId&&
+    (d.parcels||[]).length>1
+  ){
+
+    addBidQuestion(
+      bid,
+      "parcel",
+      "Which lot or parcel is this for?",
+      "Example: Lot 2"
+    );
+  }
+
+  state.messages.push({
+    role:"assistant",
+
+    text:
+      `Bid logged${
+        bid.amount
+          ?" at "+
+            money(bid.amount)
+          :""
+      }.`,
+
+    at:nowISO()
+  });
+
+  saveState();
+  render();
+
+  if(!silent){
+    toast(
+      "Bid saved"
+    );
+  }
+}
+
+function addBidQuestion(
+  bid,
+  fieldName,
+  question,
+  placeholder
+){
+
+  state.v28.questions.push({
+
+    id:uid(),
+
+    status:"open",
+
+    developmentId:
+      bid.developmentId,
+
+    parcelId:
+      bid.parcelId,
+
+    jobId:
+      bid.jobId,
+
+    entityType:"bid",
+
+    entityId:
+      bid.id,
+
+    field:
+      fieldName,
+
+    question,
+
+    placeholder,
+
+    context:
+      `This finishes the ${
+        bid.scope||
+        "bid"
+      } record.`
+  });
+}
+
+/* =========================================================
+   QUESTIONS -> JOB OVERVIEW
+   ========================================================= */
+
+function seedQuestionsForJob(
+  dev,
+  parcel,
+  job
+){
+
+  if(!job){
+    return;
+  }
+
+  const existing=
+    state.v28.questions
+      .filter(
+        q=>q.jobId===job.id
+      );
+
+  const answered=
+    job.a7Overview?.facts||
+    {};
+
+  const name=
+    String(
+      job.name||
+      job.trade||
+      job.title||
+      ""
+    )
+    .toLowerCase();
+
+  const defs=
+    /land\s*clear/.test(name)
+
+      ?[
+        [
+          "contractor",
+          "Who is doing the land clearing?",
+          "Contractor name"
+        ],
+        [
+          "price",
+          "What is the agreed land-clearing price?",
+          "Example: 5000"
+        ],
+        [
+          "clear_acres",
+          "How many acres are being completely cleared?",
+          "Example: 1.5 acres"
+        ],
+        [
+          "underbrush_acres",
+          "How many additional acres are underbrush-only?",
+          "Example: 2 acres"
+        ],
+        [
+          "start_date",
+          "When is land clearing scheduled to start?",
+          "Example: October 1"
+        ],
+        [
+          "completion",
+          "What is the expected completion date?",
+          "Example: October 3"
+        ]
+      ]
+
+      :[
+        [
+          "contractor",
+          "Who is the contractor for this job?",
+          "Contractor name"
+        ],
+        [
+          "price",
+          "What is the current price or budget for this job?",
+          "Example: 5000"
+        ],
+        [
+          "status",
+          "What is the current status?",
+          "Not started / In progress / Complete"
+        ],
+        [
+          "start_date",
+          "When is this job scheduled to start?",
+          "Date"
+        ],
+        [
+          "completion",
+          "What is the expected completion date?",
+          "Date"
+        ]
+      ];
+
+  for(
+    const [
+      key,
+      q,
+      ph
+    ]
+    of defs
+  ){
+
+    const label=
+      factLabel(key);
+
+    if(answered[label]){
+      continue;
+    }
+
+    if(
+      existing.some(
+        x=>x.field===key
+      )
+    ){
+      continue;
+    }
+
+    state.v28.questions.push({
+
+      id:uid(),
+
+      status:"open",
+
+      developmentId:
+        dev.id,
+
+      parcelId:
+        parcel.id,
+
+      jobId:
+        job.id,
+
+      entityType:"job",
+
+      entityId:
+        job.id,
+
+      field:key,
+
+      question:q,
+
+      placeholder:ph,
+
+      context:
+        `${
+          parcel.name||
+          "Parcel"
+        } · ${
+          job.name||
+          job.trade||
+          job.title||
+          "Job"
+        }`
+    });
+  }
+}
+
+function factLabel(key){
+
+  const labels={
+
+    contractor:
+      "Contractor",
+
+    price:
+      "Price",
+
+    clear_acres:
+      "Completely cleared",
+
+    underbrush_acres:
+      "Underbrush only",
+
+    start_date:
+      "Start date",
+
+    completion:
+      "Expected completion",
+
+    status:
+      "Status",
+
+    parcel:
+      "Lot / Parcel",
+
+    amount:
+      "Bid amount",
+
+    scope:
+      "Scope",
+
+    note:
+      "Note"
+  };
+
+  return labels[key]||
+    key
+      .replace(/_/g," ")
+      .replace(
+        /\b\w/g,
+        m=>m.toUpperCase()
+      );
+}
+
+function answerQuestion(
+  e,
+  id
+){
+
+  e.preventDefault();
+
+  const answer=
+    field(
+      e.target,
+      "answer"
+    );
+
+  const q=
+    state.v28.questions
+      .find(
+        x=>x.id===id
+      );
+
+  if(!q||!answer){
+    return;
+  }
+
+  if(
+    q.entityType===
+    "job"
+  ){
+
+    const found=
+      findJobById(
+        q.entityId||
+        q.jobId
+      );
+
+    if(found){
+
+      found.j.a7Overview=
+        found.j.a7Overview||
+        {facts:{}};
+
+      found.j.a7Overview.facts=
+        found.j.a7Overview.facts||
+        {};
+
+      found.j.a7Overview.facts[
+        factLabel(q.field)
+      ]=
+        answer;
+
+      if(
+        q.field===
+        "status"
+      ){
+        found.j.status=
+          answer;
+      }
+
+      if(
+        q.field===
+        "contractor"
+      ){
+        found.j.contractorName=
+          answer;
+      }
+    }
+  }
+
+  if(
+    q.entityType===
+    "bid"
+  ){
+
+    const bid=
+      state.bids.find(
+        b=>b.id===q.entityId
+      );
+
+    if(bid){
+
+      if(
+        q.field===
+        "contractor"
+      ){
+        bid.contractorName=
+          answer;
+      }
+
+      if(
+        q.field===
+        "amount"
+      ){
+        bid.amount=
+          extractAmount(answer)||
+          num(answer);
+      }
+
+      if(
+        q.field===
+        "scope"
+      ){
+        bid.scope=
+          answer;
+      }
+
+      if(
+        q.field===
+        "parcel"
+      ){
+
+        const p=
+          findParcelByName(
+            currentDev(),
+            answer
+          );
+
+        bid.parcelId=
+          p?.id||
+          null;
+
+        if(p){
+          q.parcelId=
+            p.id;
+        }
+      }
+
+      const found=
+        bid.jobId
+          ?findJobById(
+            bid.jobId
+          )
+          :null;
+
+      if(found){
+
+        found.j.a7Overview=
+          found.j.a7Overview||
+          {facts:{}};
+
+        found.j.a7Overview.facts=
+          found.j.a7Overview.facts||
+          {};
+
+        if(
+          q.field===
+          "contractor"
+        ){
+          found.j.a7Overview.facts[
+            "Latest bidder"
+          ]=
+            answer;
+        }
+
+        if(
+          q.field===
+          "amount"
+        ){
+          found.j.a7Overview.facts[
+            "Latest bid"
+          ]=
+            money(
+              bid.amount
+            );
+        }
+      }
+    }
+  }
+
+  q.status="answered";
+  q.answer=answer;
+  q.answeredAt=nowISO();
+
+  addActivity(
+    `${
+      factLabel(
+        q.field
+      )
+    } updated: ${answer}`,
+    "answer",
+    {
+      parcelId:
+        q.parcelId,
+      jobId:
+        q.jobId
+    }
+  );
+
+  saveState();
+  render();
+
+  toast(
+    "Saved to the overview"
+  );
+}
+
+/* =========================================================
+   OVERVIEW
+   ========================================================= */
+
+function overviewPage(){
+
+  const d=currentDev();
+  const p=currentParcel();
+  const j=currentJob();
+
+  const snap=
+    budgetSnapshot();
+
+  return `
+    <div class="head">
+
+      <div>
+
+        <h1>
+          Project Overview
+        </h1>
+
+        <div class="sub">
+          Office-ready summary
+          from your field updates
+        </div>
+
+      </div>
+
+    </div>
+
+    ${projectPicker()}
+
+    <div
+      class="grid"
+      style="margin-bottom:12px">
+
+      <div class="stat">
+
+        <small>
+          Open questions
+        </small>
+
+        <strong>
+          ${
+            devQuestions()
+              .length
+          }
+        </strong>
+
+      </div>
+
+      <div class="stat">
+
+        <small>
+          Bids received
+        </small>
+
+        <strong>
+          ${
+            devBids()
+              .length
+          }
+        </strong>
+
+      </div>
+
+      <div class="stat">
+
+        <small>
+          Committed
+        </small>
+
+        <strong>
+          ${
+            money(
+              snap.committed
+            )
+          }
+        </strong>
+
+      </div>
+
+      <div class="stat">
+
+        <small>
+          Paid
+        </small>
+
+        <strong>
+          ${
+            money(
+              snap.paid
+            )
+          }
+        </strong>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <div class="head">
+
+        <div>
+
+          <h2>
+            ${
+              esc(
+                j?.name||
+                j?.trade||
+                j?.title||
+                "Current Job"
+              )
+            }
+          </h2>
+
+          <div class="sub">
+            ${
+              esc(
+                p?.name||
+                "No parcel selected"
+              )
+            }
+          </div>
+
+        </div>
+
+        ${
+          j
+            ?`
+              <span
+                class="pill blue">
+
+                ${
+                  esc(
+                    j.status||
+                    "ACTIVE"
+                  )
+                }
+
+              </span>
+            `
+            :""
+        }
+
+      </div>
+
+      ${
+        j
+          ?jobOverviewHTML(j)
+          :`
+            <div class="empty">
+
+              <strong>
+                No job selected
+              </strong>
+
+              Open Jobs and
+              select a job.
+
+            </div>
+          `
+      }
+
+    </div>
+
+    <div class="card">
+
+      <div class="head">
+
+        <div>
+
+          <h2>
+            Project Activity
+          </h2>
+
+          <div class="sub">
+            Newest first
+          </div>
+
+        </div>
+
+      </div>
+
+      ${
+        devActivity()
+          .slice(0,14)
+          .map(activityHTML)
+          .join("")
+        ||
+        `
+          <div class="empty">
+
+            <strong>
+              No activity yet
+            </strong>
+
+            Field updates will
+            appear here.
+
+          </div>
+        `
+      }
+
+    </div>
+  `;
+}
+
+function jobOverviewHTML(j){
+
+  const facts=
+    j.a7Overview?.facts||
+    {};
+
+  const entries=
+    Object.entries(facts);
+
+  return `
+    ${
+      entries.length
+        ?`
+          <div class="fact-grid">
+
+            ${
+              entries
+                .map(
+                  ([k,v])=>`
+                    <div class="fact">
+
+                      <small>
+                        ${esc(k)}
+                      </small>
+
+                      <strong>
+                        ${esc(v)}
+                      </strong>
+
+                    </div>
+                  `
+                )
+                .join("")
+            }
+
+          </div>
+        `
+        :`
+          <div class="notice">
+
+            A7 has not collected
+            job details yet.
+            Go to Jobs, open this job,
+            or answer field questions.
+
+          </div>
+        `
+    }
+
+    <div
+      class="actions"
+      style="margin-top:12px">
+
+      <button
+        class="btn soft"
+        onclick="
+          seedCurrentJobQuestions()
+        ">
+
+        Ask Me What You Need
+
+      </button>
+
+      <button
+        class="btn secondary"
+        onclick="
+          openQuick('progress')
+        ">
+
+        Add Update
+
+      </button>
+
+    </div>
+  `;
+}
+
+function seedCurrentJobQuestions(){
+
+  const d=currentDev();
+  const p=currentParcel();
+  const j=currentJob();
+
+  if(!d||!p||!j){
+
+    toast(
+      "Select a job first."
+    );
+
+    return;
+  }
+
+  seedQuestionsForJob(
+    d,
+    p,
+    j
+  );
+
+  saveState();
+
+  page="field";
+
+  render();
+
+  toast(
+    "Questions added "+
+    "to Field Mode"
+  );
+}
+
+function activityHTML(a){
+
+  return `
+    <div class="activity">
+
+      <strong>
+        ${esc(a.text)}
+      </strong>
+
+      <div class="meta">
+
+        ${fmtDate(a.at)}
+        ·
+        ${esc(a.type||"update")}
+
+      </div>
+
+    </div>
+  `;
+}
+
+/* =========================================================
+   BIDS
+   ========================================================= */
+
+function bidsPage(){
+
+  const bids=
+    devBids()
+      .slice()
+      .sort(
+        (a,b)=>
+          (b.createdAt||"")
+            .localeCompare(
+              a.createdAt||
+              ""
+            )
+      );
+
+  const snap=
+    budgetSnapshot();
+
+  return `
+    <div class="head">
+
+      <div>
+
+        <h1>
+          Bids & Budget
+        </h1>
+
+        <div class="sub">
+          Field bids flow into
+          the project record
+        </div>
+
+      </div>
+
+      <button
+        class="btn"
+        onclick="
+          openQuick('bid')
+        ">
+
+        + Bid
+
+      </button>
+
+    </div>
+
+    ${projectPicker()}
+
+    <div
+      class="grid"
+      style="margin-bottom:12px">
+
+      <div class="stat">
+
+        <small>
+          Received
+        </small>
+
+        <strong>
+          ${
+            bids.filter(
+              b=>
+                b.status===
+                "received"
+            ).length
+          }
+        </strong>
+
+      </div>
+
+      <div class="stat">
+
+        <small>
+          Awarded
+        </small>
+
+        <strong>
+          ${
+            bids.filter(
+              b=>
+                b.status===
+                "awarded"
+            ).length
+          }
+        </strong>
+
+      </div>
+
+      <div class="stat">
+
+        <small>
+          Committed
+        </small>
+
+        <strong>
+          ${
+            money(
+              snap.committed
+            )
+          }
+        </strong>
+
+      </div>
+
+      <div class="stat">
+
+        <small>
+          Paid
+        </small>
+
+        <strong>
+          ${
+            money(
+              snap.paid
+            )
+          }
+        </strong>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      ${
+        bids.length
+          ?bids
+            .map(bidHTML)
+            .join("")
+          :`
+            <div class="empty">
+
+              <strong>
+                No bids yet
+              </strong>
+
+              Tell A7 about a
+              bid in Field Mode.
+
+            </div>
+          `
+      }
+
+    </div>
+  `;
+}
+
+function bidHTML(b){
+
+  const p=
+    currentDev()
+      ?.parcels
+      ?.find(
+        x=>x.id===b.parcelId
+      );
+
+  return `
+    <div class="list-item">
+
+      <div class="item-head">
+
+        <div>
+
+          <div class="item-title">
+            ${
+              esc(
+                b.scope||
+                "Bid"
+              )
+            }
+          </div>
+
+          <div class="meta">
+
+            ${
+              esc(
+                b.contractorName||
+                "Contractor not entered"
+              )
+            }
+
+            ·
+
+            ${
+              esc(
+                p?.name||
+                "No lot assigned"
+              )
+            }
+
+          </div>
+
+          <div class="meta">
+
+            ${
+              fmtDate(
+                b.createdAt||
+                b.date
+              )
+            }
+
+          </div>
+
+        </div>
+
+        <div
+          style="text-align:right">
+
+          <div class="item-title">
+
+            ${
+              b.amount
+                ?money(b.amount)
+                :"Amount needed"
+            }
+
+          </div>
+
+          <span
+            class="
+              pill
+              ${
+                b.status==="awarded"
+                  ?"green"
+                  :"blue"
+              }
+            ">
+
+            ${
+              esc(
+                (
+                  b.status||
+                  "received"
+                ).toUpperCase()
+              )
+            }
+
+          </span>
+
+        </div>
+
+      </div>
+
+      <div
+        class="actions"
+        style="margin-top:10px">
+
+        ${
+          b.status!=="awarded"
+            ?`
+              <button
+                class="btn small green"
+                onclick="
+                  awardBid('${b.id}')
+                ">
+
+                Award Bid
+
+              </button>
+            `
+            :""
+        }
+
+        <button
+          class="btn small secondary"
+          onclick="
+            editBid('${b.id}')
+          ">
+
+          Edit
+
+        </button>
+
+        <button
+          class="btn small danger"
+          onclick="
+            deleteBid('${b.id}')
+          ">
+
+          Delete
+
+        </button>
+
+      </div>
+
+    </div>
+  `;
+}
+
+function awardBid(id){
+
+  const b=
+    state.bids.find(
+      x=>x.id===id
+    );
+
+  if(!b){
+    return;
+  }
+
+  b.status=
+    "awarded";
+
+  b.awardedAt=
+    nowISO();
+
+  const existing=
+    state.v28.budgetLines
+      .find(
+        x=>x.bidId===id
+      );
+
+  if(!existing){
+
+    state.v28.budgetLines.push({
+
+      id:uid(),
+
+      bidId:b.id,
+
+      developmentId:
+        b.developmentId,
+
+      parcelId:
+        b.parcelId,
+
+      jobId:
+        b.jobId,
+
+      label:
+        b.scope||
+        "Bid",
+
+      vendor:
+        b.contractorName||
+        "",
+
+      committed:
+        num(b.amount),
+
+      paid:0,
+
+      status:"committed"
+    });
+  }
+
+  addActivity(
+    `Awarded ${
+      b.scope||
+      "bid"
+    } to ${
+      b.contractorName||
+      "contractor"
+    } for ${
+      money(b.amount)
+    }.`,
+    "award",
+    {
+      parcelId:
+        b.parcelId,
+      jobId:
+        b.jobId
+    }
+  );
+
+  saveState();
+  render();
+
+  toast(
+    "Bid awarded and "+
+    "added to committed budget"
+  );
+}
+
+function deleteBid(id){
+
+  if(
+    !confirm(
+      "Delete this bid?"
+    )
+  ){
+    return;
+  }
+
+  state.bids=
+    state.bids.filter(
+      b=>b.id!==id
+    );
+
+  state.v28.questions=
+    state.v28.questions.filter(
+      q=>q.entityId!==id
+    );
+
+  state.v28.budgetLines=
+    state.v28.budgetLines.filter(
+      x=>x.bidId!==id
+    );
+
+  saveState();
+  render();
+}
+
+function editBid(id){
+
+  const b=
+    state.bids.find(
+      x=>x.id===id
+    );
+
+  if(!b){
+    return;
+  }
+
+  openSheet(`
+    <h2>
+      Edit Bid
+    </h2>
+
+    <p class="sub">
+      Update the stored bid record.
+    </p>
+
+    <form
+      onsubmit="
+        saveBidEdit(
+          event,
+          '${id}'
+        )
+      "
+      style="margin-top:14px">
+
+      <div class="field">
+
+        <label>
+          Contractor
+        </label>
+
+        <input
+          name="contractor"
+          value="${
+            esc(
+              b.contractorName||
+              ""
+            )
+          }">
+
+      </div>
+
+      <div class="field">
+
+        <label>
+          Amount
+        </label>
+
+        <input
+          name="amount"
+          inputmode="decimal"
+          value="${
+            b.amount||
+            ""
+          }">
+
+      </div>
+
+      <div class="field">
+
+        <label>
+          Scope
+        </label>
+
+        <input
+          name="scope"
+          value="${
+            esc(
+              b.scope||
+              ""
+            )
+          }">
+
+      </div>
+
+      <button class="btn">
+        Save Changes
+      </button>
+
+    </form>
+  `);
+}
+
+function saveBidEdit(e,id){
+
+  e.preventDefault();
+
+  const b=
+    state.bids.find(
+      x=>x.id===id
+    );
+
+  if(!b){
+    return;
+  }
+
+  b.contractorName=
+    field(
+      e.target,
+      "contractor"
+    );
+
+  b.amount=
+    num(
+      field(
+        e.target,
+        "amount"
+      )
+    );
+
+  b.scope=
+    field(
+      e.target,
+      "scope"
+    );
+
+  const line=
+    state.v28.budgetLines
+      .find(
+        x=>x.bidId===id
+      );
+
+  if(line){
+
+    line.vendor=
+      b.contractorName;
+
+    line.committed=
+      b.amount;
+
+    line.label=
+      b.scope;
+  }
+
+  saveState();
+  closeSheet();
+  render();
+
+  toast(
+    "Bid updated"
+  );
+}
+
+function budgetSnapshot(){
+
+  const d=currentDev();
+
+  const lines=
+    state.v28.budgetLines
+      .filter(
+        x=>
+          !d||
+          x.developmentId===
+          d.id
+      );
+
+  let committed=
+    lines.reduce(
+      (s,x)=>
+        s+
+        num(x.committed),
+      0
+    );
+
+  let paid=
+    lines.reduce(
+      (s,x)=>
+        s+
+        num(x.paid),
+      0
+    );
+
+  const v27=
+    d?.dealV26
+      ?.costItems;
+
+  if(
+    Array.isArray(v27)
+  ){
+
+    for(const x of v27){
+
+      const amt=
+        num(
+          x.committedAmount??
+          x.amount??
+          x.forecast??
+          x.estimate??
+          0
+        );
+
+      if(amt){
+        committed+=amt;
+      }
+
+      paid+=
+        num(
+          x.paidAmount??
+          x.paid??
+          0
+        );
+    }
+  }
+
+  return {
+    committed,
+    paid
+  };
+}
+
+/* =========================================================
+   JOBS
+   ========================================================= */
+
+function jobsPage(){
+
+  const d=currentDev();
+
+  const rows=
+    allJobs(d);
+
+  return `
+    <div class="head">
+
+      <div>
+
+        <h1>
+          Jobs
+        </h1>
+
+        <div class="sub">
+
+          Tap a job to make it
+          the current field job
+
+        </div>
+
+      </div>
+
+      <button
+        class="btn"
+        onclick="
+          openQuick('job')
+        ">
+
+        + Job
+
+      </button>
+
+    </div>
+
+    ${projectPicker()}
+
+    <div class="card">
+
+      ${
+        rows.length
+          ?rows
+            .map(
+              ({p,j})=>`
+                <div
+                  class="list-item"
+                  onclick="
+                    setJob('${j.id}')
+                  "
+                  style="cursor:pointer">
+
+                  <div class="item-head">
+
+                    <div>
+
+                      <div class="item-title">
+
+                        ${
+                          esc(
+                            j.name||
+                            j.trade||
+                            j.title||
+                            "Job"
+                          )
+                        }
+
+                      </div>
+
+                      <div class="meta">
+
+                        ${
+                          esc(
+                            p.name||
+                            "Parcel"
+                          )
+                        }
+
+                        ·
+
+                        ${
+                          esc(
+                            j.contractorName||
+                            "No contractor yet"
+                          )
+                        }
+
+                      </div>
+
+                    </div>
+
+                    <span
+                      class="
+                        pill
+                        ${
+                          j.id===
+                          currentJob()?.id
+                            ?"blue"
+                            :""
+                        }
+                      ">
+
+                      ${
+                        esc(
+                          j.status||
+                          "OPEN"
+                        )
+                      }
+
+                    </span>
+
+                  </div>
+
+                  ${
+                    Object.keys(
+                      j.a7Overview
+                        ?.facts||
+                      {}
+                    ).length
+
+                      ?`
+                        <div
+                          class="meta"
+                          style="
+                            margin-top:7px
+                          ">
+
+                          ${
+                            Object.keys(
+                              j.a7Overview
+                                .facts
+                            ).length
+                          }
+                          overview detail
+                          ${
+                            Object.keys(
+                              j.a7Overview
+                                .facts
+                            ).length===1
+                              ?""
+                              :"s"
+                          }
+                          saved
+
+                        </div>
+                      `
+                      :""
+                  }
+
+                </div>
+              `
+            )
+            .join("")
+          :`
+            <div class="empty">
+
+              <strong>
+                No jobs yet
+              </strong>
+
+              Add a job such as
+              Land Clearing,
+              Driveway,
+              Septic,
+              or Electrical.
+
+            </div>
+          `
+      }
+
+    </div>
+  `;
+}
+
+/* =========================================================
+   QUICK SHEETS
+   ========================================================= */
+
+function openSheet(html){
+
+  document.getElementById(
+    "sheetPanel"
+  ).innerHTML=
+    `
+      <div class="sheet-grab"></div>
+      ${html}
+    `;
+
+  document.getElementById(
+    "sheet"
+  ).classList.add(
+    "open"
+  );
+}
+
+function closeSheet(){
+
+  document.getElementById(
+    "sheet"
+  ).classList.remove(
+    "open"
+  );
+}
+
+function sheetBackdrop(e){
+
+  if(
+    e.target.id===
+    "sheet"
+  ){
+    closeSheet();
+  }
+}
+
+function openQuick(type){
+
+  if(type==="bid"){
+
+    openSheet(`
+      <div class="head">
+
+        <div>
+
+          <h2>
+            New Bid
+          </h2>
+
+          <div class="sub">
+            Fast field entry
+          </div>
+
+        </div>
+
+      </div>
+
+      <form
+        onsubmit="
+          quickBid(event)
+        ">
+
+        <div class="field">
+
+          <label>
+            Contractor
+          </label>
+
+          <input
+            name="contractor"
+            placeholder="Landon">
+
+        </div>
+
+        <div class="field">
+
+          <label>
+            Amount
+          </label>
+
+          <input
+            name="amount"
+            inputmode="decimal"
+            placeholder="5000">
+
+        </div>
+
+        <div class="field">
+
+          <label>
+            Scope
+          </label>
+
+          <select name="scope">
+
+            ${
+              TRADES.map(
+                x=>`
+                  <option>
+                    ${x}
+                  </option>
+                `
+              ).join("")
+            }
+
+          </select>
+
+        </div>
+
+        <button class="btn">
+          Save Bid
+        </button>
+
+      </form>
+    `);
+  }
+
+  if(
+    type==="progress"||
+    type==="problem"
+  ){
+
+    openSheet(`
+      <h2>
+
+        ${
+          type==="problem"
+            ?"Log Problem"
+            :"Progress Update"
+        }
+
+      </h2>
+
+      <p class="sub">
+
+        ${
+          esc(
+            currentJob()?.name||
+            currentJob()?.trade||
+            "Current job"
+          )
+        }
+
+      </p>
+
+      <form
+        onsubmit="
+          quickUpdate(
+            event,
+            '${type}'
+          )
+        "
+        style="margin-top:14px">
+
+        <div class="field">
+
+          <label>
+            What happened?
+          </label>
+
+          <textarea
+            name="note"
+            placeholder="${
+              type==="problem"
+                ?"Example: Culvert delivery pushed to Friday"
+                :"Example: Finished clearing the west side today"
+            }"
+            required></textarea>
+
+        </div>
+
+        <button
+          class="
+            btn
+            ${
+              type==="problem"
+                ?""
+                :"green"
+            }
+          ">
+
+          Save Update
+
+        </button>
+
+      </form>
+    `);
+  }
+
+  if(type==="job"){
+
+    openSheet(`
+      <h2>
+        Add Job
+      </h2>
+
+      <p class="sub">
+
+        ${
+          esc(
+            currentParcel()?.name||
+            "Current parcel"
+          )
+        }
+
+      </p>
+
+      <form
+        onsubmit="
+          quickJob(event)
+        "
+        style="margin-top:14px">
+
+        <div class="field">
+
+          <label>
+            Job / Trade
+          </label>
+
+          <select name="name">
+
+            ${
+              TRADES
+                .map(
+                  x=>`
+                    <option>
+                      ${x}
+                    </option>
+                  `
+                )
+                .join("")
+            }
+
+          </select>
+
+        </div>
+
+        <button class="btn">
+          Add Job
+        </button>
+
+      </form>
+    `);
+  }
+}
+
+function quickBid(e){
+
+  e.preventDefault();
+
+  createBidFromCommand(
+    {
+      contractor:
+        field(
+          e.target,
+          "contractor"
+        ),
+
+      amount:
+        num(
+          field(
+            e.target,
+            "amount"
+          )
+        ),
+
+      scope:
+        field(
+          e.target,
+          "scope"
+        ).toLowerCase(),
+
+      parcelText:
+        currentParcel()?.name||
+        ""
+    },
+    "Manual field bid"
+  );
+
+  closeSheet();
+}
+
+function quickUpdate(
+  e,
+  type
+){
+
+  e.preventDefault();
+
+  const note=
+    field(
+      e.target,
+      "note"
+    );
+
+  const j=currentJob();
+
+  addActivity(
+    note,
+    type,
+    {
+      parcelId:
+        currentParcel()?.id,
+      jobId:
+        j?.id
+    }
+  );
+
+  if(j){
+
+    j.a7Overview=
+      j.a7Overview||
+      {facts:{}};
+
+    j.a7Overview.facts=
+      j.a7Overview.facts||
+      {};
+
+    j.a7Overview.facts[
+      type==="problem"
+        ?"Latest issue"
+        :"Latest progress"
+    ]=
+      note;
+  }
+
+  saveState();
+  closeSheet();
+  render();
+
+  toast(
+    "Update saved"
+  );
+}
+
+function quickJob(e){
+
+  e.preventDefault();
+
+  const p=currentParcel();
+
+  if(!p){
+    return;
+  }
+
+  const name=
+    field(
+      e.target,
+      "name"
+    );
+
+  const j={
+    id:uid(),
+    name,
+    status:"Not started",
+    a7Overview:{
+      facts:{}
+    },
+    files:[]
+  };
+
+  p.jobs=p.jobs||[];
+
+  p.jobs.push(j);
+
+  state.activeJob=
+    j.id;
+
+  seedQuestionsForJob(
+    currentDev(),
+    p,
+    j
+  );
+
+  addActivity(
+    `${name} job added.`,
+    "job",
+    {
+      parcelId:p.id,
+      jobId:j.id
+    }
+  );
+
+  saveState();
+  closeSheet();
+  render();
+
+  toast(
+    "Job added"
+  );
+}
+
+/* =========================================================
+   PHOTO STORAGE
+   ========================================================= */
+
+function openFileDB(){
+
+  if(fileDB){
+    return Promise.resolve(
+      fileDB
+    );
+  }
+
+  return new Promise(
+    (ok,no)=>{
+
+      const req=
+        indexedDB.open(
+          FILE_DB,
+          1
+        );
+
+      req.onupgradeneeded=
+        ()=>{
+
+          if(
+            !req.result
+              .objectStoreNames
+              .contains(
+                "files"
+              )
+          ){
+            req.result
+              .createObjectStore(
+                "files"
+              );
+          }
+        };
+
+      req.onsuccess=
+        ()=>{
+
+          fileDB=
+            req.result;
+
+          ok(fileDB);
+        };
+
+      req.onerror=
+        ()=>no(
+          req.error
+        );
+    }
+  );
+}
+
+async function putFile(
+  id,
+  blob
+){
+
+  const db=
+    await openFileDB();
+
+  return new Promise(
+    (ok,no)=>{
+
+      const tx=
+        db.transaction(
+          "files",
+          "readwrite"
+        );
+
+      tx.objectStore(
+        "files"
+      ).put(
+        blob,
+        id
+      );
+
+      tx.oncomplete=
+        ()=>ok();
+
+      tx.onerror=
+        ()=>no(
+          tx.error
+        );
+    }
+  );
+}
+
+async function capturePhoto(e){
+
+  const file=
+    e.target.files?.[0];
+
+  if(!file){
+    return;
+  }
+
+  try{
+
+    const id=uid();
+
+    await putFile(
+      id,
+      file
+    );
+
+    state.v28.photos.push({
+
+      id,
+
+      name:
+        file.name||
+        "Field photo",
+
+      type:
+        file.type,
+
+      size:
+        file.size,
+
+      date:
+        today(),
+
+      at:
+        nowISO(),
+
+      developmentId:
+        currentDev()?.id||
+        null,
+
+      parcelId:
+        currentParcel()?.id||
+        null,
+
+      jobId:
+        currentJob()?.id||
+        null
+    });
+
+    addActivity(
+      `Field photo added: ${
+        file.name||
+        "Photo"
+      }`,
+      "photo",
+      {
+        parcelId:
+          currentParcel()?.id,
+        jobId:
+          currentJob()?.id
+      }
+    );
+
+    saveState();
+    render();
+
+    toast(
+      "Photo saved on this device"
+    );
+
+  }catch(err){
+
+    toast(
+      "Could not save the photo"
+    );
+  }
+
+  e.target.value="";
+}
+
+/* =========================================================
+   CLOUD SYNC
+   ========================================================= */
+
+async function initCloud(
+  showMessages=false
+){
+
+  const s=
+    state.settings;
+
+  if(
+    !s.syncEnabled||
+    !s.supabaseUrl||
+    !s.supabaseAnonKey||
+    !window.supabase
+  ){
+
+    cloudClient=null;
+    cloudSession=null;
+
+    return false;
+  }
+
+  try{
+
+    cloudClient=
+      window.supabase
+        .createClient(
+          s.supabaseUrl,
+          s.supabaseAnonKey
+        );
+
+    const {data}=
+      await cloudClient
+        .auth
+        .getSession();
+
+    cloudSession=
+      data.session||
+      null;
+
+    cloudClient.auth
+      .onAuthStateChange(
+        (
+          _event,
+          session
+        )=>{
+
+          cloudSession=
+            session||
+            null;
+
+          if(cloudSession){
+            cloudLoad();
+          }
+
+          render();
+        }
+      );
+
+    if(cloudSession){
+
+      await cloudLoad(
+        false
+      );
+    }
+
+    return true;
+
+  }catch(err){
+
+    if(showMessages){
+
+      toast(
+        "Cloud setup error"
+      );
+    }
+
+    return false;
+  }
+}
+
+async function sendMagicLink(){
+
+  const s=
+    state.settings;
+
+  if(
+    !s.supabaseUrl||
+    !s.supabaseAnonKey||
+    !s.email
+  ){
+
+    toast(
+      "Enter Supabase URL, "+
+      "anon key, and your "+
+      "email first."
+    );
+
+    return;
+  }
+
+  await initCloud();
+
+  if(!cloudClient){
+
+    toast(
+      "Could not start "+
+      "cloud login."
+    );
+
+    return;
+  }
+
+  const {error}=
+    await cloudClient
+      .auth
+      .signInWithOtp({
+
+        email:s.email,
+
+        options:{
+          emailRedirectTo:
+            location.origin+
+            location.pathname
+        }
+      });
+
+  if(error){
+
+    toast(
+      error.message
+    );
+
+    return;
+  }
+
+  toast(
+    "Login link sent "+
+    "to your email"
+  );
+}
+
+function scheduleCloudSave(){
+
+  if(
+    !state.settings.syncEnabled||
+    !cloudSession||
+    !cloudClient
+  ){
+    return;
+  }
+
+  clearTimeout(
+    syncTimer
+  );
+
+  syncTimer=
+    setTimeout(
+      ()=>cloudSave(),
+      700
+    );
+}
+
+async function cloudSave(){
+
+  if(
+    !cloudSession||
+    !cloudClient
+  ){
+    return;
+  }
+
+  try{
+
+    const payload=
+      copy(state);
+
+    payload.settings={
+      ...payload.settings,
+      supabaseAnonKey:""
+    };
+
+    const {error}=
+      await cloudClient
+        .from(
+          "a7_state"
+        )
+        .upsert(
+          {
+            user_id:
+              cloudSession
+                .user
+                .id,
+
+            state:
+              payload,
+
+            updated_at:
+              nowISO()
+          },
+
+          {
+            onConflict:
+              "user_id"
+          }
+        );
+
+    if(error){
+      throw error;
+    }
+
+  }catch(err){
+
+    console.warn(
+      "A7 cloud save failed",
+      err
+    );
+  }
+}
+
+async function cloudLoad(
+  showToast=true
+){
+
+  if(
+    !cloudSession||
+    !cloudClient
+  ){
+    return;
+  }
+
+  try{
+
+    const {
+      data,
+      error
+    }=
+      await cloudClient
+        .from(
+          "a7_state"
+        )
+        .select(
+          "state,updated_at"
+        )
+        .eq(
+          "user_id",
+          cloudSession.user.id
+        )
+        .maybeSingle();
+
+    if(error){
+      throw error;
+    }
+
+    if(data?.state){
+
+      const localSettings=
+        copy(
+          state.settings
+        );
+
+      const incoming=
+        normalize(
+          data.state
+        );
+
+      incoming.settings={
+        ...incoming.settings,
+        ...localSettings
+      };
+
+      state=
+        incoming;
+
+      saveState(
+        false
+      );
+
+      if(showToast){
+
+        toast(
+          "Cloud project loaded"
+        );
+      }
+
+      render();
+
+    }else{
+
+      await cloudSave();
+    }
+
+  }catch(err){
+
+    if(showToast){
+
+      toast(
+        "Cloud sync could not load. "+
+        "Local data is still safe."
+      );
+    }
+  }
+}
+
+/* =========================================================
+   SETTINGS
+   ========================================================= */
+
+function settingsPage(){
+
+  const s=
+    state.settings;
+
+  return `
+    <div class="head">
+
+      <div>
+
+        <h1>
+          Settings
+        </h1>
+
+        <div class="sub">
+
+          Mobile app,
+          sync,
+          backups,
+          and AI connection
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        iPhone Field App
+      </h2>
+
+      <div class="notice good">
+
+        In Safari, use
+        <strong>
+          Share → Add to Home Screen
+        </strong>.
+
+        V28 is designed to open
+        like an app with large
+        field controls.
+
+      </div>
+
+      <div class="row">
+
+        <span class="sub">
+          Local field storage
+        </span>
+
+        <strong>
+          On
+        </strong>
+
+      </div>
+
+      <div class="row">
+
+        <span class="sub">
+          V27 browser import
+        </span>
+
+        <strong>
+          ${
+            state.v28.migratedFrom||
+            "Ready"
+          }
+        </strong>
+
+      </div>
+
+      <div class="row">
+
+        <span class="sub">
+          Version
+        </span>
+
+        <strong>
+          28
+        </strong>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        Phone ↔ Desktop Cloud Sync
+      </h2>
+
+      <p
+        class="sub"
+        style="margin:6px 0 14px">
+
+        Optional.
+        This is what lets field
+        updates on your iPhone
+        appear on the office computer.
+
+        Use Supabase with Row Level
+        Security.
+
+        Do not put a private
+        service-role key in this file.
+
+      </p>
+
+      <form
+        onsubmit="
+          saveCloudSettings(event)
+        ">
+
+        <div class="field">
+
+          <label>
+            Supabase Project URL
+          </label>
+
+          <input
+            name="url"
+            value="${
+              esc(
+                s.supabaseUrl
+              )
+            }"
+            placeholder="
+              https://xxxx.supabase.co
+            ">
+
+        </div>
+
+        <div class="field">
+
+          <label>
+            Supabase Anon /
+            Publishable Key
+          </label>
+
+          <input
+            name="key"
+            value="${
+              esc(
+                s.supabaseAnonKey
+              )
+            }"
+            placeholder="
+              Public anon key only
+            ">
+
+        </div>
+
+        <div class="field">
+
+          <label>
+            Your Login Email
+          </label>
+
+          <input
+            name="email"
+            type="email"
+            value="${
+              esc(
+                s.email
+              )
+            }"
+            placeholder="
+              you@example.com
+            ">
+
+        </div>
+
+        <label
+          style="
+            display:flex;
+            align-items:center;
+            gap:9px;
+            font-weight:800;
+            margin:5px 0 14px
+          ">
+
+          <input
+            name="enabled"
+            type="checkbox"
+            style="
+              width:20px;
+              min-height:20px
+            "
+            ${
+              s.syncEnabled
+                ?"checked"
+                :""
+            }>
+
+          Enable secure cloud sync
+
+        </label>
+
+        <div class="actions">
+
+          <button class="btn">
+            Save Sync Settings
+          </button>
+
+          <button
+            type="button"
+            class="btn secondary"
+            onclick="
+              sendMagicLink()
+            ">
+
+            Email Me a Login Link
+
+          </button>
+
+          ${
+            cloudSession
+              ?`
+                <span
+                  class="pill green">
+
+                  SIGNED IN
+
+                </span>
+              `
+              :`
+                <span class="pill">
+                  LOCAL ONLY
+                </span>
+              `
+          }
+
+        </div>
+
+      </form>
+
+      <details
+        style="margin-top:14px">
+
+        <summary
+          style="
+            font-weight:900;
+            color:var(--navy)
+          ">
+
+          Supabase one-time
+          table setup
+
+        </summary>
+
+        <pre
+          style="
+            white-space:pre-wrap;
+            background:#f5f7fa;
+            border:1px solid var(--line);
+            padding:11px;
+            border-radius:10px;
+            font-size:11px;
+            overflow:auto
+          ">create table public.a7_state (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  state jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.a7_state enable row level security;
+
+create policy "Users read own A7 state"
+on public.a7_state for select
+using (auth.uid() = user_id);
+
+create policy "Users insert own A7 state"
+on public.a7_state for insert
+with check (auth.uid() = user_id);
+
+create policy "Users update own A7 state"
+on public.a7_state for update
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);</pre>
+
+      </details>
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        A7 AI Brain
+      </h2>
+
+      <p
+        class="sub"
+        style="margin:6px 0 12px">
+
+        V28 handles common field
+        commands locally.
+
+        For full Jarvis-style
+        reasoning, connect a secure
+        server endpoint here.
+
+        Never paste an OpenAI secret
+        API key directly into this HTML.
+
+      </p>
+
+      <form
+        onsubmit="
+          saveAISettings(event)
+        ">
+
+        <div class="field">
+
+          <label>
+            AI Backend URL
+          </label>
+
+          <input
+            name="endpoint"
+            value="${
+              esc(
+                s.aiEndpoint
+              )
+            }"
+            placeholder="
+              https://your-secure-backend.example.com/api/a7
+            ">
+
+        </div>
+
+        <button class="btn">
+          Save AI Connection
+        </button>
+
+      </form>
+
+    </div>
+
+    <div class="card">
+
+      <h2>
+        Backup
+      </h2>
+
+      <p class="sub">
+
+        Backups protect the project
+        data saved on this browser.
+
+        Photos stored in IndexedDB
+        are not included in this
+        lightweight V28 JSON backup.
+
+      </p>
+
+      <div
+        class="actions"
+        style="margin-top:12px">
+
+        <button
+          class="btn secondary"
+          onclick="
+            exportBackup()
+          ">
+
+          Export V28 JSON
+
+        </button>
+
+        <label
+          class="btn secondary"
+          style="margin:0">
+
+          Import JSON
+
+          <input
+            type="file"
+            accept="
+              .json,
+              application/json
+            "
+            hidden
+            onchange="
+              importBackup(event)
+            ">
+
+        </label>
+
+      </div>
+
+    </div>
+  `;
+}
+
+function saveCloudSettings(e){
+
+  e.preventDefault();
+
+  state.settings.supabaseUrl=
+    field(
+      e.target,
+      "url"
+    );
+
+  state.settings.supabaseAnonKey=
+    field(
+      e.target,
+      "key"
+    );
+
+  state.settings.email=
+    field(
+      e.target,
+      "email"
+    );
+
+  state.settings.syncEnabled=
+    e.target
+      .elements
+      .enabled
+      .checked;
+
+  saveState(false);
+
+  initCloud(true);
+
+  render();
+
+  toast(
+    "Sync settings saved"
+  );
+}
+
+function saveAISettings(e){
+
+  e.preventDefault();
+
+  state.settings.aiEndpoint=
+    field(
+      e.target,
+      "endpoint"
+    );
+
+  saveState(false);
+
+  render();
+
+  toast(
+    "AI connection saved"
+  );
+}
+
+/* =========================================================
+   BACKUP
+   ========================================================= */
+
+function exportBackup(){
+
+  const data={
+    format:"a7-v28",
+    exportedAt:nowISO(),
+    state
+  };
+
+  const blob=
+    new Blob(
+      [
+        JSON.stringify(
+          data,
+          null,
+          2
+        )
+      ],
+      {
+        type:"application/json"
+      }
+    );
+
+  const url=
+    URL.createObjectURL(
+      blob
+    );
+
+  const a=
+    document.createElement(
+      "a"
+    );
+
+  a.href=url;
+
+  a.download=
+    "A7-V28-Backup-"+
+    today()+
+    ".json";
+
+  document.body.appendChild(
+    a
+  );
+
+  a.click();
+  a.remove();
+
+  setTimeout(
+    ()=>URL.revokeObjectURL(url),
+    2000
+  );
+}
+
+async function importBackup(e){
+
+  const f=
+    e.target.files?.[0];
+
+  if(!f){
+    return;
+  }
+
+  try{
+
+    const data=
+      JSON.parse(
+        await f.text()
+      );
+
+    if(
+      data.format!=="a7-v28"||
+      !data.state
+    ){
+      throw new Error(
+        "Not an A7 V28 backup"
+      );
+    }
+
+    if(
+      !confirm(
+        "Replace the current V28 "+
+        "browser data with this backup?"
+      )
+    ){
+      return;
+    }
+
+    const settings=
+      copy(
+        state.settings
+      );
+
+    state=
+      normalize(
+        data.state
+      );
+
+    state.settings={
+      ...state.settings,
+      ...settings
+    };
+
+    saveState();
+    render();
+
+    toast(
+      "Backup imported"
+    );
+
+  }catch(err){
+
+    toast(
+      "Could not import that backup"
+    );
+  }
+
+  e.target.value="";
+}
+
+/* =========================================================
+   ONLINE / OFFLINE
+   ========================================================= */
+
+window.addEventListener(
+  "online",
+  ()=>{
+    render();
+    scheduleCloudSave();
+  }
+);
+
+window.addEventListener(
+  "offline",
+  ()=>{
+    render();
+  }
+);
+
+/* =========================================================
+   START
+   ========================================================= */
+
+initCloud(false)
+  .finally(
+    ()=>render()
+  );
+
+</script>
+</body>
+</html>
